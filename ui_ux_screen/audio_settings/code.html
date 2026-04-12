@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html lang="ms"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#7cf2c9",
+                        "on-surface": "#003a31",
+                        "secondary": "#795931",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#00644c",
+                        "surface-container-high": "#bef3e6",
+                        "on-secondary": "#fff7f3",
+                        "surface-container-highest": "#b2efe0",
+                        "on-primary-fixed": "#004533",
+                        "surface-container": "#c9f7eb",
+                        "error-container": "#f56965",
+                        "inverse-primary": "#88fed4",
+                        "primary-fixed-dim": "#6ee4bb",
+                        "primary-dim": "#005f48",
+                        "tertiary": "#8a5200",
+                        "on-secondary-fixed-variant": "#75562e",
+                        "primary-fixed": "#7cf2c9",
+                        "surface-variant": "#b2efe0",
+                        "outline": "#4b8579",
+                        "tertiary-fixed": "#fcaa4a",
+                        "tertiary-dim": "#794700",
+                        "on-secondary-container": "#6a4c25",
+                        "outline-variant": "#82bdb0",
+                        "on-tertiary-container": "#543000",
+                        "on-error-container": "#65000b",
+                        "on-tertiary-fixed-variant": "#603800",
+                        "on-tertiary": "#fff7f3",
+                        "error-dim": "#70030f",
+                        "tertiary-container": "#fcaa4a",
+                        "on-primary-container": "#005a44",
+                        "on-surface-variant": "#2e695d",
+                        "secondary-fixed": "#ffddb7",
+                        "on-error": "#fff7f6",
+                        "surface": "#e5fff7",
+                        "surface-dim": "#a3e7d7",
+                        "inverse-surface": "#00110e",
+                        "surface-tint": "#006c52",
+                        "error": "#ac3434",
+                        "secondary-dim": "#6b4d26",
+                        "inverse-on-surface": "#84a39b",
+                        "surface-container-low": "#d5fcf1",
+                        "on-background": "#003a31",
+                        "on-primary": "#e5fff2",
+                        "on-tertiary-fixed": "#361d00",
+                        "secondary-container": "#ffddb7",
+                        "primary": "#006c52",
+                        "tertiary-fixed-dim": "#ec9d3e",
+                        "surface-bright": "#e5fff7",
+                        "on-secondary-fixed": "#553a14",
+                        "background": "#e5fff7",
+                        "secondary-fixed-dim": "#f8cd9b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .toggle-checkbox:checked { right: 0; border-color: #006c52; background-color: #006c52; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #7cf2c9; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar (Leveraging Shared Logic) -->
+<aside class="w-64 bg-surface-container-low flex flex-col border-r border-outline-variant/15">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary p-2 rounded-xl text-on-primary">
+<span class="material-symbols-outlined">mosque</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">myAzan</h1>
+</div>
+<nav class="flex-1 px-4 space-y-2 py-4">
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="font-medium text-sm">Utama</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined">calendar_today</span>
+<p class="font-medium text-sm">Jadual</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-on-primary shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<p class="font-medium text-sm">Tetapan Audio</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+<p class="font-medium text-sm">Notifikasi</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<p class="font-medium text-sm">Profil</p>
+</div>
+</nav>
+<div class="p-4 mt-auto">
+<div class="bg-surface-container-highest p-4 rounded-xl flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">cloud_done</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-primary-fixed">Status</p>
+<p class="text-xs text-on-surface-variant">Sistem Beroperasi</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto hide-scrollbar bg-surface p-8">
+<header class="flex flex-col gap-2 mb-8">
+<h2 class="text-3xl font-bold tracking-tight text-on-surface">Tetapan Audio &amp; Notifikasi</h2>
+<p class="text-on-surface-variant">Konfigurasi suara azan dan sistem pemberitahuan waktu solat anda.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Section 1: Azan Audio -->
+<section class="flex flex-col gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">audio_file</span>
+<h3 class="text-xl font-bold">Fail Audio Azan</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm space-y-6">
+<!-- Subuh Audio -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div>
+<h4 class="font-bold text-on-surface">Waktu Subuh</h4>
+<p class="text-xs text-on-surface-variant">Audio khas untuk azan pertama dan kedua Subuh.</p>
+</div>
+<span class="text-[10px] font-bold px-2 py-1 bg-primary-container text-on-primary-container rounded-full">MP3 DIGUNAKAN</span>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-lg border border-outline-variant/10">
+<div class="bg-primary rounded-full size-10 flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">play_arrow</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Azan_Makkah_Subuh.mp3</p>
+<div class="w-full bg-surface-container-highest h-1 rounded-full mt-2">
+<div class="bg-primary h-full w-1/3 rounded-full"></div>
+</div>
+</div>
+<button class="bg-surface-container-high p-2 rounded-lg hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="Upload">upload</span>
+</button>
+</div>
+</div>
+<!-- General Audio -->
+<div class="flex flex-col gap-4">
+<div>
+<h4 class="font-bold text-on-surface">Waktu-waktu Lain</h4>
+<p class="text-xs text-on-surface-variant">Zohor, Asar, Maghrib &amp; Isyak.</p>
+</div>
+<div class="border-2 border-dashed border-outline-variant/30 rounded-xl p-8 flex flex-col items-center justify-center gap-2 hover:bg-surface-container-low transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline-variant">cloud_upload</span>
+<p class="text-sm font-medium">Klik untuk muat naik fail MP3</p>
+<p class="text-[10px] text-on-surface-variant">Maksimum saiz: 10MB</p>
+</div>
+</div>
+</div>
+<!-- Section 3: Idle Audio (Relocated for visual balance) -->
+<div class="flex items-center gap-2 mt-4">
+<span class="material-symbols-outlined text-secondary">library_music</span>
+<h3 class="text-xl font-bold">Audio Latar (Idle)</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm space-y-4">
+<p class="text-sm text-on-surface-variant">Mainkan bacaan Al-Quran atau Zikir secara automatik di antara waktu solat.</p>
+<div class="flex items-center gap-4 bg-surface p-4 rounded-xl border border-outline-variant/15">
+<span class="material-symbols-outlined text-tertiary">folder_open</span>
+<div class="flex-1">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Folder Sumber</p>
+<p class="text-sm font-medium">C:/Users/Admin/Music/Al-Quran-MP3</p>
+</div>
+<button class="text-primary text-sm font-bold hover:underline">Tukar Folder</button>
+</div>
+<div class="flex items-center justify-between py-2">
+<span class="text-sm font-medium">Mainkan secara rawak (Shuffle)</span>
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="shuffle" name="shuffle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer" for="shuffle"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Notification Settings -->
+<section class="flex flex-col gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<h3 class="text-xl font-bold">Tetapan Notifikasi</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant/15">
+<tr>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Waktu Solat</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Notifikasi</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Peringatan (Minit)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Subuh -->
+<tr>
+<td class="px-6 py-4">
+<p class="font-bold">Subuh</p>
+</td>
+<td class="px-6 py-4">
+<div class="relative inline-block w-10 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer"></label>
+</div>
+</td>
+<td class="px-6 py-4">
+<input class="w-20 bg-surface-container-low border-none rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20" type="number" value="10"/>
+</td>
+</tr>
+<!-- Syuruk -->
+<tr>
+<td class="px-6 py-4">
+<p class="font-bold text-on-surface-variant/60">Syuruk</p>
+</td>
+<td class="px-6 py-4">
+<div class="relative inline-block w-10 align-middle select-none">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer"></label>
+</div>
+</td>
+<td class="px-6 py-4">
+<input class="w-20 bg-surface-container-high/50 border-none rounded-lg text-sm font-bold opacity-50" disabled="" type="number" value="0"/>
+</td>
+</tr>
+<!-- Zohor -->
+<tr>
+<td class="px-6 py-4">
+<p class="font-bold">Zohor</p>
+</td>
+<td class="px-6 py-4">
+<div class="relative inline-block w-10 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer"></label>
+</div>
+</td>
+<td class="px-6 py-4">
+<input class="w-20 bg-surface-container-low border-none rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20" type="number" value="5"/>
+</td>
+</tr>
+<!-- Asar -->
+<tr>
+<td class="px-6 py-4">
+<p class="font-bold">Asar</p>
+</td>
+<td class="px-6 py-4">
+<div class="relative inline-block w-10 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer"></label>
+</div>
+</td>
+<td class="px-6 py-4">
+<input class="w-20 bg-surface-container-low border-none rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20" type="number" value="5"/>
+</td>
+</tr>
+<!-- Maghrib -->
+<tr>
+<td class="px-6 py-4">
+<p class="font-bold">Maghrib</p>
+</td>
+<td class="px-6 py-4">
+<div class="relative inline-block w-10 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer"></label>
+</div>
+</td>
+<td class="px-6 py-4">
+<input class="w-20 bg-surface-container-low border-none rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20" type="number" value="10"/>
+</td>
+</tr>
+<!-- Isyak -->
+<tr>
+<td class="px-6 py-4">
+<p class="font-bold">Isyak</p>
+</td>
+<td class="px-6 py-4">
+<div class="relative inline-block w-10 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer"></label>
+</div>
+</td>
+<td class="px-6 py-4">
+<input class="w-20 bg-surface-container-low border-none rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20" type="number" value="5"/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Visual Accent Card -->
+<div class="relative h-48 rounded-2xl overflow-hidden mt-2 group shadow-lg">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/80 to-secondary/80 mix-blend-multiply z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Intricate geometric Islamic art patterns and calligraphy on a mosque wall with soft spiritual lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAHMQ2qFfShMNtUL1SSb0vAqpoYUHSIQR-L32Ki3qepHDil8T2jdMStgJ8940esYpvr8a-iGLsLNv6rpidVSd31g5q1qbnUbScyAqJb4B9NUFZM9BlsnDgQJKAbL_sFd8QbCd_U95HFhKL0t2n2sR02fEiC6Som2xKVOS7lkpMPyUFszx-qtWRFjl1nFQrMVdFlsXPfSOhtMVgqjiKGMN48zNmxP_2xiQL4BGOgSvBseBo89uEiSra2W3byjxbt1QvA3YtrFjlLM7Tu');"></div>
+<div class="absolute inset-0 z-20 p-8 flex flex-col justify-end">
+<h4 class="text-white text-xl font-bold">Ketenangan Melalui Suara</h4>
+<p class="text-on-primary text-sm opacity-90 max-w-xs">Pastikan tetapan audio anda dikonfigurasi dengan betul untuk pengalaman spiritual yang terbaik.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Action Bar -->
+<footer class="mt-12 flex items-center justify-between bg-surface-container-low p-6 rounded-2xl border border-outline-variant/15">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">info</span>
+<p class="text-xs">Tetapan akan disimpan secara automatik ke profil awan anda.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2.5 rounded-lg text-sm font-bold text-primary hover:bg-primary/5 transition-colors">
+                        Set Semula
+                    </button>
+<button class="px-8 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-primary to-primary-dim text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
+                        Simpan Semua Tetapan
+                    </button>
+</div>
+</footer>
+</main>
+</div>
+</body></html>
