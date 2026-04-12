@@ -1,0 +1,67 @@
+{
+  "name": "azan-malaysia",
+  "version": "1.0.0",
+  "description": "Azan Malaysia – Desktop prayer times app for Windows",
+  "main": "main.js",
+  "scripts": {
+    "postinstall": "node scripts/generate-icons.js",
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:all": "electron-builder -mwl"
+  },
+  "keywords": [
+    "azan",
+    "malaysia",
+    "prayer",
+    "electron"
+  ],
+  "author": "farafarizul",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^39.8.1",
+    "electron-builder": "^26.8.1"
+  },
+  "dependencies": {
+    "adhan": "^4.4.3"
+  },
+  "build": {
+    "appId": "com.azanmalaysia.app",
+    "productName": "Azan Malaysia",
+    "copyright": "Copyright © 2024 farafarizul",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css",
+      "renderer.js",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Azan Malaysia",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "license": "LICENSE"
+    }
+  }
+}
