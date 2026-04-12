@@ -56,3 +56,35 @@ export interface NotificationSetting {
 }
 
 export type AudioPriority = 'azan' | 'notification' | 'idle';
+
+/**
+ * Tetapan aplikasi yang dikongsi antara main process dan renderer.
+ * Menggabungkan app_settings, audio_settings, dan notifikasi asas.
+ */
+export interface AppSettings {
+  /** Kod zon JAKIM yang dipilih pengguna, e.g. 'WLY01'. */
+  activeZoneCode: string | null;
+  /** Laluan fail MP3 azan Subuh. */
+  azanSubuhFilePath: string | null;
+  /** Laluan fail MP3 azan selain Subuh. */
+  azanOtherFilePath: string | null;
+  /** Laluan folder MP3 idle (al-Quran / zikir). */
+  idleFolderPath: string | null;
+  /** Sama ada audio idle diaktifkan. */
+  idleEnabled: boolean;
+  /** Tetapan notifikasi untuk setiap waktu solat. */
+  notificationSettings: NotificationSetting[];
+}
+
+/**
+ * Payload untuk menyimpan tetapan — semua medan adalah pilihan.
+ * Hanya medan yang disediakan akan dikemas kini.
+ */
+export interface SaveSettingsPayload {
+  activeZoneCode?: string | null;
+  azanSubuhFilePath?: string | null;
+  azanOtherFilePath?: string | null;
+  idleFolderPath?: string | null;
+  idleEnabled?: boolean;
+  notificationSettings?: NotificationSetting[];
+}

@@ -1,8 +1,9 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '../../shared/constants';
-import { AppInfo } from '../../shared/types';
+import { AppInfo, SaveSettingsPayload } from '../../shared/types';
 import { APP_NAME, APP_VERSION, APP_AUTHOR, APP_EMAIL, APP_PHONE } from '../../shared/constants';
 import { fetchAllZones } from '../services/zones';
+import { getSettings, saveSettings, setActiveZoneCode, SettingsValidationError } from '../services/settings';
 
 /**
  * Daftarkan semua IPC handler untuk komunikasi renderer ↔ main.
@@ -26,8 +27,33 @@ export function registerIpcHandlers(): void {
     return fetchAllZones();
   });
 
-  // TODO: Fasa 1 — GET_SETTINGS, SAVE_SETTINGS
-  // TODO: Fasa 1 — SET_ACTIVE_ZONE
+  ipcMain.handle(IPC_CHANNELS.GET_SETTINGS, () => {
+    return getSettings();
+  });
+
+  ipcMain.handle(
+    IPC_CHANNELS.SAVE_SETTINGS,
+    (_event, payload: SaveSettingsPayload) => {
+      try {
+        saveSettings(payload);
+        return { ok: true };
+      } catch (err) {
+        if (err instanceof SettingsValidationError) {
+          return { ok: false, error: err.message };
+        }
+        throw err;
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SET_ACTIVE_ZONE,
+    (_event, zoneCode: string) => {
+      setActiveZoneCode(zoneCode);
+      return { ok: true };
+    },
+  );
+
   // TODO: Fasa 4 — SELECT_AUDIO_FILE, SELECT_AUDIO_FOLDER
   // TODO: Fasa 4 — GET_PLAYBACK_STATUS
 }
