@@ -1,0 +1,194 @@
+:root {
+  --warna-utama: #1a472a;
+  --warna-utama-cerah: #2d6a4f;
+  --warna-latar: #f8f9fa;
+  --warna-latar-kad: #ffffff;
+  --warna-teks: #212529;
+  --warna-teks-ringan: #6c757d;
+  --warna-border: #dee2e6;
+  --warna-aktif: #d4edda;
+  --radius: 8px;
+  --bayang: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--warna-latar);
+  color: var(--warna-teks);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Header */
+.app-header {
+  background-color: var(--warna-utama);
+  color: white;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--bayang);
+}
+
+.app-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.app-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  padding: 6px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.nav-btn.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: white;
+  font-weight: 600;
+}
+
+/* Kandungan utama */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* Halaman */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Kad waktu */
+.waktu-card,
+.status-card,
+.tentang-card {
+  background: var(--warna-latar-kad);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--bayang);
+  border: 1px solid var(--warna-border);
+}
+
+.waktu-card h2,
+.status-card h2 {
+  font-size: 1.1rem;
+  color: var(--warna-utama);
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--warna-aktif);
+  padding-bottom: 8px;
+}
+
+/* Grid waktu solat */
+.waktu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.waktu-item {
+  background: var(--warna-latar);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  text-align: center;
+  border: 1px solid var(--warna-border);
+}
+
+.waktu-label {
+  font-size: 0.8rem;
+  color: var(--warna-teks-ringan);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.waktu-masa {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--warna-utama);
+}
+
+.waktu-item.berikutnya {
+  background: var(--warna-aktif);
+  border-color: var(--warna-utama-cerah);
+}
+
+/* Status audio */
+.status-idle {
+  color: var(--warna-teks-ringan);
+  font-style: italic;
+}
+
+/* Halaman Tentang */
+.tentang-card h3 {
+  font-size: 1.05rem;
+  color: var(--warna-utama);
+  margin-bottom: 12px;
+}
+
+.tentang-card p {
+  margin-bottom: 8px;
+  color: var(--warna-teks);
+}
+
+.tentang-card .label {
+  font-weight: 600;
+  color: var(--warna-teks-ringan);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tentang-lesen {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+}
+
+/* Teks maklumat */
+.info-teks {
+  color: var(--warna-teks-ringan);
+  font-style: italic;
+}
+
+/* Halaman Tetapan */
+#page-tetapan h2 {
+  font-size: 1.1rem;
+  color: var(--warna-utama);
+  margin-bottom: 16px;
+}

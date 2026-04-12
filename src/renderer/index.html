@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myAzan</title>
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <h1 class="app-title">🕌 myAzan</h1>
+        <nav class="app-nav">
+          <button class="nav-btn active" data-page="utama">Utama</button>
+          <button class="nav-btn" data-page="tetapan">Tetapan</button>
+          <button class="nav-btn" data-page="tentang">Tentang</button>
+        </nav>
+      </header>
+
+      <main class="app-content">
+        <!-- Halaman Utama -->
+        <section id="page-utama" class="page active">
+          <div class="waktu-card">
+            <h2>Waktu Solat Hari Ini</h2>
+            <div id="waktu-solat-list" class="waktu-grid">
+              <p class="info-teks">Memuat data waktu solat...</p>
+            </div>
+          </div>
+          <div class="status-card">
+            <h2>Status Audio</h2>
+            <p id="status-audio" class="status-idle">Idle</p>
+          </div>
+        </section>
+
+        <!-- Halaman Tetapan -->
+        <section id="page-tetapan" class="page">
+          <h2>Tetapan</h2>
+          <p class="info-teks">Tetapan akan disediakan pada fasa seterusnya.</p>
+        </section>
+
+        <!-- Halaman Tentang -->
+        <section id="page-tentang" class="page">
+          <h2>Tentang Pembangun</h2>
+          <div id="tentang-info" class="tentang-card">
+            <p>Memuatkan maklumat...</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
