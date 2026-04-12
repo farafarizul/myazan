@@ -1,0 +1,142 @@
+Project Name : "myAzan"
+Technolgy : Electronjs, windows 10 atau windows 11
+Bahasa yang akan digunakan dalam system ini untuk paparan pengguna : Bahasa melayu
+
+Objektif projek:
+1. Membina satu app untuk windows.
+2. App yang akan mengumandangkan waktu azan apabila tiba masanya mengikut zon pilihan.
+3. App boleh dijalankan secara offline tanpa internet selepas data untuk zon dan tahun tersebut didownload dan save locally. Mungkin save di database atau save sebagai standalone fail, mana yang lebih baik.
+4. app akan dijalan di windows 10 keatas dan menggunakan mini PC. jadi ia akan run 24jam.
+5. app akan mengumandangkan azan dan notification melalui speaker apabila tiba waktunya.
+6. app akan mengalunkan ayat-ayat alquran atau zikir semasa idle, iaitu semasa azan atau notification tidak dimainkan lagi.
+7. Selepas azan atau notification siap play, app akan terus mengalunkan ayat-ayat alquran atau zikir seperti dalam setting.
+
+Cadangan pelan pembangunan :
+1. Mungkin boleh buat 3 mp3 player berasingan yang akan setiasa bersedia memainkan azan, notification dan zikir. Jadi tidak perlu berkongsi 1 player untuk semua.
+2. sekiranya tidak berkongsi mp3 player, maka ketika azan play atau notification play, zikir boleh pause sebentar dan sambung semula selepas player-player lain stop playing.
+
+Semasa app launch, check zon yang telah dipilih, seterusnya check adakah data untuk zon tersebut telah didownload locally?
+- Seandainya belum ada, call API dan download dan save data pada tahun tersebut locally. Situasi ini berlaku seandainya berlaku perubahan tarikh dari satu tahun kepada tahun lain.
+
+Ada page untuk ubah setting. dalam page tu dirangka untuk mempunyai setting seperti berikut :
+1. Pilih ZON anda 
+- User boleh memilih zon yang diingini mereka. Setiap kali zon dipilih, sistem akan check adakah data untuk zon tersebut pada tahun tersebut telah didownload? seandainya belum, maka download dan save data untuk zon tersebut dan tahun tersebut.
+- Semua data yang didownload perlu disimpan secara berasingan, supaya akan datang sekiranya user mahu tukar-tukar zon, tidak perlu download semula untuk tahun tersebut.
+2. MP3 files to play when system trigger adhan time.
+- app akan setiasa check untuk trigger waktu azan.
+- sekiranya telah tiba waktu azan megikut zon yang dipilih, app akan memainkan azan.
+- ada setting untuk pilih mp3 fail yang akan dimainkan setibanya waktu azan.
+- perlu ada 2 jenis mp3 waktu azan, iaitu azan subuh dan azan lain (zohor, asar, maghrib, isyak)
+3. Notification {x} minutes before azan is playing.
+- app akan check adakah waktu azan hampir tiba. seandainya sistem set notification adalah {x} minit, maka sistem akan play mp3 notification sebelum azan berkumandang mengikut {x} minit.
+- perlu ada setting untuk pilih mp3 fail untuk setiap waktu azan (imsak,fajr,syuruk,dhuha,dhuhr,asr,maghrib,isha). Setiap waktu memerlukan setting berbeza jadi user boleh pilih notification berbeza untuk setiap waktu azan termasuk imsak,syuruk dan dhuha
+- Notification untuk setiap waktu (imsak,fajr,syuruk,dhuha,dhuhr,asr,maghrib,isha) boleh di enable atau disable.
+4. User boleh pilih folder yang terisi dengan pelbagai mp3 ayat-ayat alquran.
+- perlu ada setting untuk user pilih folder yang mengandungi pelbagai mp3 ayat-ayat alquran.
+- system akan memainkan mp3 dalam folder ini secara continuous mengikut susunan filename. mp3 dengan filename 01- akan dimainkan paling awal. bermakna sorting by name.
+- Seandainya telah habis play semua fail, ulang semula dari filename 01-
+- Setiap kali notification hendak mula atau azan hendak mula, stop play fail-fail ini. berhenti putar ayat-ayat alquran untuk memberi laluan kepada mp3 notification atau mp3 azan.
+- Ada setting untuk enable play ayat-ayat alquran atau disable.
+
+
+Ada page "Tentang Pembangun"
+- Page ini memaparkan developer untuk projek ini iaitu
+-- Name : Fara Farizul | email : farxpeace@gmail.com | phone : +60137974467
+- Page ini juga paparkan sedikit objektif projek ini.
+- Tulis juga bahawa ini adalah Proprietary Software. "Lesen Hak Cipta Peribadi (Proprietary License): Anda tulis fail LICENSE sendiri yang menyatakan kod adalah sulit, tetapi aplikasi (binari) boleh digunakan secara percuma.
+"
+
+API Jakim untuk dapatkan waktu solat : https://www.e-solat.gov.my/index.php?r=esolatApi/takwimsolat&period=year&zone={zon}
+- contoh {zon} adalah JHR01, KDH06, KTN01 dan sebagainya
+
+Kod-kod dan nama zon untuk zone perlu disimpan didatabase. 
+Senarai ZON :
+Johor
+- JHR01 - Pulau Aur dan Pulau Pemanggil 
+- JHR02 - Johor Bahru, Kota Tinggi, Mersing, Kulai
+- JHR03 - Kluang, Pontian
+- JHR04 - Batu Pahat, Muar, Segamat, Gemas Johor, Tangkak
+
+Kedah
+- KDH01 - Kota Setar, Kubang Pasu, Pokok Sena (Daerah Kecil)
+- KDH02 - Kuala Muda, Yan, Pendang
+- KDH03 - Padang Terap, Sik
+- KDH04 - Baling
+- KDH05 - Bandar Baharu, Kulim
+- KDH06 - Langkawi
+- KDH07 - Puncak Gunung Jerai
+
+Kelantan
+- KTN01 - Bachok, Kota Bharu, Machang, Pasir Mas, Pasir Puteh, Tanah Merah, Tumpat, Kuala Krai, Mukim Chiku
+- KTN02 - Gua Musang (Daerah Galas Dan Bertam), Jeli, Jajahan Kecil Lojing
+
+Melaka
+- MLK01 - SELURUH NEGERI MELAKA
+
+Negeri Sembilan
+- NGS01 - Tampin, Jempol
+- NGS02 - Jelebu, Kuala Pilah, Rembau
+- NGS03 - Port Dickson, Seremban
+
+Pahang
+- PHG01 - Pulau Tioman
+- PHG02 - Kuantan, Pekan, Muadzam Shah
+- PHG03 - Jerantut, Temerloh, Maran, Bera, Chenor, Jengka
+- PHG04 - Bentong, Lipis, Raub
+- PHG05 - Genting Sempah, Janda Baik, Bukit Tinggi
+- PHG06 - Cameron Highlands, Genting Higlands, Bukit Fraser
+- PHG07 - Zon Khas Daerah Rompin, (Mukim Rompin, Mukim Endau, Mukim Pontian)
+
+Perlis
+- PLS01 - Kangar, Padang Besar, Arau
+
+Pulau Pinang
+- PNG01 - Seluruh Negeri Pulau Pinang
+
+Perak
+- PRK01 - Tapah, Slim River, Tanjung Malim
+- PRK02 - Kuala Kangsar, Sg. Siput , Ipoh, Batu Gajah, Kampar
+- PRK03 - Lenggong, Pengkalan Hulu, Grik
+- PRK04 - Temengor, Belum
+- PRK05 - Kg Gajah, Teluk Intan, Bagan Datuk, Seri Iskandar, Beruas, Parit, Lumut, Sitiawan, Pulau Pangkor
+- PRK06 - Selama, Taiping, Bagan Serai, Parit Buntar
+- PRK07 - Bukit Larut
+
+Sabah
+- SBH01 - Bahagian Sandakan (Timur), Bukit Garam, Semawang, Temanggong, Tambisan, Bandar Sandakan, Sukau
+- SBH02 - Beluran, Telupid, Pinangah, Terusan, Kuamut, Bahagian Sandakan (Barat)
+- SBH03 - Lahad Datu, Silabukan, Kunak, Sahabat, Semporna, Tungku, Bahagian Tawau  (Timur)
+- SBH04 - Bandar Tawau, Balong, Merotai, Kalabakan, Bahagian Tawau (Barat)
+- SBH05 - Kudat, Kota Marudu, Pitas, Pulau Banggi, Bahagian Kudat
+- SBH06 - Gunung Kinabalu
+- SBH07 - Kota Kinabalu, Ranau, Kota Belud, Tuaran, Penampang, Papar, Putatan, Bahagian Pantai Barat
+- SBH08 - Pensiangan, Keningau, Tambunan, Nabawan, Bahagian Pendalaman (Atas)
+- SBH09 - Beaufort, Kuala Penyu, Sipitang, Tenom, Long Pasia, Membakut, Weston, Bahagian Pendalaman (Bawah)
+
+Selangor
+- SGR01 - Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, S.Alam
+- SGR02 - Kuala Selangor, Sabak Bernam
+- SGR03 - Klang, Kuala Langat
+
+Sarawak
+- SWK01 - Limbang, Lawas, Sundar, Trusan
+- SWK02 - Miri, Niah, Bekenu, Sibuti, Marudi
+- SWK03 - Pandan, Belaga, Suai, Tatau, Sebauh, Bintulu
+- SWK04 - Sibu, Mukah, Dalat, Song, Igan, Oya, Balingian, Kanowit, Kapit
+- SWK05 - Sarikei, Matu, Julau, Rajang, Daro, Bintangor, Belawai
+- SWK06 - Lubok Antu, Sri Aman, Roban, Debak, Kabong, Lingga, Engkelili, Betong, Spaoh, Pusa, Saratok
+- SWK07 - Serian, Simunjan, Samarahan, Sebuyau, Meludam
+- SWK08 - Kuching, Bau, Lundu, Sematan
+- SWK09 - Zon Khas (Kampung Patarikan)
+
+Terengganu
+- TRG01 - Kuala Terengganu, Marang, Kuala Nerus
+- TRG02 - Besut, Setiu
+- TRG03 - Hulu Terengganu
+- TRG04 - Dungun, Kemaman
+
+Wilayah Persekutuan
+- WLY01 - Kuala Lumpur, Putrajaya
+- WLY02 - Labuan
+
+
