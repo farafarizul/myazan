@@ -1,0 +1,390 @@
+## Spesifikasi Projek: myAzan
+
+### 1. Nama Projek
+
+**myAzan**
+
+### 2. Teknologi Sasaran
+
+* **Platform:** Windows 10 dan Windows 11
+* **Framework Desktop:** Electron.js
+* **Bahasa paparan aplikasi:** Bahasa Melayu
+* **Mod operasi:** Sesuai untuk mini PC yang berjalan **24 jam secara berterusan**
+
+---
+
+## 3. Ringkasan Projek
+
+myAzan ialah sebuah aplikasi desktop untuk Windows yang berfungsi mengumandangkan azan secara automatik mengikut zon waktu solat yang dipilih oleh pengguna. Aplikasi ini juga menyokong notifikasi awal sebelum masuk waktu solat serta memainkan bacaan al-Quran atau zikir ketika aplikasi berada dalam keadaan idle. Sistem perlu menyokong operasi **offline** selepas data waktu solat bagi zon dan tahun tertentu dimuat turun dan disimpan secara setempat.
+
+---
+
+## 4. Objektif Sistem
+
+1. Membangunkan aplikasi desktop untuk Windows.
+2. Memainkan azan secara automatik apabila masuk waktu solat berdasarkan zon yang dipilih.
+3. Menyokong operasi offline selepas data zon dan tahun berkaitan dimuat turun serta disimpan secara lokal.
+4. Berjalan stabil pada peranti mini PC yang aktif 24 jam.
+5. Mengeluarkan audio azan dan notifikasi melalui speaker.
+6. Memainkan bacaan al-Quran atau zikir semasa tiada azan atau notifikasi dimainkan.
+7. Menyambung semula bacaan al-Quran atau zikir selepas azan atau notifikasi selesai dimainkan.
+
+---
+
+## 5. Cadangan Reka Bentuk Audio
+
+Untuk memastikan sistem audio lebih stabil dan mudah dikawal, dicadangkan aplikasi menggunakan **3 pemain audio berasingan**, iaitu:
+
+1. **Player Azan**
+2. **Player Notifikasi**
+3. **Player Zikir / al-Quran**
+
+### Logik audio yang dicadangkan
+
+* Player zikir berjalan secara berterusan ketika sistem idle.
+* Apabila notifikasi atau azan hendak dimainkan, player zikir akan **pause** atau **stop sementara**.
+* Selepas notifikasi atau azan selesai, player zikir akan **sambung semula** daripada kedudukan yang sesuai atau bermula semula mengikut tetapan.
+* Pengasingan player ini mengurangkan konflik jika semua audio dikongsi dalam satu player sahaja.
+
+---
+
+## 6. Aliran Sistem Semasa Aplikasi Dilancarkan
+
+Apabila aplikasi dibuka:
+
+1. Sistem membaca zon semasa yang dipilih oleh pengguna.
+2. Sistem menyemak sama ada data waktu solat bagi **zon tersebut** dan **tahun semasa** telah tersedia dalam simpanan lokal.
+3. Jika data belum wujud:
+
+   * Sistem akan memanggil API JAKIM.
+   * Sistem akan memuat turun data waktu solat tahunan bagi zon tersebut.
+   * Data akan disimpan secara lokal.
+4. Situasi muat turun ini juga perlu berlaku secara automatik apabila berlaku pertukaran tahun, contohnya daripada 2026 ke 2027.
+
+---
+
+## 7. Keperluan Fungsian Utama
+
+### 7.1 Pengurusan Zon
+
+Pengguna perlu boleh memilih zon waktu solat mereka daripada senarai zon yang disediakan.
+
+#### Keperluan:
+
+* Sistem menyimpan kod zon dan nama zon dalam pangkalan data lokal.
+* Apabila pengguna memilih zon:
+
+  * Sistem menyemak sama ada data waktu solat untuk zon dan tahun semasa telah dimuat turun.
+  * Jika belum ada, sistem perlu memuat turun data tersebut dan menyimpannya secara lokal.
+* Semua data zon yang pernah dimuat turun perlu disimpan secara berasingan.
+* Jika pengguna menukar zon pada masa akan datang, sistem tidak perlu memuat turun semula data bagi tahun yang sudah tersedia.
+
+---
+
+### 7.2 Audio Azan
+
+Sistem perlu memainkan fail audio azan apabila tiba waktu solat.
+
+#### Keperluan:
+
+* Sistem sentiasa memantau waktu semasa berbanding jadual waktu solat zon yang dipilih.
+* Apabila tiba waktu azan, aplikasi akan memainkan audio azan.
+* Pengguna boleh memilih fail MP3 yang akan dimainkan.
+* Sistem perlu menyokong dua kategori audio azan:
+
+  1. **Azan Subuh**
+  2. **Azan selain Subuh**
+     (Zohor, Asar, Maghrib, Isyak)
+
+---
+
+### 7.3 Notifikasi Sebelum Waktu Solat
+
+Sistem perlu menyokong notifikasi audio beberapa minit sebelum masuk waktu tertentu.
+
+#### Keperluan:
+
+* Pengguna boleh menetapkan nilai **{x} minit sebelum waktu** untuk memainkan notifikasi.
+* Sistem akan menyemak jika sesuatu waktu hampir tiba berdasarkan tetapan tersebut.
+* Sistem akan memainkan fail notifikasi sebelum azan mengikut bilangan minit yang ditetapkan.
+* Pengguna boleh menetapkan fail MP3 notifikasi yang berbeza bagi setiap waktu berikut:
+
+  * Imsak
+  * Fajr / Subuh
+  * Syuruk
+  * Dhuha
+  * Zuhur
+  * Asar
+  * Maghrib
+  * Isyak
+* Setiap jenis notifikasi waktu boleh **diaktifkan** atau **dinyahaktifkan** secara berasingan.
+
+---
+
+### 7.4 Audio Idle: Bacaan al-Quran / Zikir
+
+Sistem perlu menyokong mainan audio bacaan al-Quran atau zikir ketika tiada azan dan tiada notifikasi.
+
+#### Keperluan:
+
+* Pengguna boleh memilih satu folder yang mengandungi pelbagai fail MP3 bacaan al-Quran atau zikir.
+* Sistem akan memainkan semua fail dalam folder tersebut secara berterusan.
+* Susunan mainan mestilah mengikut **nama fail** secara menaik.
+
+  * Contoh: fail bermula dengan `01-` dimainkan dahulu, kemudian `02-`, dan seterusnya.
+* Setelah semua fail habis dimainkan, sistem akan mengulang semula dari fail pertama.
+* Apabila notifikasi atau azan hendak dimainkan:
+
+  * Mainan audio zikir / al-Quran mesti dihentikan sementara.
+* Selepas notifikasi atau azan selesai:
+
+  * Mainan audio zikir / al-Quran perlu disambung semula.
+* Ciri ini juga perlu mempunyai pilihan **Enable / Disable**.
+
+---
+
+## 8. Halaman Tetapan
+
+Aplikasi perlu menyediakan halaman tetapan yang membolehkan pengguna mengurus konfigurasi berikut:
+
+1. **Pilih Zon**
+2. **Tetapan audio azan**
+3. **Tetapan notifikasi sebelum waktu**
+4. **Tetapan folder audio al-Quran / zikir**
+5. **Enable / Disable** fungsi tertentu
+
+Tujuan halaman ini ialah supaya semua konfigurasi utama dapat diurus dengan mudah oleh pengguna tanpa perlu mengubah fail sistem secara manual.
+
+---
+
+## 9. Halaman “Tentang Pembangun”
+
+Aplikasi perlu mempunyai halaman khas untuk maklumat pembangun.
+
+### Maklumat yang dipaparkan:
+
+* **Nama:** Fara Farizul
+* **Email:** [farxpeace@gmail.com](mailto:farxpeace@gmail.com)
+* **Telefon:** +60137974467
+
+### Kandungan tambahan:
+
+* Paparan ringkas objektif projek.
+* Nyatakan bahawa perisian ini adalah **Proprietary Software**.
+
+### Cadangan teks lesen:
+
+**Lesen Hak Cipta Peribadi (Proprietary License):**
+Kod sumber adalah sulit dan tidak dibenarkan untuk diedarkan, diubah suai, atau digunakan semula tanpa kebenaran pemilik. Walau bagaimanapun, aplikasi dalam bentuk binari boleh digunakan secara percuma oleh pengguna akhir tertakluk kepada syarat yang ditetapkan oleh pemilik perisian.
+
+---
+
+## 10. Sumber API Waktu Solat
+
+Sistem akan mendapatkan data waktu solat daripada API JAKIM berikut:
+
+```text
+https://www.e-solat.gov.my/index.php?r=esolatApi/takwimsolat&period=year&zone={zon}
+```
+
+Contoh kod zon:
+
+* JHR01
+* KDH06
+* KTN01
+
+---
+
+## 11. Keperluan Penyimpanan Data
+
+Sistem perlu menyimpan data berikut secara lokal:
+
+1. **Senarai zon**
+2. **Data waktu solat mengikut zon dan tahun**
+3. **Tetapan pengguna**
+4. **Lokasi fail audio**
+5. **Status enable/disable bagi setiap fungsi**
+
+### Cadangan penyimpanan
+
+Untuk aplikasi Electron.js, pendekatan yang sesuai ialah:
+
+* **SQLite** untuk data berstruktur seperti zon, tetapan, dan jadual waktu solat
+* Simpan **path folder / fail** dalam database
+* Audio MP3 kekal berada dalam folder pengguna, bukan disalin ke database
+
+### Kenapa SQLite sesuai
+
+* Ringan
+* Offline
+* Stabil untuk aplikasi desktop
+* Mudah disandarkan
+* Sesuai untuk data zon dan jadual tahunan
+
+---
+
+## 12. Cadangan Struktur Modul Sistem
+
+### Modul utama
+
+1. **App Bootstrap / Startup**
+
+   * Inisialisasi aplikasi
+   * Semak zon aktif
+   * Semak data tahunan
+   * Muat turun data jika perlu
+
+2. **Zone Management Module**
+
+   * Simpan senarai zon
+   * Ubah zon aktif
+   * Semak kewujudan data zon
+
+3. **Prayer Time Sync Module**
+
+   * Ambil data daripada API JAKIM
+   * Simpan ke database
+   * Urus pertukaran tahun
+
+4. **Scheduler Module**
+
+   * Semak waktu semasa
+   * Tentukan trigger notifikasi
+   * Tentukan trigger azan
+   * Elak trigger berulang untuk waktu yang sama
+
+5. **Audio Engine Module**
+
+   * Urus 3 audio player
+   * Pause / resume / stop
+   * Pengurusan keutamaan audio
+
+6. **Settings Module**
+
+   * Simpan dan baca semua konfigurasi pengguna
+
+7. **About Module**
+
+   * Paparan maklumat pembangun
+   * Paparan maklumat lesen
+
+---
+
+## 13. Peraturan Logik Sistem
+
+Berikut ialah logik utama yang perlu dipatuhi:
+
+* Jika audio zikir sedang dimainkan dan waktu notifikasi tiba, audio zikir mesti dihentikan sementara.
+* Jika audio notifikasi sedang dimainkan dan waktu azan tiba, azan mesti mengambil keutamaan.
+* Azan mempunyai keutamaan tertinggi.
+* Notifikasi mempunyai keutamaan kedua.
+* Zikir / al-Quran ialah audio latar belakang ketika idle.
+* Sistem mesti memastikan setiap waktu hanya dicetuskan sekali bagi setiap hari.
+* Sistem perlu terus berfungsi walaupun internet tiada, selagi data zon dan tahun semasa sudah tersedia secara lokal.
+
+---
+
+## 14. Cadangan Kriteria Penerimaan
+
+Sistem dianggap memenuhi keperluan jika:
+
+1. Aplikasi boleh dipasang dan berjalan pada Windows 10/11.
+2. Pengguna boleh memilih zon dan data zon dimuat turun secara automatik jika belum tersedia.
+3. Jadual waktu solat tahunan disimpan secara lokal.
+4. Azan dimainkan tepat pada waktu berdasarkan zon yang dipilih.
+5. Notifikasi dimainkan mengikut minit awal yang ditetapkan.
+6. Setiap waktu boleh mempunyai MP3 notifikasi berbeza.
+7. Bacaan al-Quran / zikir dimainkan berterusan semasa idle.
+8. Bacaan idle berhenti sementara apabila notifikasi atau azan dimainkan.
+9. Sistem berfungsi tanpa internet selepas data tersedia.
+10. Tetapan kekal disimpan selepas aplikasi ditutup dan dibuka semula.
+
+Kod-kod dan nama zon untuk zone perlu disimpan didatabase. 
+Senarai ZON :
+Johor
+- JHR01 - Pulau Aur dan Pulau Pemanggil 
+- JHR02 - Johor Bahru, Kota Tinggi, Mersing, Kulai
+- JHR03 - Kluang, Pontian
+- JHR04 - Batu Pahat, Muar, Segamat, Gemas Johor, Tangkak
+
+Kedah
+- KDH01 - Kota Setar, Kubang Pasu, Pokok Sena (Daerah Kecil)
+- KDH02 - Kuala Muda, Yan, Pendang
+- KDH03 - Padang Terap, Sik
+- KDH04 - Baling
+- KDH05 - Bandar Baharu, Kulim
+- KDH06 - Langkawi
+- KDH07 - Puncak Gunung Jerai
+
+Kelantan
+- KTN01 - Bachok, Kota Bharu, Machang, Pasir Mas, Pasir Puteh, Tanah Merah, Tumpat, Kuala Krai, Mukim Chiku
+- KTN02 - Gua Musang (Daerah Galas Dan Bertam), Jeli, Jajahan Kecil Lojing
+
+Melaka
+- MLK01 - SELURUH NEGERI MELAKA
+
+Negeri Sembilan
+- NGS01 - Tampin, Jempol
+- NGS02 - Jelebu, Kuala Pilah, Rembau
+- NGS03 - Port Dickson, Seremban
+
+Pahang
+- PHG01 - Pulau Tioman
+- PHG02 - Kuantan, Pekan, Muadzam Shah
+- PHG03 - Jerantut, Temerloh, Maran, Bera, Chenor, Jengka
+- PHG04 - Bentong, Lipis, Raub
+- PHG05 - Genting Sempah, Janda Baik, Bukit Tinggi
+- PHG06 - Cameron Highlands, Genting Higlands, Bukit Fraser
+- PHG07 - Zon Khas Daerah Rompin, (Mukim Rompin, Mukim Endau, Mukim Pontian)
+
+Perlis
+- PLS01 - Kangar, Padang Besar, Arau
+
+Pulau Pinang
+- PNG01 - Seluruh Negeri Pulau Pinang
+
+Perak
+- PRK01 - Tapah, Slim River, Tanjung Malim
+- PRK02 - Kuala Kangsar, Sg. Siput , Ipoh, Batu Gajah, Kampar
+- PRK03 - Lenggong, Pengkalan Hulu, Grik
+- PRK04 - Temengor, Belum
+- PRK05 - Kg Gajah, Teluk Intan, Bagan Datuk, Seri Iskandar, Beruas, Parit, Lumut, Sitiawan, Pulau Pangkor
+- PRK06 - Selama, Taiping, Bagan Serai, Parit Buntar
+- PRK07 - Bukit Larut
+
+Sabah
+- SBH01 - Bahagian Sandakan (Timur), Bukit Garam, Semawang, Temanggong, Tambisan, Bandar Sandakan, Sukau
+- SBH02 - Beluran, Telupid, Pinangah, Terusan, Kuamut, Bahagian Sandakan (Barat)
+- SBH03 - Lahad Datu, Silabukan, Kunak, Sahabat, Semporna, Tungku, Bahagian Tawau  (Timur)
+- SBH04 - Bandar Tawau, Balong, Merotai, Kalabakan, Bahagian Tawau (Barat)
+- SBH05 - Kudat, Kota Marudu, Pitas, Pulau Banggi, Bahagian Kudat
+- SBH06 - Gunung Kinabalu
+- SBH07 - Kota Kinabalu, Ranau, Kota Belud, Tuaran, Penampang, Papar, Putatan, Bahagian Pantai Barat
+- SBH08 - Pensiangan, Keningau, Tambunan, Nabawan, Bahagian Pendalaman (Atas)
+- SBH09 - Beaufort, Kuala Penyu, Sipitang, Tenom, Long Pasia, Membakut, Weston, Bahagian Pendalaman (Bawah)
+
+Selangor
+- SGR01 - Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, S.Alam
+- SGR02 - Kuala Selangor, Sabak Bernam
+- SGR03 - Klang, Kuala Langat
+
+Sarawak
+- SWK01 - Limbang, Lawas, Sundar, Trusan
+- SWK02 - Miri, Niah, Bekenu, Sibuti, Marudi
+- SWK03 - Pandan, Belaga, Suai, Tatau, Sebauh, Bintulu
+- SWK04 - Sibu, Mukah, Dalat, Song, Igan, Oya, Balingian, Kanowit, Kapit
+- SWK05 - Sarikei, Matu, Julau, Rajang, Daro, Bintangor, Belawai
+- SWK06 - Lubok Antu, Sri Aman, Roban, Debak, Kabong, Lingga, Engkelili, Betong, Spaoh, Pusa, Saratok
+- SWK07 - Serian, Simunjan, Samarahan, Sebuyau, Meludam
+- SWK08 - Kuching, Bau, Lundu, Sematan
+- SWK09 - Zon Khas (Kampung Patarikan)
+
+Terengganu
+- TRG01 - Kuala Terengganu, Marang, Kuala Nerus
+- TRG02 - Besut, Setiu
+- TRG03 - Hulu Terengganu
+- TRG04 - Dungun, Kemaman
+
+Wilayah Persekutuan
+- WLY01 - Kuala Lumpur, Putrajaya
+- WLY02 - Labuan
