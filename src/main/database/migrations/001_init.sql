@@ -109,7 +109,8 @@ INSERT OR IGNORE INTO audio_settings (
   idle_enabled, idle_resume_mode, idle_sort_mode, updated_at
 ) VALUES (
   1, NULL, NULL, NULL,
-  0, 'restart_playlist', 'filename_asc', datetime('now')
+  0, 'restart_playlist', 'filename_asc',
+  strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 );
 
 -- ============================================================
@@ -118,20 +119,20 @@ INSERT OR IGNORE INTO audio_settings (
 INSERT OR IGNORE INTO notification_settings
   (event_name, enabled, minutes_before, audio_file_path, volume, updated_at)
 VALUES
-  ('imsak',   0, 10, NULL, NULL, datetime('now')),
-  ('fajr',    1,  5, NULL, NULL, datetime('now')),
-  ('syuruk',  0,  5, NULL, NULL, datetime('now')),
-  ('dhuha',   0,  5, NULL, NULL, datetime('now')),
-  ('dhuhr',   1,  5, NULL, NULL, datetime('now')),
-  ('asr',     1,  5, NULL, NULL, datetime('now')),
-  ('maghrib', 1,  5, NULL, NULL, datetime('now')),
-  ('isha',    1,  5, NULL, NULL, datetime('now'));
+  ('imsak',   0, 10, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('fajr',    1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('syuruk',  0,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('dhuha',   0,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('dhuhr',   1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('asr',     1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('maghrib', 1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('isha',    1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));
 
 -- ============================================================
 -- Seed: app_settings (nilai lalai)
 -- ============================================================
 INSERT OR IGNORE INTO app_settings (key, value, value_type, updated_at)
 VALUES
-  ('active_zone_code',        NULL,    'string',  datetime('now')),
-  ('idle_enabled',            'false', 'boolean', datetime('now')),
-  ('auto_download_next_year', 'true',  'boolean', datetime('now'));
+  ('active_zone_code',        NULL,    'string',  strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('idle_enabled',            'false', 'boolean', strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('auto_download_next_year', 'true',  'boolean', strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));

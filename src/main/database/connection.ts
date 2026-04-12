@@ -24,7 +24,10 @@ export function openDatabase(): Database {
   console.log(`[db] Membuka database: ${dbPath}`);
 
   db = new BetterSqlite3(dbPath, {
-    verbose: process.env['NODE_ENV'] === 'development' ? console.log : undefined,
+    verbose:
+      process.env['NODE_ENV'] === 'development'
+        ? (msg: unknown): void => console.log('[db-query]', msg)
+        : undefined,
   });
 
   // Aktifkan WAL mode untuk prestasi yang lebih baik

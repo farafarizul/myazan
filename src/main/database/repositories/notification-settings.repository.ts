@@ -39,7 +39,15 @@ export function saveNotificationSetting(
          (event_name, enabled, minutes_before, audio_file_path, volume, updated_at)
        VALUES
          (@event_name, @enabled, @minutes_before, @audio_file_path, @volume, @updated_at)`,
-    ).run({ event_name: eventName, enabled: 0, minutes_before: 0, audio_file_path: null, volume: null, ...payload, updated_at: now });
+    ).run({
+      event_name: eventName,
+      enabled: 0,
+      minutes_before: 0,
+      audio_file_path: null,
+      volume: null,
+      ...payload,
+      updated_at: now,
+    });
   } else {
     const merged = { ...current, ...payload, updated_at: now };
     db.prepare(
