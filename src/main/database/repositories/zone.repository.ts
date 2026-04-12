@@ -36,3 +36,23 @@ export function upsertZone(zone: Omit<ZoneRow, 'created_at' | 'updated_at'>): vo
        updated_at = excluded.updated_at`,
   ).run({ ...zone, created_at: now, updated_at: now });
 }
+
+export function getZonesByState(stateName: string): ZoneRow[] {
+  const db = getDatabase();
+  return db
+    .prepare('SELECT * FROM zones WHERE state_name = ? ORDER BY sort_order ASC, code ASC')
+    .all(stateName) as ZoneRow[];
+}
+
+export function getDistinctStateNames(): string[] {
+  const db = getDatabase();
+  const rows = db
+    .prepare(
+      `SELECT state_name
+       FROM zones
+       GROUP BY state_name
+       ORDER BY MIN(sort_order) ASC`,
+    )
+    .all() as { state_name: string }[];
+  return rows.map((r) => r.state_name);
+}
