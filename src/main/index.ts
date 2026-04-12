@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { bootstrap } from './bootstrap';
 import { registerIpcHandlers } from './ipc';
+import { closeDatabase } from './database';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -48,4 +49,8 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('before-quit', () => {
+  closeDatabase();
 });

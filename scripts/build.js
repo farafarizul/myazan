@@ -15,7 +15,7 @@ const mainConfig = {
   target: 'node20',
   format: 'cjs',
   outfile: path.join(__dirname, '../dist/main/index.js'),
-  external: ['electron'],
+  external: ['electron', 'better-sqlite3'],
   sourcemap: true,
   tsconfig: path.join(__dirname, '../tsconfig.json'),
 };
@@ -44,6 +44,26 @@ const rendererConfig = {
   sourcemap: true,
   tsconfig: path.join(__dirname, '../tsconfig.renderer.json'),
 };
+
+/**
+ * Copy SQL migration files to dist/main/database/migrations/
+ * Esbuild bundles TypeScript but cannot embed SQL files, so we copy them manually.
+ */
+function copyMigrations() {
+  const srcDir = path.join(__dirname, '../src/main/database/migrations');
+  const outDir = path.join(__dirname, '../dist/main/database/migrations');
+
+  if (!fs.existsSync(srcDir)) return;
+
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
+  }
+
+  const sqlFiles = fs.readdirSync(srcDir).filter((f) => f.endsWith('.sql'));
+  for (const file of sqlFiles) {
+    fs.copyFileSync(path.join(srcDir, file), path.join(outDir, file));
+  }
+}
 
 /**
  * Copy static renderer assets (HTML, CSS) to dist/renderer/
@@ -83,6 +103,7 @@ async function build() {
       rendererCtx.watch(),
     ]);
 
+    copyMigrations();
     copyRendererAssets();
     console.log('[build] watching for changes...');
   } else {
@@ -92,6 +113,7 @@ async function build() {
       esbuild.build(rendererConfig),
     ]);
 
+    copyMigrations();
     copyRendererAssets();
     console.log('[build] done');
   }

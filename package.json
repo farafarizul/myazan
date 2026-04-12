@@ -22,9 +22,9 @@
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "concurrently": "^9.0.0",
-    "esbuild": "^0.28.0",
     "electron": "^41.2.0",
     "electron-builder": "^25.0.0",
+    "esbuild": "^0.28.0",
     "eslint": "^9.0.0",
     "prettier": "^3.0.0",
     "typescript": "^6.0.2",
@@ -40,12 +40,18 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
     "files": [
       "dist/**/*"
     ]
+  },
+  "dependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.9.0"
   }
 }
