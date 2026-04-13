@@ -210,16 +210,16 @@ function onIdleError(_event: IpcMainEvent, errorMsg: string): void {
 // Pengurusan pendaftaran IPC dalaman
 // ============================================================
 
-type IpcHandler = (event: IpcMainEvent, ...args: unknown[]) => void;
+type IpcHandler = (event: IpcMainEvent, ...args: any[]) => void;
 const ipcHandlers: Array<[string, IpcHandler]> = [];
 
 function registerIpcListeners(): void {
-  addIpcHandler(AUDIO_IPC.AZAN_ENDED, onAzanEnded as IpcHandler);
-  addIpcHandler(AUDIO_IPC.AZAN_ERROR, onAzanError as unknown as IpcHandler);
-  addIpcHandler(AUDIO_IPC.NOTIFICATION_ENDED, onNotificationEnded as IpcHandler);
-  addIpcHandler(AUDIO_IPC.NOTIFICATION_ERROR, onNotificationError as unknown as IpcHandler);
-  addIpcHandler(AUDIO_IPC.IDLE_ENDED, onIdleEnded as IpcHandler);
-  addIpcHandler(AUDIO_IPC.IDLE_ERROR, onIdleError as unknown as IpcHandler);
+  addIpcHandler(AUDIO_IPC.AZAN_ENDED, onAzanEnded);
+  addIpcHandler(AUDIO_IPC.AZAN_ERROR, onAzanError);
+  addIpcHandler(AUDIO_IPC.NOTIFICATION_ENDED, onNotificationEnded);
+  addIpcHandler(AUDIO_IPC.NOTIFICATION_ERROR, onNotificationError);
+  addIpcHandler(AUDIO_IPC.IDLE_ENDED, onIdleEnded);
+  addIpcHandler(AUDIO_IPC.IDLE_ERROR, onIdleError);
 }
 
 function addIpcHandler(channel: string, handler: IpcHandler): void {
@@ -244,11 +244,11 @@ function removeIpcListeners(): void {
  */
 function buildIdlePlaylist(folderPath: string): string[] {
   try {
-    const entries = fs.readdirSync(folderPath) as string[];
-    return entries
-      .filter((f: string) => f.toLowerCase().endsWith('.mp3'))
-      .sort((a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-      .map((f: string) => path.join(folderPath, f));
+    const entries = fs.readdirSync(folderPath);
+    return (entries as string[])
+      .filter((f) => f.toLowerCase().endsWith('.mp3'))
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+      .map((f) => path.join(folderPath, f));
   } catch (err) {
     console.warn(`[audio-coordinator] Gagal baca folder idle '${folderPath}': ${String(err)}`);
     return [];
