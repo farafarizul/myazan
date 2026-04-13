@@ -1,0 +1,57 @@
+{
+  "name": "my-azan",
+  "version": "0.1.0",
+  "description": "Aplikasi azan automatik untuk Windows 10/11",
+  "main": "dist/main/index.js",
+  "author": {
+    "name": "Fara Farizul",
+    "email": "farxpeace@gmail.com"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "compile": "node scripts/build.js",
+    "start": "npm run compile && electron .",
+    "dev": "concurrently -k \"node scripts/build.js --watch\" \"wait-on dist/main/index.js && electron . --dev\"",
+    "typecheck": "tsc --noEmit && tsc --noEmit --project tsconfig.renderer.json",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
+    "build": "npm run compile && electron-builder --win"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "concurrently": "^9.0.0",
+    "electron": "^41.2.0",
+    "electron-builder": "^25.0.0",
+    "esbuild": "^0.28.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^6.0.2",
+    "wait-on": "^8.0.0"
+  },
+  "build": {
+    "appId": "com.farafarizul.myazan",
+    "productName": "myAzan",
+    "directories": {
+      "output": "dist-build"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "files": [
+      "dist/**/*"
+    ]
+  },
+  "dependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.9.0"
+  }
+}
