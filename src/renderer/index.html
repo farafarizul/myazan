@@ -180,14 +180,60 @@
             <!-- Audio Azan (4 cols) -->
             <div class="bento-card bento-4" style="justify-content:space-between;">
               <div class="bento-card-header">
-                <span class="material-symbols-outlined">volume_up</span>
-                <span class="bento-card-title">Audio Azan</span>
+                <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">audio_file</span>
+                <span class="bento-card-title">Fail Audio Azan</span>
               </div>
-              <div class="form-row">
-                <div class="form-label">Fail Dipilih</div>
-                <div style="font-size:0.8125rem;color:var(--on-surface-variant);padding:8px 0;"
-                     id="settings-azan-subuh-preview">Tiada fail</div>
+
+              <!-- Subuh -->
+              <div style="margin-bottom:16px;">
+                <div style="margin-bottom:8px;">
+                  <div style="font-weight:700;font-size:0.875rem;">Waktu Subuh</div>
+                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Audio khas untuk azan Subuh</div>
+                </div>
+                <div id="audio-subuh-preview" class="audio-file-preview">
+                  <div class="audio-play-icon">
+                    <span class="material-symbols-outlined">music_note</span>
+                  </div>
+                  <div>
+                    <div class="audio-file-name" id="audio-subuh-nama">Tiada fail dipilih</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button id="btn-azan-subuh" class="btn-primary flex-1" type="button">
+                    <span class="material-symbols-outlined">upload</span>
+                    Pilih Fail
+                  </button>
+                  <button id="btn-azan-subuh-padam" class="btn-icon" type="button" title="Padam">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
               </div>
+
+              <!-- Selain Subuh -->
+              <div style="margin-bottom:16px;">
+                <div style="margin-bottom:8px;">
+                  <div style="font-weight:700;font-size:0.875rem;">Waktu-waktu Lain</div>
+                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Zohor, Asar, Maghrib &amp; Isyak</div>
+                </div>
+                <div id="audio-lain-preview" class="audio-file-preview">
+                  <div class="audio-play-icon">
+                    <span class="material-symbols-outlined">music_note</span>
+                  </div>
+                  <div>
+                    <div class="audio-file-name" id="azan-lain-nama">Tiada fail dipilih</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button id="btn-azan-lain" class="btn-primary flex-1" type="button">
+                    <span class="material-symbols-outlined">upload</span>
+                    Pilih Fail
+                  </button>
+                  <button id="btn-azan-lain-padam" class="btn-icon" type="button" title="Padam">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+
               <div class="form-row">
                 <label class="form-label">Kelantangan Azan</label>
                 <div class="volume-row">
@@ -195,11 +241,6 @@
                   <span id="azan-volume-nilai" class="volume-value">100%</span>
                 </div>
               </div>
-              <button class="btn-primary w-full mt-3" id="btn-goto-audio" type="button"
-                      style="margin-top:auto;">
-                <span class="material-symbols-outlined">library_music</span>
-                Urus Audio
-              </button>
             </div>
 
             <!-- Notifikasi (7 cols) -->
@@ -296,64 +337,6 @@
           </div>
 
           <div class="audio-grid">
-            <!-- Fail Audio Azan -->
-            <div class="audio-file-card">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
-                <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">audio_file</span>
-                <h3 style="font-size:1rem;font-weight:700;">Fail Audio Azan</h3>
-              </div>
-
-              <!-- Subuh -->
-              <div style="margin-bottom:20px;">
-                <div style="margin-bottom:8px;">
-                  <div style="font-weight:700;font-size:0.875rem;">Waktu Subuh</div>
-                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Audio khas untuk azan Subuh</div>
-                </div>
-                <div id="audio-subuh-preview" class="audio-file-preview">
-                  <div class="audio-play-icon">
-                    <span class="material-symbols-outlined">music_note</span>
-                  </div>
-                  <div>
-                    <div class="audio-file-name" id="audio-subuh-nama">Tiada fail dipilih</div>
-                  </div>
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <button id="btn-azan-subuh" class="btn-primary flex-1" type="button">
-                    <span class="material-symbols-outlined">upload</span>
-                    Pilih Fail
-                  </button>
-                  <button id="btn-azan-subuh-padam" class="btn-icon" type="button" title="Padam">
-                    <span class="material-symbols-outlined">close</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Selain Subuh -->
-              <div>
-                <div style="margin-bottom:8px;">
-                  <div style="font-weight:700;font-size:0.875rem;">Waktu-waktu Lain</div>
-                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Zohor, Asar, Maghrib &amp; Isyak</div>
-                </div>
-                <div id="audio-lain-preview" class="audio-file-preview">
-                  <div class="audio-play-icon">
-                    <span class="material-symbols-outlined">music_note</span>
-                  </div>
-                  <div>
-                    <div class="audio-file-name" id="azan-lain-nama">Tiada fail dipilih</div>
-                  </div>
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <button id="btn-azan-lain" class="btn-primary flex-1" type="button">
-                    <span class="material-symbols-outlined">upload</span>
-                    Pilih Fail
-                  </button>
-                  <button id="btn-azan-lain-padam" class="btn-icon" type="button" title="Padam">
-                    <span class="material-symbols-outlined">close</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
             <!-- Audio Idle -->
             <div class="audio-file-card">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
