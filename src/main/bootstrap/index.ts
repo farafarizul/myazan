@@ -21,7 +21,7 @@ import { startAudioEngine } from '../services/audio';
 function setDefaultAudioPaths(): void {
   const audio = getAudioSettings();
   const assetsDir = path.join(__dirname, '../assets');
-  const updates: Record<string, string | number> = {};
+  const updates: Record<string, string> = {};
 
   if (!audio?.azan_subuh_file_path) {
     updates['azan_subuh_file_path'] = path.join(assetsDir, 'audio', 'default_azan_biasa.mp3');

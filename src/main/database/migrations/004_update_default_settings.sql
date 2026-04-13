@@ -3,12 +3,13 @@
 -- Gunakan fail notifikasi lalai, kelantangan zikir 50%, dan zon SGR01
 
 -- Kemaskini tetapan notifikasi untuk waktu solat utama
--- (enabled=1, minutes_before=15)
+-- hanya jika masih menggunakan nilai lalai lama (minutes_before = 5)
 UPDATE notification_settings
 SET enabled = 1,
     minutes_before = 15,
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
-WHERE event_name IN ('fajr', 'dhuhr', 'asr', 'maghrib', 'isha');
+WHERE event_name IN ('fajr', 'dhuhr', 'asr', 'maghrib', 'isha')
+  AND minutes_before = 5;
 
 -- Kemaskini kelantangan zikir (idle) kepada 50% sebagai lalai
 UPDATE audio_settings
