@@ -22,6 +22,6 @@ export async function fetchYearlyPrayerTimes(
   zoneCode: string,
   year: number,
 ): Promise<NewPrayerTimeRow[]> {
-  const raw = await fetchJakimYearlyData(zoneCode, year);
+  const raw = await fetchJakimYearlyData(zoneCode);
   return parseJakimResponse(raw, zoneCode, year);
 }

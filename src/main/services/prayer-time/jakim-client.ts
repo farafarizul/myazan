@@ -72,16 +72,13 @@ function sleep(ms: number): Promise<void> {
  * Akan cuba semula sehingga MAX_ATTEMPTS kali jika gagal.
  *
  * @param zoneCode - Kod zon JAKIM, contoh: 'WLY01'
- * @param year     - Tahun yang diminta (digunakan untuk log; API sentiasa pulangkan tahun semasa)
  * @throws {JakimNetworkError} jika rangkaian gagal selepas semua percubaan
  * @throws {JakimApiError}     jika API memulangkan status bukan-OK
  */
 export async function fetchJakimYearlyData(
   zoneCode: string,
-  year: number,
 ): Promise<JakimApiResponse> {
   const url = `${JAKIM_API_BASE}&period=year&zone=${encodeURIComponent(zoneCode)}`;
-  void year; // disimpan untuk kegunaan log masa hadapan
 
   let lastError: unknown;
 
