@@ -12,111 +12,76 @@ declare global {
       selectAudioFolder: () => Promise<string | null>;
       syncPrayerTimes: (payload: { zoneCode: string; year?: number }) => Promise<{ ok: boolean; error?: string }>;
       getPrayerTimesForDate: (zoneCode: string, date: string) => Promise<import('../shared/types').PrayerTimeForDate | null>;
+      windowMinimize: () => Promise<void>;
+      windowClose: () => Promise<void>;
     };
   }
 }
 
-/** Navigasi halaman ringkas menggunakan data atribut. */
+// ============================================================
+// Nama waktu solat dalam Bahasa Melayu
+// ============================================================
+
+const NAMA_WAKTU: Record<string, string> = {
+  imsak: 'Imsak',
+  fajr: 'Subuh',
+  syuruk: 'Syuruk',
+  dhuha: 'Dhuha',
+  dhuhr: 'Zohor',
+  asr: 'Asar',
+  maghrib: 'Maghrib',
+  isha: 'Isyak',
+};
+
+// ============================================================
+// Navigasi sidebar
+// ============================================================
+
+/** Inisialisasi navigasi sidebar (Digital Sanctuary layout). */
 function initNavigation(): void {
-  const navBtns = document.querySelectorAll<HTMLButtonElement>('.nav-btn');
+  const navItems = document.querySelectorAll<HTMLButtonElement>('.nav-item[data-page]');
   const pages = document.querySelectorAll<HTMLElement>('.page');
 
-  navBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const targetPage = btn.dataset['page'];
+  navItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      const targetPage = item.dataset['page'];
 
-      navBtns.forEach((b) => b.classList.remove('active'));
+      navItems.forEach((n) => n.classList.remove('nav-item-active'));
       pages.forEach((p) => p.classList.remove('active'));
 
-      btn.classList.add('active');
-
+      item.classList.add('nav-item-active');
       const pageEl = document.getElementById(`page-${targetPage}`);
       pageEl?.classList.add('active');
+
+      // Sync audio page controls when navigating to audio page
+      if (targetPage === 'audio') {
+        syncAudioPage();
+      }
     });
   });
 }
 
-/** Muatkan maklumat pembangun pada halaman Tentang. */
-async function loadAboutPage(): Promise<void> {
-  const container = document.getElementById('tentang-info');
-  if (!container) return;
+// ============================================================
+// Window controls
+// ============================================================
 
-  try {
-    const info = await window.myAzan.getAppInfo();
-    const tahunHakCipta = new Date().getFullYear();
+function initWindowControls(): void {
+  document.getElementById('btn-minimize')?.addEventListener('click', () => {
+    window.myAzan.windowMinimize().catch((err) => {
+      console.error('[window] gagal minimize:', err);
+    });
+  });
 
-    container.innerHTML = `
-      <div class="tentang-grid">
-
-        <!-- Kad Pembangun -->
-        <div class="tentang-kad tentang-kad-pembangun">
-          <div class="tentang-avatar" aria-hidden="true">🧑‍💻</div>
-          <div class="tentang-pembangun-butiran">
-            <h3 class="tentang-nama">${info.author}</h3>
-            <p class="tentang-jawatan">Pembangun Utama</p>
-            <div class="tentang-kenalan">
-              <div class="tentang-kenalan-baris">
-                <span class="tentang-ikon" aria-hidden="true">✉️</span>
-                <div>
-                  <p class="tentang-kenalan-label">Emel</p>
-                  <a class="tentang-kenalan-nilai" href="mailto:${info.email}">${info.email}</a>
-                </div>
-              </div>
-              <div class="tentang-kenalan-baris">
-                <span class="tentang-ikon" aria-hidden="true">📞</span>
-                <div>
-                  <p class="tentang-kenalan-label">Telefon</p>
-                  <p class="tentang-kenalan-nilai">${info.phone}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Kad Maklumat Perisian -->
-        <div class="tentang-kad tentang-kad-perisian">
-          <p class="tentang-seksyen-label">Maklumat Perisian</p>
-          <div class="tentang-perisian-senarai">
-            <div class="tentang-perisian-baris">
-              <span class="tentang-perisian-kunci">Aplikasi</span>
-              <span class="tentang-perisian-nilai">${info.name}</span>
-            </div>
-            <div class="tentang-perisian-baris">
-              <span class="tentang-perisian-kunci">Versi</span>
-              <span class="tentang-versi-teg">${info.version}</span>
-            </div>
-            <div class="tentang-perisian-baris">
-              <span class="tentang-perisian-kunci">Status Lesen</span>
-              <span class="tentang-perisian-nilai tentang-lesen-teg">Proprietari</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Seksyen Objektif -->
-        <div class="tentang-kad tentang-kad-objektif">
-          <p class="tentang-seksyen-label">Objektif Projek</p>
-          <p class="tentang-objektif-teks">${info.objective}</p>
-        </div>
-
-        <!-- Notis Lesen -->
-        <div class="tentang-lesen-notis">
-          <span aria-hidden="true">⚠️</span>
-          <p>${info.license}</p>
-        </div>
-
-        <!-- Footer Hak Cipta -->
-        <div class="tentang-footer">
-          <p>Hak Cipta Terpelihara &copy; ${tahunHakCipta} ${info.author}</p>
-          <p>Direka dengan penuh ketelitian di Malaysia.</p>
-        </div>
-
-      </div>
-    `;
-  } catch (err) {
-    console.error('[tentang] gagal muatkan maklumat:', err);
-    container.innerHTML = '<p class="info-teks">Gagal memuatkan maklumat.</p>';
-  }
+  document.getElementById('btn-close')?.addEventListener('click', () => {
+    window.myAzan.windowClose().catch((err) => {
+      console.error('[window] gagal close:', err);
+    });
+  });
 }
+
+// ============================================================
+// Pembantu masa
+// ============================================================
 
 /** Kembalikan tarikh hari ini dalam format YYYY-MM-DD (waktu tempatan). */
 function tarikhHariIni(): string {
@@ -139,59 +104,111 @@ function masaKeMinit(masa: string): number {
   return (jam ?? 0) * 60 + (minit ?? 0);
 }
 
+/** Format tarikh ke string Bahasa Malaysia. */
+function formatTarikhMasihi(d: Date): string {
+  return d.toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+/** Format minit ke MM:SS countdown string. */
+function formatCountdown(totalMinit: number): string {
+  if (totalMinit <= 0) return '00:00';
+  const jam = Math.floor(totalMinit / 60);
+  const minit = Math.floor(totalMinit % 60);
+  if (jam > 0) {
+    return `${String(jam).padStart(2, '0')}:${String(minit).padStart(2, '0')}`;
+  }
+  return `${String(minit).padStart(2, '0')} min`;
+}
+
+// ============================================================
+// Clock ticker (halaman Papan Pemuka)
+// ============================================================
+
+let clockInterval: ReturnType<typeof setInterval> | null = null;
+
+function startClock(): void {
+  function tick(): void {
+    const now = new Date();
+    const jamEl = document.getElementById('dashboard-jam');
+    if (jamEl) {
+      jamEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+    const tarikhEl = document.getElementById('dashboard-tarikh-masihi');
+    if (tarikhEl) {
+      tarikhEl.textContent = formatTarikhMasihi(now);
+    }
+  }
+  tick();
+  if (clockInterval) clearInterval(clockInterval);
+  clockInterval = setInterval(tick, 1000);
+}
+
+// ============================================================
+// Halaman Papan Pemuka
+// ============================================================
+
 /**
- * Muatkan dan paparkan waktu solat hari ini pada halaman utama.
+ * Muatkan dan paparkan waktu solat hari ini.
  * Jika tiada data tempatan, cuba sync terlebih dahulu.
  */
 async function loadHalamanUtama(): Promise<void> {
-  const list = document.getElementById('waktu-solat-list');
-  if (!list) return;
+  const scheduleEl = document.getElementById('prayer-schedule-rows');
+  const listEl = document.getElementById('waktu-solat-list');
 
-  list.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
+  if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Memuat jadual...</p>';
+  if (listEl) listEl.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
+
+  startClock();
 
   let settings: AppSettings;
   try {
     settings = await window.myAzan.getSettings();
   } catch {
-    list.innerHTML = '<p class="info-teks">Gagal mendapatkan tetapan.</p>';
+    if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Gagal mendapatkan tetapan.</p>';
     return;
   }
 
   const zoneCode = settings.activeZoneCode;
+
+  // Kemas kini label zon di papan pemuka
+  const zonLabelEl = document.getElementById('dashboard-zon-label');
+  if (zonLabelEl) {
+    zonLabelEl.textContent = zoneCode ?? '— Pilih Zon di Tetapan —';
+  }
+
   if (!zoneCode) {
-    list.innerHTML = `
-      <p class="info-teks">
-        Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.
-      </p>
-    `;
+    if (scheduleEl) {
+      scheduleEl.innerHTML = '<p class="info-teks">Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.</p>';
+    }
+    if (listEl) {
+      listEl.innerHTML = '<p class="info-teks">Tiada zon dipilih.</p>';
+    }
     return;
   }
 
   const tarikh = tarikhHariIni();
   let data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
 
-  // Jika tiada data, cuba sync dulu kemudian ambil semula
   if (!data) {
-    list.innerHTML = '<p class="info-teks">Memuat turun data waktu solat...</p>';
+    if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Memuat turun data waktu solat...</p>';
     try {
       const syncResult = await window.myAzan.syncPrayerTimes({ zoneCode });
       if (!syncResult.ok) {
-        list.innerHTML = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}. Sila semak sambungan internet.</p>`;
+        if (scheduleEl) scheduleEl.innerHTML = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}.</p>`;
         return;
       }
       data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
     } catch {
-      list.innerHTML = '<p class="info-teks">Gagal memuat turun data waktu solat. Sila semak sambungan internet.</p>';
+      if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Gagal memuat turun data waktu solat.</p>';
       return;
     }
   }
 
   if (!data) {
-    list.innerHTML = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
+    if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
     return;
   }
 
-  // Tentukan waktu solat berikutnya untuk ditonjolkan
   const sekarangMinit = masaKeMinit(masaSekarang());
   const waktuBerurutan: Array<[string, string | null]> = [
     ['imsak', data.imsak],
@@ -204,7 +221,7 @@ async function loadHalamanUtama(): Promise<void> {
     ['isha', data.isha],
   ];
 
-  // Cari waktu pertama yang belum berlalu
+  // Cari waktu berikutnya dan waktu sebelumnya (sedang berlangsung)
   let indexBerikutnya = -1;
   for (let i = 0; i < waktuBerurutan.length; i++) {
     const masa = waktuBerurutan[i]?.[1];
@@ -214,55 +231,185 @@ async function loadHalamanUtama(): Promise<void> {
     }
   }
 
-  // Bina HTML grid
-  const items = waktuBerurutan
-    .map(([event, masa], i) => {
-      if (!masa) return '';
-      const nama = NAMA_WAKTU[event] ?? event;
-      const aktifKelas = i === indexBerikutnya ? ' berikutnya' : '';
-      return `
-        <div class="waktu-item${aktifKelas}">
-          <div class="waktu-label">${nama}</div>
-          <div class="waktu-masa">${masa.substring(0, 5)}</div>
-        </div>
-      `;
-    })
-    .join('');
+  // Kemas kini next prayer countdown
+  if (indexBerikutnya >= 0) {
+    const nextEntry = waktuBerurutan[indexBerikutnya];
+    if (nextEntry) {
+      const [nextEvent, nextMasa] = nextEntry;
+      const nextLabel = document.getElementById('next-prayer-label');
+      const nextCountdown = document.getElementById('next-prayer-countdown');
+      const barFill = document.getElementById('next-prayer-bar-fill');
 
-  list.innerHTML = items || '<p class="info-teks">Tiada data waktu untuk dipaparkan.</p>';
+      if (nextLabel) nextLabel.textContent = `Seterusnya: ${NAMA_WAKTU[nextEvent] ?? nextEvent}`;
+      if (nextMasa && nextCountdown) {
+        const minutesLeft = masaKeMinit(nextMasa) - sekarangMinit;
+        nextCountdown.textContent = formatCountdown(minutesLeft);
+      }
+      // Progress bar: dari subuh ke maghrib sebagai contoh
+      if (barFill && nextMasa) {
+        const prevIndex = indexBerikutnya - 1;
+        const prevMasa = prevIndex >= 0 ? (waktuBerurutan[prevIndex]?.[1] ?? null) : null;
+        if (prevMasa) {
+          const total = masaKeMinit(nextMasa) - masaKeMinit(prevMasa);
+          const elapsed = sekarangMinit - masaKeMinit(prevMasa);
+          const pct = total > 0 ? Math.max(0, Math.min(100, (elapsed / total) * 100)) : 0;
+          barFill.style.width = `${pct}%`;
+        }
+      }
+    }
+  }
+
+  // Bina jadual waktu solat
+  if (scheduleEl) {
+    const rowsHtml = waktuBerurutan
+      .map(([event, masa], i) => {
+        if (!masa) return '';
+        const nama = NAMA_WAKTU[event] ?? event;
+        const isActive = i === indexBerikutnya;
+        const notifEnabled = settings.notificationSettings?.find((n) => n.eventName === event)?.enabled ?? false;
+        const notifIcon = notifEnabled
+          ? `<span class="material-symbols-outlined icon-fill text-primary">notifications_active</span>`
+          : `<span class="material-symbols-outlined" style="color:var(--outline-variant)">notifications_off</span>`;
+
+        return `
+          <div class="prayer-row${isActive ? ' prayer-active' : ''}">
+            <span class="prayer-name">${nama}</span>
+            <span class="prayer-time">${masa.substring(0, 5)}</span>
+            <div class="prayer-notif">${notifIcon}</div>
+          </div>`;
+      })
+      .join('');
+    scheduleEl.innerHTML = rowsHtml || '<p class="info-teks">Tiada data.</p>';
+  }
+
+  // Bina mini list untuk strip
+  if (listEl) {
+    const miniHtml = waktuBerurutan
+      .map(([event, masa], i) => {
+        if (!masa) return '';
+        const nama = NAMA_WAKTU[event] ?? event;
+        const isActive = i === indexBerikutnya;
+        return `<div style="display:flex;justify-content:space-between;padding:3px 0;
+                     ${isActive ? 'color:var(--primary);font-weight:700;' : 'color:var(--on-surface-variant);'}">
+                  <span>${nama}</span>
+                  <span style="font-variant-numeric:tabular-nums;">${masa.substring(0, 5)}</span>
+                </div>`;
+      })
+      .join('');
+    listEl.innerHTML = miniHtml || '<p class="info-teks">Tiada data.</p>';
+  }
 }
 
 // ============================================================
-// Nama waktu solat dalam Bahasa Melayu
+// Halaman Tentang
 // ============================================================
 
-const NAMA_WAKTU: Record<string, string> = {
-  imsak: 'Imsak',
-  fajr: 'Subuh',
-  syuruk: 'Syuruk',
-  dhuha: 'Dhuha',
-  dhuhr: 'Zohor',
-  asr: 'Asar',
-  maghrib: 'Maghrib',
-  isha: 'Isyak',
-};
+/** Muatkan maklumat pembangun pada halaman Tentang. */
+async function loadAboutPage(): Promise<void> {
+  const container = document.getElementById('tentang-info');
+  if (!container) return;
+
+  try {
+    const info: AppInfo = await window.myAzan.getAppInfo();
+    const tahunHakCipta = new Date().getFullYear();
+
+    container.innerHTML = `
+      <div class="about-grid">
+
+        <!-- Kad Pembangun -->
+        <div class="about-dev-card">
+          <div class="about-dev-inner">
+            <div class="about-avatar" aria-hidden="true">🧑‍💻</div>
+            <div style="flex:1;">
+              <div class="about-name">${info.author}</div>
+              <div class="about-role">Pembangun Utama &amp; Pereka UI</div>
+              <div class="about-contacts">
+                <div class="about-contact-item">
+                  <div class="about-contact-icon">
+                    <span class="material-symbols-outlined">mail</span>
+                  </div>
+                  <div>
+                    <div class="about-contact-label">Emel</div>
+                    <a class="about-contact-value" href="mailto:${info.email}">${info.email}</a>
+                  </div>
+                </div>
+                <div class="about-contact-item">
+                  <div class="about-contact-icon">
+                    <span class="material-symbols-outlined">call</span>
+                  </div>
+                  <div>
+                    <div class="about-contact-label">Telefon</div>
+                    <div class="about-contact-value">${info.phone}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maklumat Perisian -->
+        <div class="about-info-col">
+          <div class="about-software-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+                           color:var(--on-surface-variant);">Informasi Perisian</span>
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--primary);">terminal</span>
+            </div>
+            <div class="about-software-row">
+              <span class="about-software-key">Aplikasi</span>
+              <span class="about-software-val">${info.name}</span>
+            </div>
+            <div class="about-software-row">
+              <span class="about-software-key">Versi</span>
+              <span class="about-version-badge">${info.version}</span>
+            </div>
+            <div class="about-software-row">
+              <span class="about-software-key">Status Lesen</span>
+              <span class="about-license-badge">Proprietari</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Objektif -->
+        <div class="about-objective-card">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+                       color:var(--on-surface-variant);margin-bottom:8px;">Objektif Projek</div>
+          <p style="font-size:0.9rem;line-height:1.6;color:var(--on-surface);">${info.objective}</p>
+        </div>
+
+        <!-- Notis Lesen -->
+        <div class="about-license-notice">
+          <span class="material-symbols-outlined">warning</span>
+          <p>${info.license}</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="about-footer">
+          <p>Hak Cipta Terpelihara &copy; ${tahunHakCipta} ${info.author}</p>
+          <p>Direka dengan penuh ketelitian di Malaysia.</p>
+        </div>
+
+      </div>
+    `;
+  } catch (err) {
+    console.error('[tentang] gagal muatkan maklumat:', err);
+    container.innerHTML = '<p class="info-teks">Gagal memuatkan maklumat.</p>';
+  }
+}
 
 // ============================================================
-// State halaman Tetapan (disimpan dalam memori semasa sesi)
+// State halaman Tetapan & Audio
 // ============================================================
 
 interface TetapanState {
   zones: Zone[];
   settings: AppSettings | null;
-  /** Laluan fail yang sedang dipilih (sebelum disimpan). */
   azanSubuhFilePath: string | null;
   azanOtherFilePath: string | null;
   idleFolderPath: string | null;
-  /** Kelantangan setiap player (0–100). */
   azanVolume: number;
   notificationVolume: number;
   idleVolume: number;
-  /** Tetapan notifikasi semasa (boleh diubah di UI sebelum disimpan). */
   notificationSettings: NotificationSetting[];
 }
 
@@ -287,12 +434,23 @@ function tunjukStatusTetapan(mesej: string, jenis: 'berjaya' | 'ralat'): void {
   const el = document.getElementById('tetapan-status');
   if (!el) return;
   el.textContent = mesej;
-  el.className = `tetapan-status ${jenis}`;
+  el.className = `alert alert-${jenis === 'berjaya' ? 'success' : 'error'}`;
   el.hidden = false;
-  // Sembunyikan mesej selepas 5 saat
-  setTimeout(() => {
-    el.hidden = true;
-  }, 5000);
+  setTimeout(() => { el.hidden = true; }, 5000);
+}
+
+/** Kembalikan nama fail sahaja dari laluan penuh. */
+function namaFail(laluan: string | null): string {
+  if (!laluan) return 'Tiada fail dipilih';
+  const bahagian = laluan.replace(/\\/g, '/').split('/');
+  return bahagian[bahagian.length - 1] ?? laluan;
+}
+
+/** Potong laluan folder untuk paparan. */
+function namaFolder(laluan: string | null): string {
+  if (!laluan) return 'Tiada folder dipilih';
+  const bahagian = laluan.replace(/\\/g, '/').split('/');
+  return bahagian[bahagian.length - 1] ?? laluan;
 }
 
 /** Ikat gelangsar volume kepada nilai teks dan kemas kini state. */
@@ -312,32 +470,15 @@ function initGelansarVolume(
   });
 }
 
-
-function namaFail(laluan: string | null): string {
-  if (!laluan) return 'Tiada fail dipilih';
-  const bahagian = laluan.replace(/\\/g, '/').split('/');
-  return bahagian[bahagian.length - 1] ?? laluan;
-}
-
-/** Potong laluan folder panjang untuk paparan. */
-function namaFolder(laluan: string | null): string {
-  if (!laluan) return 'Tiada folder dipilih';
-  const bahagian = laluan.replace(/\\/g, '/').split('/');
-  return bahagian[bahagian.length - 1] ?? laluan;
-}
-
 // ============================================================
 // Zon: isi dropdown negeri & zon
 // ============================================================
 
-/** Isi dropdown Negeri berdasarkan senarai zon. */
 function isiDropdownNegeri(zones: Zone[], selectedZoneCode: string | null): void {
   const selectNegeri = document.getElementById('pilih-negeri') as HTMLSelectElement | null;
   if (!selectNegeri) return;
 
-  // Dapatkan senarai negeri unik mengikut susunan
   const negeriUnik = [...new Set(zones.map((z) => z.stateName))];
-
   selectNegeri.innerHTML = '<option value="">-- Pilih Negeri --</option>';
   negeriUnik.forEach((negeri) => {
     const opt = document.createElement('option');
@@ -346,7 +487,6 @@ function isiDropdownNegeri(zones: Zone[], selectedZoneCode: string | null): void
     selectNegeri.appendChild(opt);
   });
 
-  // Pilih negeri aktif jika ada
   if (selectedZoneCode) {
     const zonAktif = zones.find((z) => z.code === selectedZoneCode);
     if (zonAktif) {
@@ -356,7 +496,6 @@ function isiDropdownNegeri(zones: Zone[], selectedZoneCode: string | null): void
   }
 }
 
-/** Isi dropdown Zon berdasarkan negeri yang dipilih. */
 function isiDropdownZon(zones: Zone[], negeri: string, selectedCode: string | null): void {
   const selectZon = document.getElementById('pilih-zon') as HTMLSelectElement | null;
   if (!selectZon) return;
@@ -370,16 +509,13 @@ function isiDropdownZon(zones: Zone[], negeri: string, selectedCode: string | nu
     selectZon.appendChild(opt);
   });
 
-  if (selectedCode) {
-    selectZon.value = selectedCode;
-  }
+  if (selectedCode) selectZon.value = selectedCode;
 }
 
 // ============================================================
-// Notifikasi: bina baris untuk setiap waktu
+// Notifikasi: bina baris dalam table baru
 // ============================================================
 
-/** Bina baris notifikasi untuk setiap waktu solat. */
 function binaSenaraiNotifikasi(notificationSettings: NotificationSetting[]): void {
   const bekas = document.getElementById('notifikasi-senarai');
   if (!bekas) return;
@@ -388,49 +524,67 @@ function binaSenaraiNotifikasi(notificationSettings: NotificationSetting[]): voi
 
   const susunanWaktu = ['imsak', 'fajr', 'syuruk', 'dhuha', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
+  // Table header
+  const table = document.createElement('table');
+  table.className = 'notif-table';
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Waktu Solat</th>
+        <th style="text-align:center;">Aktif</th>
+        <th style="text-align:center;">Min Awal</th>
+        <th style="text-align:right;">Fail Audio</th>
+      </tr>
+    </thead>
+    <tbody id="notif-tbody"></tbody>
+  `;
+  bekas.appendChild(table);
+
+  const tbody = document.getElementById('notif-tbody');
+  if (!tbody) return;
+
   for (const eventName of susunanWaktu) {
     const ns = notificationSettings.find((n) => n.eventName === eventName);
     if (!ns) continue;
-
-    const baris = document.createElement('div');
-    baris.className = 'notifikasi-baris';
-    baris.dataset['event'] = eventName;
 
     const namaWaktu = NAMA_WAKTU[eventName] ?? eventName;
     const failNama = namaFail(ns.audioFilePath);
     const minit = ns.minutesBefore ?? 0;
     const aktif = ns.enabled;
 
-    baris.innerHTML = `
-      <span class="notifikasi-waktu">${namaWaktu}</span>
-      <label class="tetapan-togol togol-kecil" title="Aktif / Tidak Aktif">
-        <input type="checkbox" class="notifikasi-togol" data-event="${eventName}" ${aktif ? 'checked' : ''} />
-        <span class="togol-gelangsar"></span>
-      </label>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <input
-          type="number"
-          class="notifikasi-minit-input"
-          data-event="${eventName}"
-          value="${minit}"
-          min="0"
-          max="60"
-          title="Minit sebelum waktu"
-        />
-        <span class="notifikasi-minit-label">min awal</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
-        <span class="notifikasi-fail-nama" id="notif-fail-${eventName}" title="${ns.audioFilePath ?? ''}">${failNama}</span>
-        <button class="notifikasi-btn-audio" data-event="${eventName}" type="button">🎵 Fail</button>
-      </div>
-      <button class="notifikasi-btn-padam" data-event="${eventName}" type="button" title="Padam fail audio">✕</button>
+    const tr = document.createElement('tr');
+    tr.dataset['event'] = eventName;
+    tr.innerHTML = `
+      <td class="notif-waktu">${namaWaktu}</td>
+      <td class="notif-cell-center">
+        <label class="toggle-wrap toggle-wrap-sm" title="Aktif / Tidak Aktif" style="margin:auto;display:flex;">
+          <input type="checkbox" class="notifikasi-togol" data-event="${eventName}" ${aktif ? 'checked' : ''} />
+          <span class="toggle-track"></span>
+        </label>
+      </td>
+      <td class="notif-cell-center">
+        <input type="number" class="input-number notifikasi-minit-input" data-event="${eventName}"
+               value="${minit}" min="0" max="60" title="Minit sebelum waktu" style="display:inline-block;" />
+      </td>
+      <td class="notif-cell-right">
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;">
+          <span class="truncate" id="notif-fail-${eventName}"
+                title="${ns.audioFilePath ?? ''}"
+                style="max-width:120px;font-size:0.75rem;color:var(--on-surface-variant);">${failNama}</span>
+          <button class="btn-icon notifikasi-btn-audio" data-event="${eventName}" type="button" title="Pilih Fail Audio">
+            <span class="material-symbols-outlined">music_note</span>
+          </button>
+          <button class="btn-icon notifikasi-btn-padam" data-event="${eventName}" type="button" title="Padam Fail Audio">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </td>
     `;
-
-    bekas.appendChild(baris);
+    tbody.appendChild(tr);
   }
 
-  // Lekatkan pendengar acara untuk butang pilih fail notifikasi
-  bekas.querySelectorAll<HTMLButtonElement>('.notifikasi-btn-audio').forEach((btn) => {
+  // Lekatkan pendengar
+  tbody.querySelectorAll<HTMLButtonElement>('.notifikasi-btn-audio').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const ev = btn.dataset['event'] ?? '';
       const laluan = await window.myAzan.selectAudioFile();
@@ -438,24 +592,17 @@ function binaSenaraiNotifikasi(notificationSettings: NotificationSetting[]): voi
       const ns2 = tetapanState.notificationSettings.find((n) => n.eventName === ev);
       if (ns2) ns2.audioFilePath = laluan;
       const spanFail = document.getElementById(`notif-fail-${ev}`);
-      if (spanFail) {
-        spanFail.textContent = namaFail(laluan);
-        spanFail.title = laluan;
-      }
+      if (spanFail) { spanFail.textContent = namaFail(laluan); spanFail.title = laluan; }
     });
   });
 
-  // Butang padam fail audio notifikasi
-  bekas.querySelectorAll<HTMLButtonElement>('.notifikasi-btn-padam').forEach((btn) => {
+  tbody.querySelectorAll<HTMLButtonElement>('.notifikasi-btn-padam').forEach((btn) => {
     btn.addEventListener('click', () => {
       const ev = btn.dataset['event'] ?? '';
       const ns2 = tetapanState.notificationSettings.find((n) => n.eventName === ev);
       if (ns2) ns2.audioFilePath = null;
       const spanFail = document.getElementById(`notif-fail-${ev}`);
-      if (spanFail) {
-        spanFail.textContent = 'Tiada fail dipilih';
-        spanFail.title = '';
-      }
+      if (spanFail) { spanFail.textContent = 'Tiada fail'; spanFail.title = ''; }
     });
   });
 }
@@ -479,28 +626,25 @@ async function muatTetapan(): Promise<void> {
     tetapanState.azanVolume = settings.azanVolume ?? 100;
     tetapanState.notificationVolume = settings.notificationVolume ?? 100;
     tetapanState.idleVolume = settings.idleVolume ?? 100;
-    // Salin notifikasi supaya boleh diubah tanpa terus mengubah tetapan asal
     tetapanState.notificationSettings = settings.notificationSettings.map((n) => ({ ...n }));
 
-    // Isi dropdown zon
     isiDropdownNegeri(zones, settings.activeZoneCode);
 
-    // Paparkan laluan fail audio
-    const spanSubuh = document.getElementById('azan-subuh-nama');
-    if (spanSubuh) spanSubuh.textContent = namaFail(settings.azanSubuhFilePath);
+    // Preview fail azan di bento card settings
+    const settingsSubuhPreview = document.getElementById('settings-azan-subuh-preview');
+    if (settingsSubuhPreview) {
+      settingsSubuhPreview.textContent = namaFail(settings.azanSubuhFilePath);
+    }
 
-    const spanLain = document.getElementById('azan-lain-nama');
-    if (spanLain) spanLain.textContent = namaFail(settings.azanOtherFilePath);
+    // Togol idle & folder
+    const togolIdle = document.getElementById('idle-aktif') as HTMLInputElement | null;
+    if (togolIdle) togolIdle.checked = settings.idleEnabled;
 
     const spanFolder = document.getElementById('idle-folder-nama');
     if (spanFolder) spanFolder.textContent = namaFolder(settings.idleFolderPath);
 
-    // Togol idle
-    const togolIdle = document.getElementById('idle-aktif') as HTMLInputElement | null;
-    if (togolIdle) togolIdle.checked = settings.idleEnabled;
-
-    // Gelangsar volume
-    const setSlider = (id: string, nilaiId: string, val: number) => {
+    // Volume sliders dalam settings page
+    const setSlider = (id: string, nilaiId: string, val: number): void => {
       const el = document.getElementById(id) as HTMLInputElement | null;
       const nilaiEl = document.getElementById(nilaiId);
       if (el) el.value = String(val);
@@ -510,7 +654,6 @@ async function muatTetapan(): Promise<void> {
     setSlider('notifikasi-volume', 'notifikasi-volume-nilai', tetapanState.notificationVolume);
     setSlider('idle-volume', 'idle-volume-nilai', tetapanState.idleVolume);
 
-    // Bina senarai notifikasi
     binaSenaraiNotifikasi(tetapanState.notificationSettings);
   } catch (err) {
     console.error('[tetapan] gagal muatkan tetapan:', err);
@@ -525,14 +668,12 @@ async function muatTetapan(): Promise<void> {
 async function simpanTetapan(): Promise<void> {
   const selectZon = document.getElementById('pilih-zon') as HTMLSelectElement | null;
   const togolIdle = document.getElementById('idle-aktif') as HTMLInputElement | null;
-
   const selectedZoneCode = selectZon?.value || null;
 
-  // Kumpulkan tetapan notifikasi dari UI
-  const notifSenarai = document.querySelectorAll<HTMLElement>('.notifikasi-baris');
   const notificationSettings: NotificationSetting[] = [];
 
-  notifSenarai.forEach((baris) => {
+  // Kumpulkan dari tbody rows
+  document.querySelectorAll<HTMLElement>('#notif-tbody tr[data-event]').forEach((baris) => {
     const ev = baris.dataset['event'] ?? '';
     const togolEl = baris.querySelector<HTMLInputElement>('.notifikasi-togol');
     const mInitEl = baris.querySelector<HTMLInputElement>('.notifikasi-minit-input');
@@ -563,7 +704,13 @@ async function simpanTetapan(): Promise<void> {
     const hasil = await window.myAzan.saveSettings(payload);
     if (hasil.ok) {
       tunjukStatusTetapan('✅ Tetapan berjaya disimpan.', 'berjaya');
-      // Kemas kini state selepas simpan
+
+      // Kemas kini label "last saved"
+      const lastSavedEl = document.getElementById('settings-last-saved');
+      const nowStr = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+      if (lastSavedEl) lastSavedEl.textContent = `Tetapan disimpan pada ${nowStr}`;
+
+      // Kemas kini state
       tetapanState.settings = {
         ...(tetapanState.settings ?? {
           activeZoneCode: null,
@@ -571,14 +718,24 @@ async function simpanTetapan(): Promise<void> {
           azanOtherFilePath: null,
           idleFolderPath: null,
           idleEnabled: false,
+          azanVolume: 100,
+          notificationVolume: 100,
+          idleVolume: 100,
           notificationSettings: [],
         }),
         ...payload,
         notificationSettings,
-      };
-      // Muat semula waktu solat pada halaman utama dengan zon baharu
+      } as AppSettings;
+
+      // Kemas kini preview di bento card audio
+      const settingsSubuhPreview = document.getElementById('settings-azan-subuh-preview');
+      if (settingsSubuhPreview) {
+        settingsSubuhPreview.textContent = namaFail(tetapanState.azanSubuhFilePath);
+      }
+
+      // Muat semula waktu solat pada papan pemuka
       loadHalamanUtama().catch((err) => {
-        console.error('[utama] gagal muat semula waktu solat:', err);
+        console.error('[utama] gagal muat semula:', err);
       });
     } else {
       tunjukStatusTetapan(`❌ Gagal simpan: ${hasil.error ?? 'Ralat tidak diketahui'}`, 'ralat');
@@ -590,6 +747,40 @@ async function simpanTetapan(): Promise<void> {
 }
 
 // ============================================================
+// Sync halaman Audio dengan state
+// ============================================================
+
+/** Sync semula UI halaman Audio dari tetapanState semasa navigasi ke halaman Audio. */
+function syncAudioPage(): void {
+  // Nama fail azan
+  const subuhNama = document.getElementById('audio-subuh-nama');
+  if (subuhNama) subuhNama.textContent = namaFail(tetapanState.azanSubuhFilePath);
+
+  const lainNama = document.getElementById('azan-lain-nama');
+  if (lainNama) lainNama.textContent = namaFail(tetapanState.azanOtherFilePath);
+
+  // Folder idle
+  const idleFolderNama = document.getElementById('audio-idle-folder-nama');
+  if (idleFolderNama) idleFolderNama.textContent = namaFolder(tetapanState.idleFolderPath);
+
+  // Toggle idle
+  const togolAudioIdle = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
+  if (togolAudioIdle) togolAudioIdle.checked = tetapanState.settings?.idleEnabled ?? false;
+
+  // Volume sliders dalam audio page
+  const setSlider = (id: string, nilaiId: string, val: number): void => {
+    const el = document.getElementById(id) as HTMLInputElement | null;
+    const nilaiEl = document.getElementById(nilaiId);
+    if (el) el.value = String(val);
+    if (nilaiEl) nilaiEl.textContent = `${val}%`;
+  };
+  setSlider('audio-azan-volume', 'audio-azan-volume-nilai', tetapanState.azanVolume);
+  setSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', tetapanState.notificationVolume);
+  setSlider('audio-idle-volume', 'audio-idle-volume-nilai', tetapanState.idleVolume);
+  setSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', tetapanState.idleVolume);
+}
+
+// ============================================================
 // Inisialisasi halaman Tetapan
 // ============================================================
 
@@ -597,24 +788,72 @@ async function initHalamanTetapan(): Promise<void> {
   // Dropdown negeri → kemas kini dropdown zon
   const selectNegeri = document.getElementById('pilih-negeri') as HTMLSelectElement | null;
   selectNegeri?.addEventListener('change', () => {
-    const negeri = selectNegeri.value;
-    isiDropdownZon(tetapanState.zones, negeri, null);
+    isiDropdownZon(tetapanState.zones, selectNegeri.value, null);
   });
 
+  // Idle folder picker (settings page)
+  document.getElementById('btn-idle-folder')?.addEventListener('click', async () => {
+    const laluan = await window.myAzan.selectAudioFolder();
+    if (laluan === null) return;
+    tetapanState.idleFolderPath = laluan;
+    const span = document.getElementById('idle-folder-nama');
+    if (span) span.textContent = namaFolder(laluan);
+  });
+
+  document.getElementById('btn-idle-folder-padam')?.addEventListener('click', () => {
+    tetapanState.idleFolderPath = null;
+    const span = document.getElementById('idle-folder-nama');
+    if (span) span.textContent = 'Tiada folder dipilih';
+  });
+
+  // Butang simpan
+  document.getElementById('btn-simpan-tetapan')?.addEventListener('click', () => {
+    simpanTetapan().catch((err) => { console.error('[tetapan] ralat simpan:', err); });
+  });
+
+  // Butang set semula
+  document.getElementById('btn-set-semula')?.addEventListener('click', () => {
+    muatTetapan().catch((err) => { console.error('[tetapan] ralat set semula:', err); });
+  });
+
+  // Butang goto audio page
+  document.getElementById('btn-goto-audio')?.addEventListener('click', () => {
+    const audioNavItem = document.querySelector<HTMLButtonElement>('.nav-item[data-page="audio"]');
+    audioNavItem?.click();
+  });
+
+  // Muatkan data awal
+  await muatTetapan();
+
+  // Ikat gelangsar volume (settings page)
+  initGelansarVolume('azan-volume', 'azan-volume-nilai', 'azanVolume');
+  initGelansarVolume('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume');
+  initGelansarVolume('idle-volume', 'idle-volume-nilai', 'idleVolume');
+}
+
+// ============================================================
+// Inisialisasi halaman Audio
+// ============================================================
+
+function initHalamanAudio(): void {
   // Pilih fail azan Subuh
   document.getElementById('btn-azan-subuh')?.addEventListener('click', async () => {
     const laluan = await window.myAzan.selectAudioFile();
     if (laluan === null) return;
     tetapanState.azanSubuhFilePath = laluan;
-    const span = document.getElementById('azan-subuh-nama');
+    const span = document.getElementById('audio-subuh-nama');
     if (span) span.textContent = namaFail(laluan);
+    // Kemas kini preview di settings juga
+    const settingsPreview = document.getElementById('settings-azan-subuh-preview');
+    if (settingsPreview) settingsPreview.textContent = namaFail(laluan);
   });
 
-  // Padam fail azan Subuh
   document.getElementById('btn-azan-subuh-padam')?.addEventListener('click', () => {
     tetapanState.azanSubuhFilePath = null;
-    const span = document.getElementById('azan-subuh-nama');
+    const span = document.getElementById('audio-subuh-nama');
     if (span) span.textContent = 'Tiada fail dipilih';
+    const settingsPreview = document.getElementById('settings-azan-subuh-preview');
+    if (settingsPreview) settingsPreview.textContent = 'Tiada fail';
   });
 
   // Pilih fail azan lain
@@ -626,47 +865,82 @@ async function initHalamanTetapan(): Promise<void> {
     if (span) span.textContent = namaFail(laluan);
   });
 
-  // Padam fail azan lain
   document.getElementById('btn-azan-lain-padam')?.addEventListener('click', () => {
     tetapanState.azanOtherFilePath = null;
     const span = document.getElementById('azan-lain-nama');
     if (span) span.textContent = 'Tiada fail dipilih';
   });
 
-  // Pilih folder idle
-  document.getElementById('btn-idle-folder')?.addEventListener('click', async () => {
+  // Folder idle (audio page)
+  document.getElementById('audio-btn-idle-folder')?.addEventListener('click', async () => {
     const laluan = await window.myAzan.selectAudioFolder();
     if (laluan === null) return;
     tetapanState.idleFolderPath = laluan;
-    const span = document.getElementById('idle-folder-nama');
+    const span = document.getElementById('audio-idle-folder-nama');
     if (span) span.textContent = namaFolder(laluan);
+    // Sync ke settings page juga
+    const settingsSpan = document.getElementById('idle-folder-nama');
+    if (settingsSpan) settingsSpan.textContent = namaFolder(laluan);
   });
 
-  // Padam folder idle
-  document.getElementById('btn-idle-folder-padam')?.addEventListener('click', () => {
+  document.getElementById('audio-btn-idle-folder-padam')?.addEventListener('click', () => {
     tetapanState.idleFolderPath = null;
-    const span = document.getElementById('idle-folder-nama');
+    const span = document.getElementById('audio-idle-folder-nama');
     if (span) span.textContent = 'Tiada folder dipilih';
+    const settingsSpan = document.getElementById('idle-folder-nama');
+    if (settingsSpan) settingsSpan.textContent = 'Tiada folder dipilih';
   });
 
-  // Butang simpan
-  document.getElementById('btn-simpan-tetapan')?.addEventListener('click', () => {
-    simpanTetapan().catch((err) => {
-      console.error('[tetapan] ralat simpan:', err);
+  // Toggle idle (audio page) — sync ke state
+  const togolAudioIdle = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
+  togolAudioIdle?.addEventListener('change', () => {
+    const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
+    if (togolSettings) togolSettings.checked = togolAudioIdle.checked;
+  });
+
+  // Volume sliders dalam audio page → sync state
+  const bindAudioSlider = (sliderId: string, nilaiId: string, stateKey: 'azanVolume' | 'notificationVolume' | 'idleVolume', mirrorId?: string, mirrorNilaiId?: string): void => {
+    const slider = document.getElementById(sliderId) as HTMLInputElement | null;
+    const nilaiEl = document.getElementById(nilaiId);
+    if (!slider) return;
+    slider.addEventListener('input', () => {
+      const v = parseInt(slider.value, 10);
+      if (nilaiEl) nilaiEl.textContent = `${v}%`;
+      tetapanState[stateKey] = v;
+      // Mirror ke settings page slider
+      if (mirrorId) {
+        const mirror = document.getElementById(mirrorId) as HTMLInputElement | null;
+        const mirrorNilai = mirrorNilaiId ? document.getElementById(mirrorNilaiId) : null;
+        if (mirror) mirror.value = String(v);
+        if (mirrorNilai) mirrorNilai.textContent = `${v}%`;
+      }
     });
+  };
+
+  bindAudioSlider('audio-azan-volume', 'audio-azan-volume-nilai', 'azanVolume', 'azan-volume', 'azan-volume-nilai');
+  bindAudioSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', 'notificationVolume', 'notifikasi-volume', 'notifikasi-volume-nilai');
+  // idle volume: dua slider mirror each other
+  bindAudioSlider('audio-idle-volume', 'audio-idle-volume-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
+  bindAudioSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
+
+  // Butang simpan audio page
+  document.getElementById('btn-simpan-audio')?.addEventListener('click', () => {
+    // Sync togol idle dari audio page ke tetapan sebelum simpan
+    const togolAudio = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
+    const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
+    if (togolAudio && togolSettings) togolSettings.checked = togolAudio.checked;
+    simpanTetapan().catch((err) => { console.error('[audio] ralat simpan:', err); });
   });
-
-  // Muatkan data awal
-  await muatTetapan();
-
-  // Ikat gelangsar volume
-  initGelansarVolume('azan-volume', 'azan-volume-nilai', 'azanVolume');
-  initGelansarVolume('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume');
-  initGelansarVolume('idle-volume', 'idle-volume-nilai', 'idleVolume');
 }
+
+// ============================================================
+// Main
+// ============================================================
 
 async function main(): Promise<void> {
   initNavigation();
+  initWindowControls();
+  initHalamanAudio();
   await Promise.all([loadHalamanUtama(), loadAboutPage(), initHalamanTetapan()]);
 }
 

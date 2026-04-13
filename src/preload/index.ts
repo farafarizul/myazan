@@ -85,4 +85,16 @@ contextBridge.exposeInMainWorld('myAzan', {
    */
   getPlaybackStatus: (): Promise<PlaybackStatus> =>
     ipcRenderer.invoke(IPC_CHANNELS.GET_PLAYBACK_STATUS),
+
+  /**
+   * Minimumkan tetingkap aplikasi.
+   */
+  windowMinimize: (): Promise<void> =>
+    ipcRenderer.invoke(IPC_CHANNELS.WINDOW_MINIMIZE),
+
+  /**
+   * Tutup tetingkap aplikasi.
+   */
+  windowClose: (): Promise<void> =>
+    ipcRenderer.invoke(IPC_CHANNELS.WINDOW_CLOSE),
 });

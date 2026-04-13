@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, BrowserWindow } from 'electron';
 import { IPC_CHANNELS } from '../../shared/constants';
 import {
   AppInfo,
@@ -151,5 +151,19 @@ export function registerIpcHandlers(): void {
    */
   ipcMain.handle(IPC_CHANNELS.GET_PLAYBACK_STATUS, () => {
     return getPlaybackStatus();
+  });
+
+  /**
+   * Minimumkan tetingkap utama.
+   */
+  ipcMain.handle(IPC_CHANNELS.WINDOW_MINIMIZE, () => {
+    BrowserWindow.getFocusedWindow()?.minimize();
+  });
+
+  /**
+   * Tutup tetingkap utama.
+   */
+  ipcMain.handle(IPC_CHANNELS.WINDOW_CLOSE, () => {
+    BrowserWindow.getFocusedWindow()?.close();
   });
 }
