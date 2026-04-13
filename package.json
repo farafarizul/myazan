@@ -41,6 +41,7 @@
       "output": "dist-build"
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -49,6 +50,12 @@
           ]
         }
       ]
+    },
+    "mac": {
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "icon": "build/icons"
     },
     "files": [
       "dist/**/*"

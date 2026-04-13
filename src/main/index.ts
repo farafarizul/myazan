@@ -8,6 +8,18 @@ import { stopAudioEngine } from './services/audio';
 
 let mainWindow: BrowserWindow | null = null;
 
+function getAppIcon(): string {
+  const assetsDir = path.join(__dirname, '../assets/icons');
+  if (process.platform === 'win32') {
+    return path.join(assetsDir, 'icon.ico');
+  }
+  if (process.platform === 'linux') {
+    return path.join(assetsDir, '512x512.png');
+  }
+  // macOS: icon is handled by electron-builder; fall back to PNG for dev
+  return path.join(assetsDir, 'icon.png');
+}
+
 function createMainWindow(): void {
   mainWindow = new BrowserWindow({
     width: 900,
@@ -15,6 +27,7 @@ function createMainWindow(): void {
     minWidth: 720,
     minHeight: 560,
     title: 'myAzan',
+    icon: getAppIcon(),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
