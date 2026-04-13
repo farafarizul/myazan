@@ -42,7 +42,7 @@ Aplikasi menyokong **58 zon** merangkumi **14 negeri** seluruh Malaysia:
 - Wilayah Persekutuan (WLY01–WLY02) — 2 zon
 - Johor (JHR01–JHR04) — 4 zon
 - Kedah (KDH01–KDH07) — 7 zon
-- Kelantan (KTN01, KTN03) — 2 zon
+- Kelantan (KTN01, KTN03) — 2 zon *(tiada KTN02 dalam sistem JAKIM)*
 - Melaka (MLK01) — 1 zon
 - Negeri Sembilan (NSN01–NSN03) — 3 zon
 - Pahang (PHG01–PHG05) — 5 zon
