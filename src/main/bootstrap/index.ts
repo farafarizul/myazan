@@ -1,4 +1,5 @@
 import path from 'path';
+import { app } from 'electron';
 import { APP_NAME, APP_VERSION } from '../../shared/constants';
 import {
   openDatabase,
@@ -7,6 +8,7 @@ import {
   saveAudioSettings,
   getAllNotificationSettings,
   saveNotificationSetting,
+  getSetting,
 } from '../database';
 import { getActiveZoneCode } from '../services/settings';
 import { syncPrayerTimesForZone, PrayerTimeSyncError } from '../services/prayer-time';
@@ -82,6 +84,11 @@ export async function bootstrap(): Promise<void> {
   // Fasa 1b — tetapkan laluan audio lalai jika belum dikonfigurasi
   setDefaultAudioPaths();
   setDefaultNotificationAudioPaths();
+
+  // Fasa 1c — pakai tetapan "buka pada startup" dari database ke sistem operasi
+  const launchOnStartup = getSetting('launch_on_startup') !== 'false';
+  app.setLoginItemSettings({ openAtLogin: launchOnStartup });
+  console.log(`[bootstrap] Launch on startup: ${launchOnStartup ? 'aktif' : 'tidak aktif'}.`);
 
   // Fasa 2 — semak dan muat turun data waktu solat untuk zon + tahun semasa
   const activeZoneCode = getActiveZoneCode();

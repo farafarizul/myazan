@@ -80,6 +80,8 @@ export interface AppSettings {
   idleVolume: number;
   /** Tetapan notifikasi untuk setiap waktu solat. */
   notificationSettings: NotificationSetting[];
+  /** Sama ada aplikasi dibuka secara automatik semasa Windows bermula. */
+  launchOnStartup: boolean;
 }
 
 /**
@@ -141,4 +143,6 @@ export interface SaveSettingsPayload {
   notificationVolume?: number;
   idleVolume?: number;
   notificationSettings?: NotificationSetting[];
+  /** Sama ada aplikasi dibuka secara automatik semasa Windows bermula. */
+  launchOnStartup?: boolean;
 }

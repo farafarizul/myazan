@@ -644,6 +644,7 @@ interface TetapanState {
   notificationVolume: number;
   idleVolume: number;
   notificationSettings: NotificationSetting[];
+  launchOnStartup: boolean;
 }
 
 const tetapanState: TetapanState = {
@@ -656,6 +657,7 @@ const tetapanState: TetapanState = {
   notificationVolume: 100,
   idleVolume: 100,
   notificationSettings: [],
+  launchOnStartup: true,
 };
 
 // ============================================================
@@ -868,6 +870,7 @@ async function muatTetapan(): Promise<void> {
     tetapanState.notificationVolume = settings.notificationVolume ?? 100;
     tetapanState.idleVolume = settings.idleVolume ?? 100;
     tetapanState.notificationSettings = settings.notificationSettings.map((n) => ({ ...n }));
+    tetapanState.launchOnStartup = settings.launchOnStartup ?? true;
 
     isiDropdownNegeri(zones, settings.activeZoneCode);
 
@@ -887,6 +890,10 @@ async function muatTetapan(): Promise<void> {
 
     const spanFolder = document.getElementById('idle-folder-nama');
     if (spanFolder) spanFolder.textContent = namaFolder(settings.idleFolderPath);
+
+    // Checkbox launch on startup
+    const chkLaunch = document.getElementById('chk-launch-on-startup') as HTMLInputElement | null;
+    if (chkLaunch) chkLaunch.checked = tetapanState.launchOnStartup;
 
     // Volume sliders dalam settings page
     const setSlider = (id: string, nilaiId: string, val: number): void => {
@@ -916,7 +923,11 @@ async function muatTetapan(): Promise<void> {
 async function simpanTetapan(): Promise<void> {
   const selectZon = document.getElementById('pilih-zon') as HTMLSelectElement | null;
   const togolIdle = document.getElementById('idle-aktif') as HTMLInputElement | null;
+  const chkLaunch = document.getElementById('chk-launch-on-startup') as HTMLInputElement | null;
   const selectedZoneCode = selectZon?.value || null;
+
+  // Kemas kini state dari checkbox
+  if (chkLaunch) tetapanState.launchOnStartup = chkLaunch.checked;
 
   const notificationSettings: NotificationSetting[] = [];
 
@@ -946,6 +957,7 @@ async function simpanTetapan(): Promise<void> {
     notificationVolume: tetapanState.notificationVolume,
     idleVolume: tetapanState.idleVolume,
     notificationSettings,
+    launchOnStartup: tetapanState.launchOnStartup,
   };
 
   try {
@@ -970,6 +982,7 @@ async function simpanTetapan(): Promise<void> {
           notificationVolume: 100,
           idleVolume: 100,
           notificationSettings: [],
+          launchOnStartup: true,
         }),
         ...payload,
         notificationSettings,
