@@ -39,20 +39,20 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 
 Aplikasi menyokong **58 zon** merangkumi **14 negeri** seluruh Malaysia:
 
-- Wilayah Persekutuan (WLY01, WLY02)
-- Johor (JHR01–JHR05)
-- Kedah (KDH01–KDH09)
-- Kelantan (KTN01–KTN02)
-- Melaka (MLK01)
-- Negeri Sembilan (NGS01–NGS02)
-- Pahang (PHG01–PHG06)
-- Perak (PRK01–PRK08)
-- Perlis (PLS01)
-- Pulau Pinang (PNG01–PNG02)
-- Sabah (SBH01–SBH07)
-- Sarawak (SWK01–SWK09)
-- Selangor (SGR01–SGR04)
-- Terengganu (TRG01–TRG04)
+- Wilayah Persekutuan (WLY01–WLY02) — 2 zon
+- Johor (JHR01–JHR04) — 4 zon
+- Kedah (KDH01–KDH07) — 7 zon
+- Kelantan (KTN01, KTN03) — 2 zon *(tiada KTN02 dalam sistem JAKIM)*
+- Melaka (MLK01) — 1 zon
+- Negeri Sembilan (NSN01–NSN03) — 3 zon
+- Pahang (PHG01–PHG05) — 5 zon
+- Perak (PRK01–PRK07) — 7 zon
+- Perlis (PLS01) — 1 zon
+- Pulau Pinang (PNG01–PNG02) — 2 zon
+- Sabah (SBH01–SBH07) — 7 zon
+- Sarawak (SRW01–SRW09) — 9 zon
+- Selangor (SGR01–SGR04) — 4 zon
+- Terengganu (TRG01–TRG04) — 4 zon
 
 ---
 
@@ -323,14 +323,14 @@ Waktu yang disokong untuk notifikasi:
 
 | Waktu | Lalai |
 |-------|-------|
-| Imsak | Diaktifkan, 10 minit sebelum |
-| Subuh (Fajr) | Diaktifkan, 5 minit sebelum |
-| Syuruk | Tidak diaktifkan |
-| Dhuha | Tidak diaktifkan |
-| Zohor | Diaktifkan, 5 minit sebelum |
-| Asar | Diaktifkan, 5 minit sebelum |
-| Maghrib | Diaktifkan, 5 minit sebelum |
-| Isyak | Diaktifkan, 5 minit sebelum |
+| Imsak | Tidak diaktifkan, 10 minit sebelum |
+| Subuh (Fajr) | Diaktifkan, 15 minit sebelum |
+| Syuruk | Tidak diaktifkan, 5 minit sebelum |
+| Dhuha | Tidak diaktifkan, 5 minit sebelum |
+| Zohor | Diaktifkan, 15 minit sebelum |
+| Asar | Diaktifkan, 15 minit sebelum |
+| Maghrib | Diaktifkan, 15 minit sebelum |
+| Isyak | Diaktifkan, 15 minit sebelum |
 
 ### Tetapan Audio Idle 📖
 - Pilih **folder** yang mengandungi fail-fail MP3
@@ -460,14 +460,14 @@ Seksyen ini membolehkan pengguna menetapkan bunyi peringatan **sebelum** masuk w
 
 | Waktu | Aktif | Minit Sebelum |
 |-------|-------|--------------|
-| Imsak | ✅ | 10 minit |
-| Subuh | ✅ | 5 minit |
-| Syuruk | ❌ | — |
-| Dhuha | ❌ | — |
-| Zohor | ✅ | 5 minit |
-| Asar | ✅ | 5 minit |
-| Maghrib | ✅ | 5 minit |
-| Isyak | ✅ | 5 minit |
+| Imsak | ❌ | 10 minit |
+| Subuh | ✅ | 15 minit |
+| Syuruk | ❌ | 5 minit |
+| Dhuha | ❌ | 5 minit |
+| Zohor | ✅ | 15 minit |
+| Asar | ✅ | 15 minit |
+| Maghrib | ✅ | 15 minit |
+| Isyak | ✅ | 15 minit |
 
 > 🛡️ Setiap notifikasi hanya berbunyi **sekali sehari**. Jika notifikasi Zohor telah berbunyi, ia tidak akan berbunyi lagi pada hari yang sama walaupun aplikasi dimulakan semula.
 
@@ -541,6 +541,50 @@ Memaparkan notis proprietary yang menjelaskan bahawa perisian ini adalah hakmili
 
 - `Hak Cipta Terpelihara © [Tahun Semasa] Fara Farizul`
 - `Direka dengan penuh ketelitian di Malaysia.`
+
+---
+
+## ⚙️ Tetapan Lalai (Default Settings)
+
+Berikut adalah nilai lalai yang digunakan oleh myAzan selepas pemasangan baru, seperti yang ditetapkan dalam fail migrasi pangkalan data:
+
+### Tetapan Umum (`app_settings`)
+
+| Kunci | Nilai Lalai | Keterangan |
+|-------|------------|-----------|
+| `active_zone_code` | `SGR01` | Zon aktif lalai — Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, Shah Alam |
+| `idle_enabled` | `false` | Audio idle dimatikan secara lalai |
+| `auto_download_next_year` | `true` | Auto muat turun data tahun berikutnya pada Oktober–Disember |
+| `launch_on_startup` | `true` | Bermula bersama Windows secara automatik |
+
+### Tetapan Audio (`audio_settings`)
+
+| Tetapan | Nilai Lalai | Keterangan |
+|---------|------------|-----------|
+| `azan_subuh_file_path` | `NULL` | Tiada fail lalai — perlu dipilih oleh pengguna |
+| `azan_other_file_path` | `NULL` | Tiada fail lalai — perlu dipilih oleh pengguna |
+| `idle_folder_path` | `NULL` | Tiada folder lalai — perlu dipilih oleh pengguna |
+| `idle_enabled` | `0` (mati) | Audio idle dimatikan secara lalai |
+| `idle_resume_mode` | `restart_playlist` | Mulakan semula dari fail pertama selepas gangguan |
+| `idle_sort_mode` | `filename_asc` | Isih fail mengikut nama (A → Z) |
+| `azan_volume` | `100` | Kelantangan azan — 100% |
+| `notification_volume` | `100` | Kelantangan notifikasi — 100% |
+| `idle_volume` | `50` | Kelantangan audio idle — 50% |
+
+### Tetapan Notifikasi (`notification_settings`)
+
+| Waktu | Aktif Lalai | Minit Sebelum Lalai |
+|-------|------------|-------------------|
+| Imsak | ❌ Tidak | 10 minit |
+| Subuh (Fajr) | ✅ Ya | 15 minit |
+| Syuruk | ❌ Tidak | 5 minit |
+| Dhuha | ❌ Tidak | 5 minit |
+| Zohor (Dhuhr) | ✅ Ya | 15 minit |
+| Asar | ✅ Ya | 15 minit |
+| Maghrib | ✅ Ya | 15 minit |
+| Isyak (Isha) | ✅ Ya | 15 minit |
+
+> 💡 Semua tetapan boleh diubah suai melalui halaman **Tetapan** dan **Audio & Notifikasi** dalam aplikasi.
 
 ---
 
@@ -675,10 +719,6 @@ Perisian ini adalah **Proprietary Software**.
 
 ## 👩‍💻 Tentang Pembangun
 
-| | |
-|--|--|
-| **Nama** | Fara Farizul |
-| **E-mel** | farxpeace@gmail.com |
-| **Telefon** | +60137974467 |
+myAzan dibangunkan oleh **Fara Farizul** dengan niat untuk memudahkan umat Islam menunaikan solat tepat pada waktunya, tanpa perlu bergantung kepada aplikasi awan atau sambungan internet yang berterusan. 🤲
 
-myAzan dibangunkan dengan niat untuk memudahkan umat Islam menunaikan solat tepat pada waktunya, tanpa perlu bergantung kepada aplikasi awan atau sambungan internet yang berterusan. 🤲
+> Maklumat lanjut pembangun boleh dilihat dalam aplikasi melalui halaman **Tentang** (🧑‍💻 Kad Pembangun).

@@ -113,12 +113,6 @@ INSERT OR IGNORE INTO audio_settings (
   strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 );
 
--- Nilai kelantangan lalai: azan=100, notifikasi=100, zikir=50
--- (lajur ini ditambah oleh migration 003; dikemaskini di sini untuk install baru)
-UPDATE audio_settings SET
-  idle_volume = 50
-WHERE id = 1;
-
 -- ============================================================
 -- Seed: notification_settings (satu rekod per waktu solat)
 -- ============================================================
