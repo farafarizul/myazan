@@ -3,6 +3,13 @@ import { fetchJakimYearlyData, JakimNetworkError, JakimApiError } from './jakim-
 import { parseJakimResponse, JakimParseError } from './jakim-parser';
 
 export { JakimNetworkError, JakimApiError, JakimParseError };
+export {
+  hasPrayerTimeData,
+  ensurePrayerTimesAvailable,
+  getPrayerTimesForDate,
+  syncPrayerTimesForZone,
+  PrayerTimeSyncError,
+} from './sync';
 
 /**
  * Dapatkan dan parse data waktu solat tahunan daripada API JAKIM.

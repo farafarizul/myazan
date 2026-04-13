@@ -77,6 +77,41 @@ export interface AppSettings {
 }
 
 /**
+ * Payload untuk IPC SYNC_PRAYER_TIMES — zon dan tahun yang ingin disync.
+ */
+export interface SyncPrayerTimesPayload {
+  zoneCode: string;
+  year?: number; // jika tidak diberikan, gunakan tahun semasa
+}
+
+/**
+ * Keputusan operasi sync waktu solat.
+ */
+export interface SyncResult {
+  ok: boolean;
+  /** Mesej ralat jika ok === false */
+  error?: string;
+}
+
+/**
+ * Waktu solat untuk satu tarikh, dikembalikan melalui IPC.
+ */
+export interface PrayerTimeForDate {
+  zoneCode: string;
+  date: string;
+  hijri: string | null;
+  dayLabel: string | null;
+  imsak: string | null;
+  fajr: string;
+  syuruk: string | null;
+  dhuha: string | null;
+  dhuhr: string;
+  asr: string;
+  maghrib: string;
+  isha: string;
+}
+
+/**
  * Payload untuk menyimpan tetapan — semua medan adalah pilihan.
  * Hanya medan yang disediakan akan dikemas kini.
  */
