@@ -79,9 +79,12 @@ function copyMigrations() {
 }
 
 /**
- * Recursively copy a directory.
- * @param {string} src
- * @param {string} dest
+ * Recursively copy all files and subdirectories from src to dest.
+ * Silently returns if src does not exist.
+ * Used to copy self-hosted font assets (@fontsource/inter, material-symbols)
+ * into the dist/renderer/fonts directory during the build step.
+ * @param {string} src  - Source directory path.
+ * @param {string} dest - Destination directory path.
  */
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;

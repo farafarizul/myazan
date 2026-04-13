@@ -109,15 +109,12 @@ function formatTarikhMasihi(d: Date): string {
   return d.toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/** Format minit ke MM:SS countdown string. */
+/** Format minit ke format jam:minit yang konsisten (HH:MM). */
 function formatCountdown(totalMinit: number): string {
   if (totalMinit <= 0) return '00:00';
   const jam = Math.floor(totalMinit / 60);
   const minit = Math.floor(totalMinit % 60);
-  if (jam > 0) {
-    return `${String(jam).padStart(2, '0')}:${String(minit).padStart(2, '0')}`;
-  }
-  return `${String(minit).padStart(2, '0')} min`;
+  return `${String(jam).padStart(2, '0')}:${String(minit).padStart(2, '0')}`;
 }
 
 // ============================================================
