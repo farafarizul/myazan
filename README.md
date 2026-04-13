@@ -30,6 +30,7 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 | 💾 Simpanan Lokal | Data waktu solat disimpan dalam SQLite, tiada bergantung awan |
 | 🔁 Kitaran Tahunan | Auto muat turun data tahun baru pada Oktober–Disember |
 | 🎚️ Kawalan Kelantangan | Kelantangan berasingan untuk azan, notifikasi, dan idle |
+| 🚀 Mula Bersama Windows | Boleh ditetapkan untuk bermula secara automatik ketika Windows dihidupkan |
 | 🇲🇾 Bahasa Melayu | Semua UI, butang, dan mesej dalam Bahasa Melayu |
 
 ---
@@ -300,7 +301,7 @@ Scheduler terus berjalan seperti biasa 🔄
 
 ## 🔧 Ciri Tetapan Pengguna
 
-### Pilihan Zon
+### 🗺️ Pilihan Zon
 - Pengguna memilih negeri & zon dari senarai lengkap 58 zon JAKIM
 - Selepas zon ditukar, data waktu solat zon baru dimuat turun secara automatik (jika belum ada)
 - Data zon lama **tidak** dipadam, boleh digunakan semula jika zon ditukar balik
@@ -343,11 +344,15 @@ Waktu yang disokong untuk notifikasi:
 - Kelantangan **Notifikasi**: 0–100
 - Kelantangan **Idle**: 0–100
 
+### Permulaan Automatik 🚀
+- Togol **"Mulakan bersama Windows"** — hidupkan untuk myAzan bermula secara automatik apabila Windows dihidupkan
+- Sesuai untuk mini PC atau komputer yang sentiasa aktif
+
 ---
 
 ## 📱 Halaman Aplikasi
 
-Aplikasi myAzan mempunyai **3 halaman utama** yang boleh dinavigasi melalui bar navigasi di bahagian atas skrin:
+Aplikasi myAzan mempunyai **4 halaman utama** yang boleh dinavigasi melalui bar sisi (sidebar) di sebelah kiri skrin:
 
 ---
 
@@ -372,7 +377,7 @@ Halaman utama dipaparkan secara lalai apabila aplikasi dibuka. Ia menunjukkan du
 
 ### ⚙️ Halaman Tetapan
 
-Halaman Tetapan adalah tempat pengguna mengkonfigurasi semua aspek aplikasi. Ia dibahagikan kepada **4 seksyen utama**:
+Halaman Tetapan adalah tempat pengguna mengkonfigurasi zon waktu solat dan pilihan permulaan sistem. Ia dibahagikan kepada **2 seksyen utama**:
 
 ---
 
@@ -395,9 +400,32 @@ Pengguna memilih kawasan mereka melalui **2 peringkat pemilihan dropdown**:
 
 ---
 
-#### 🔊 Seksyen 2: Fail Audio Azan
+#### 🚀 Seksyen 2: Permulaan Sistem
 
-Pengguna menetapkan fail MP3 yang akan dimainkan sebagai azan:
+| Kawalan | Fungsi |
+|---------|--------|
+| **Togol "Mulakan bersama Windows"** | Apabila diaktifkan, myAzan akan dilancarkan secara automatik setiap kali Windows dihidupkan — sesuai untuk mini PC atau komputer yang sentiasa aktif |
+
+> 💡 Ciri ini menggunakan mekanisme **Login Items** Electron yang menulis ke registry Windows. Ia diaktifkan secara lalai.
+
+---
+
+#### 💾 Butang Simpan Tetapan
+
+Di bahagian bawah halaman Tetapan terdapat butang **"💾 Simpan Tetapan"**:
+
+- Semua perubahan dalam 2 seksyen di atas **hanya disimpan apabila butang ini ditekan**
+- Selepas berjaya disimpan, mesej pengesahan hijau ✅ dipaparkan selama 5 saat
+- Jika ada ralat (contoh: laluan fail tidak sah), mesej merah ❌ dipaparkan
+- Halaman Utama akan **dikemas kini secara automatik** dengan zon dan data terbaru selepas simpan
+
+---
+
+### 🎵 Halaman Audio & Notifikasi
+
+Halaman **Audio & Notifikasi** adalah halaman khusus untuk mengkonfigurasi semua tetapan bunyi. Ia mengandungi:
+
+#### 🔊 Fail Audio Azan
 
 | Tetapan | Keterangan |
 |---------|-----------|
@@ -414,7 +442,7 @@ Pengguna menetapkan fail MP3 yang akan dimainkan sebagai azan:
 
 ---
 
-#### 🔔 Seksyen 3: Notifikasi Sebelum Waktu Solat
+#### 🔔 Notifikasi Sebelum Waktu Solat
 
 Seksyen ini membolehkan pengguna menetapkan bunyi peringatan **sebelum** masuk waktu solat. Terdapat **8 baris** — satu untuk setiap waktu solat:
 
@@ -445,9 +473,7 @@ Seksyen ini membolehkan pengguna menetapkan bunyi peringatan **sebelum** masuk w
 
 ---
 
-#### 🎵 Seksyen 4: Audio al-Quran / Zikir (Idle)
-
-Seksyen ini mengurus audio latar belakang yang dimainkan berterusan semasa tiada azan atau notifikasi:
+#### 📖 Audio Latar (Idle) — al-Quran / Zikir
 
 | Kawalan | Fungsi |
 |---------|--------|
@@ -469,17 +495,6 @@ Seksyen ini mengurus audio latar belakang yang dimainkan berterusan semasa tiada
 | `restart_playlist` | Kembali ke fail pertama dalam senarai (lalai) |
 | `restart_track` | Ulang semula fail yang sedang dimainkan dari awal |
 | `resume_track` | Sambung semula tepat dari kedudukan yang terputus |
-
----
-
-#### 💾 Butang Simpan Tetapan
-
-Di bahagian bawah halaman Tetapan terdapat butang **"💾 Simpan Tetapan"**:
-
-- Semua perubahan dalam 4 seksyen di atas **hanya disimpan apabila butang ini ditekan**
-- Selepas berjaya disimpan, mesej pengesahan hijau ✅ dipaparkan selama 5 saat
-- Jika ada ralat (contoh: laluan fail tidak sah), mesej merah ❌ dipaparkan
-- Halaman Utama akan **dikemas kini secara automatik** dengan zon dan data terbaru selepas simpan
 
 ---
 
@@ -591,6 +606,17 @@ npm start
 ```
 
 > **Nota:** `npm install` akan memuat turun binari Electron (~150 MB) dan membina `better-sqlite3` untuk Electron. Proses ini mungkin mengambil masa beberapa minit.
+
+### 🛠️ Perintah Berguna Semasa Pembangunan
+
+| Perintah | Fungsi |
+|---------|--------|
+| `npm start` | Kompil + lancarkan Electron (mod biasa) |
+| `npm run dev` | Mod pembangunan dengan **hot-reload** — kompil semula secara automatik apabila kod berubah |
+| `npm run compile` | Kompil sahaja (tanpa lancarkan Electron) |
+| `npm run typecheck` | Semak jenis TypeScript tanpa kompil |
+| `npm run lint` | Jalankan ESLint untuk semak kualiti kod |
+| `npm run format` | Format kod automatik menggunakan Prettier |
 
 ### Membina Pemasang Windows
 
