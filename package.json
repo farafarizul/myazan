@@ -41,7 +41,7 @@
       "output": "dist-build"
     },
     "win": {
-      "icon": "build/icon.ico",
+      "icon": "src/assets/icons/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -52,10 +52,10 @@
       ]
     },
     "mac": {
-      "icon": "build/icon.icns"
+      "icon": "src/assets/icons/icon.icns"
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "src/assets/icons/linux"
     },
     "files": [
       "dist/**/*"
