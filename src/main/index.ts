@@ -94,6 +94,9 @@ function createTray(): void {
   });
 }
 
+// Buang menu aplikasi lalai (Fail, Edit, Paparan, dll.) daripada semua tetingkap
+Menu.setApplicationMenu(null);
+
 app.whenReady().then(async () => {
   registerIpcHandlers(() => mainWindow);
   await bootstrap();
