@@ -11,13 +11,13 @@
   "private": true,
   "scripts": {
     "compile": "node scripts/build.js",
-    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "electron-builder install-app-deps",
     "start": "npm run compile && electron .",
     "dev": "concurrently -k \"node scripts/build.js --watch\" \"wait-on dist/main/index.js && electron . --dev\"",
     "typecheck": "tsc --noEmit && tsc --noEmit --project tsconfig.renderer.json",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
-    "build": "npm run compile && electron-builder --win"
+    "build": "npm run compile && electron-builder --win nsis --x64"
   },
   "devDependencies": {
     "@fontsource/inter": "^5.2.8",
@@ -34,36 +34,43 @@
     "typescript": "^6.0.2",
     "wait-on": "^8.0.0"
   },
+  "dependencies": {
+    "better-sqlite3": "^12.9.0"
+  },
   "build": {
     "appId": "com.farafarizul.myazan",
     "productName": "myAzan",
+    "copyright": "Copyright © 2026 Fara Farizul",
     "directories": {
-      "output": "dist-build"
+      "output": "dist-build",
+      "buildResources": "src/assets"
     },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "npmRebuild": true,
+    "buildDependenciesFromSource": false,
+    "forceCodeSigning": false,
     "win": {
       "icon": "src/assets/icons/icon.ico",
       "target": [
         {
-          "target": "dir",
+          "target": "nsis",
           "arch": [
             "x64"
           ]
         }
-      ]
+      ],
+      "icon": "src/assets/icons/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     },
-    "mac": {
-      "icon": "src/assets/icons/icon.icns"
-    },
-    "linux": {
-      "icon": "src/assets/icons/linux"
-    },
-    "files": [
-      "dist/**/*"
-    ]
-  },
-  "dependencies": {
-    "@types/better-sqlite3": "^7.6.13",
-    "better-sqlite3": "^12.9.0"
-  },
-  "forceCodeSigning": false
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "artifactName": "${productName}-Installer-${version}.${ext}"
+    }
+  }
 }
