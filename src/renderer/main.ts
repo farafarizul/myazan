@@ -41,16 +41,74 @@ async function loadAboutPage(): Promise<void> {
 
   try {
     const info = await window.myAzan.getAppInfo();
+    const tahunHakCipta = new Date().getFullYear();
 
     container.innerHTML = `
-      <h3>${info.name}</h3>
-      <p><span class="label">Versi</span><br>${info.version}</p>
-      <p><span class="label">Objektif</span><br>${info.objective}</p>
-      <hr style="margin: 16px 0; border-color: var(--warna-border);" />
-      <p><span class="label">Pembangun</span><br>${info.author}</p>
-      <p><span class="label">E-mel</span><br><a href="mailto:${info.email}">${info.email}</a></p>
-      <p><span class="label">Telefon</span><br>${info.phone}</p>
-      <div class="tentang-lesen">⚠️ ${info.license}</div>
+      <div class="tentang-grid">
+
+        <!-- Kad Pembangun -->
+        <div class="tentang-kad tentang-kad-pembangun">
+          <div class="tentang-avatar" aria-hidden="true">🧑‍💻</div>
+          <div class="tentang-pembangun-butiran">
+            <h3 class="tentang-nama">${info.author}</h3>
+            <p class="tentang-jawatan">Pembangun Utama</p>
+            <div class="tentang-kenalan">
+              <div class="tentang-kenalan-baris">
+                <span class="tentang-ikon" aria-hidden="true">✉️</span>
+                <div>
+                  <p class="tentang-kenalan-label">Emel</p>
+                  <a class="tentang-kenalan-nilai" href="mailto:${info.email}">${info.email}</a>
+                </div>
+              </div>
+              <div class="tentang-kenalan-baris">
+                <span class="tentang-ikon" aria-hidden="true">📞</span>
+                <div>
+                  <p class="tentang-kenalan-label">Telefon</p>
+                  <p class="tentang-kenalan-nilai">${info.phone}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kad Maklumat Perisian -->
+        <div class="tentang-kad tentang-kad-perisian">
+          <p class="tentang-seksyen-label">Maklumat Perisian</p>
+          <div class="tentang-perisian-senarai">
+            <div class="tentang-perisian-baris">
+              <span class="tentang-perisian-kunci">Aplikasi</span>
+              <span class="tentang-perisian-nilai">${info.name}</span>
+            </div>
+            <div class="tentang-perisian-baris">
+              <span class="tentang-perisian-kunci">Versi</span>
+              <span class="tentang-versi-teg">${info.version}</span>
+            </div>
+            <div class="tentang-perisian-baris">
+              <span class="tentang-perisian-kunci">Status Lesen</span>
+              <span class="tentang-perisian-nilai tentang-lesen-teg">Proprietari</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seksyen Objektif -->
+        <div class="tentang-kad tentang-kad-objektif">
+          <p class="tentang-seksyen-label">Objektif Projek</p>
+          <p class="tentang-objektif-teks">${info.objective}</p>
+        </div>
+
+        <!-- Notis Lesen -->
+        <div class="tentang-lesen-notis">
+          <span aria-hidden="true">⚠️</span>
+          <p>${info.license}</p>
+        </div>
+
+        <!-- Footer Hak Cipta -->
+        <div class="tentang-footer">
+          <p>Hak Cipta Terpelihara &copy; ${tahunHakCipta} ${info.author}</p>
+          <p>Direka dengan penuh ketelitian di Malaysia.</p>
+        </div>
+
+      </div>
     `;
   } catch (err) {
     console.error('[tentang] gagal muatkan maklumat:', err);
