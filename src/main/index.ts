@@ -40,6 +40,7 @@ function createMainWindow(): void {
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
   mainWindow.once('ready-to-show', () => {
+    mainWindow?.maximize();
     mainWindow?.show();
   });
 
