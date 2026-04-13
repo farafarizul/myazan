@@ -3,63 +3,68 @@
 <html class="light" lang="ms"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>myAzan - Tetapan</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             "colors": {
-                    "on-primary-fixed": "#002116",
-                    "error-container": "#ffdad6",
-                    "on-secondary-container": "#57657a",
-                    "surface-variant": "#e0e3e5",
-                    "on-surface-variant": "#404944",
-                    "on-primary": "#ffffff",
-                    "primary-fixed-dim": "#8bd6b6",
-                    "on-error": "#ffffff",
-                    "on-tertiary-container": "#31c98f",
-                    "on-background": "#191c1e",
-                    "secondary-container": "#d5e3fc",
-                    "surface-dim": "#d8dadc",
-                    "surface-container-highest": "#e0e3e5",
-                    "primary": "#003526",
-                    "on-secondary-fixed-variant": "#3a485b",
-                    "inverse-primary": "#8bd6b6",
-                    "background": "#f7f9fb",
-                    "on-secondary-fixed": "#0d1c2e",
-                    "on-tertiary-fixed": "#002113",
-                    "tertiary-fixed": "#6ffbbe",
-                    "surface": "#f7f9fb",
-                    "outline": "#707974",
-                    "error": "#ba1a1a",
-                    "on-error-container": "#93000a",
-                    "on-tertiary": "#ffffff",
-                    "primary-container": "#004e39",
-                    "primary-fixed": "#a6f2d1",
+                    "tertiary": "#8a5200",
+                    "on-surface": "#003a31",
+                    "on-tertiary": "#fff7f3",
+                    "on-primary-fixed": "#004533",
+                    "surface-container-low": "#d5fcf1",
+                    "primary": "#006c52",
+                    "on-tertiary-fixed-variant": "#603800",
+                    "on-secondary-container": "#6a4c25",
+                    "inverse-surface": "#00110e",
+                    "error": "#ac3434",
+                    "primary-dim": "#005f48",
+                    "secondary-dim": "#6b4d26",
+                    "surface": "#e5fff7",
+                    "on-tertiary-fixed": "#361d00",
+                    "on-background": "#003a31",
+                    "primary-container": "#7cf2c9",
+                    "surface-variant": "#b2efe0",
+                    "on-primary-container": "#005a44",
+                    "surface-container-highest": "#b2efe0",
+                    "surface-dim": "#a3e7d7",
+                    "on-error-container": "#65000b",
+                    "inverse-primary": "#88fed4",
+                    "surface-bright": "#e5fff7",
+                    "on-primary-fixed-variant": "#00644c",
+                    "tertiary-dim": "#794700",
+                    "primary-fixed": "#7cf2c9",
+                    "on-secondary-fixed-variant": "#75562e",
+                    "secondary-fixed": "#ffddb7",
+                    "on-primary": "#e5fff2",
                     "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "tertiary": "#003623",
-                    "secondary-fixed-dim": "#b9c7df",
-                    "outline-variant": "#bfc9c3",
-                    "tertiary-fixed-dim": "#4edea3",
-                    "on-tertiary-fixed-variant": "#005236",
-                    "surface-container-low": "#f2f4f6",
-                    "on-primary-fixed-variant": "#00513b",
-                    "surface-tint": "#1b6b51",
-                    "inverse-surface": "#2d3133",
-                    "on-primary-container": "#76c0a1",
-                    "surface-container": "#eceef0",
-                    "on-surface": "#191c1e",
-                    "surface-bright": "#f7f9fb",
-                    "inverse-on-surface": "#eff1f3",
-                    "secondary": "#515f74",
-                    "secondary-fixed": "#d5e3fc",
-                    "surface-container-high": "#e6e8ea",
-                    "tertiary-container": "#004f34"
+                    "outline-variant": "#82bdb0",
+                    "surface-tint": "#006c52",
+                    "tertiary-fixed": "#fcaa4a",
+                    "error-container": "#f56965",
+                    "on-secondary": "#fff7f3",
+                    "inverse-on-surface": "#84a39b",
+                    "on-tertiary-container": "#543000",
+                    "error-dim": "#70030f",
+                    "background": "#e5fff7",
+                    "on-surface-variant": "#2e695d",
+                    "tertiary-fixed-dim": "#ec9d3e",
+                    "secondary-fixed-dim": "#f8cd9b",
+                    "outline": "#4b8579",
+                    "on-error": "#fff7f6",
+                    "tertiary-container": "#fcaa4a",
+                    "surface-container": "#c9f7eb",
+                    "surface-container-high": "#bef3e6",
+                    "on-secondary-fixed": "#553a14",
+                    "secondary": "#795931",
+                    "secondary-container": "#ffddb7",
+                    "primary-fixed-dim": "#6ee4bb"
             },
             "borderRadius": {
                     "DEFAULT": "0.125rem",
@@ -80,187 +85,323 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
-        .drag-region { -webkit-app-region: drag; }
-        .no-drag { -webkit-app-region: no-drag; }
+        .active-nav-item {
+            font-variation-settings: 'FILL' 1;
+        }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
-<header class="fixed top-0 left-0 w-full h-10 bg-emerald-50 dark:bg-slate-950 flex justify-between items-center px-4 drag-region z-50">
-<div class="flex items-center gap-2">
-<span class="text-sm font-black text-emerald-900 dark:text-emerald-100 tracking-wider uppercase">myAzan</span>
-</div>
-<div class="flex items-center gap-1 no-drag">
-<button class="w-8 h-8 flex items-center justify-center hover:bg-red-500/10 transition-colors">
-<span class="material-symbols-outlined text-xs text-slate-400">wifi</span>
-</button>
-<button class="w-8 h-8 flex items-center justify-center hover:bg-red-500/10 transition-colors">
-<span class="material-symbols-outlined text-xs text-slate-400">graphic_eq</span>
-</button>
-<button class="w-8 h-8 flex items-center justify-center hover:bg-red-500/10 transition-colors">
-<span class="material-symbols-outlined text-xs text-slate-400">minimize</span>
-</button>
-<button class="w-8 h-8 flex items-center justify-center hover:bg-red-500/10 transition-colors">
-<span class="material-symbols-outlined text-xs text-slate-400 text-[10px]">rectangle</span>
-</button>
-<button class="w-8 h-8 flex items-center justify-center hover:bg-red-500/10 transition-colors">
-<span class="material-symbols-outlined text-xs text-slate-400">close</span>
-</button>
-</div>
-</header>
-<aside class="fixed left-0 top-0 h-full w-64 flex flex-col bg-emerald-50/70 dark:bg-slate-900/70 backdrop-blur-xl border-r border-emerald-900/5 pt-10 z-40">
-<div class="p-6">
-<div class="flex items-center gap-3 mb-8">
-<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden">
-<img alt="myAzan Logo" class="w-full h-full object-cover" data-alt="a minimalist geometric logo with Islamic pattern influences in deep emerald green and gold" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMQV0ySxBXMxydM6c1vfkbjYLNcHJB6yq1RHMyR15-k5CzjahpvF8PEA24-JNCH7bak5QOzLeZv6-kXbnzjFM1bfEvsHMlYwOPPQ83ill5vjwAc_W4H_6GHtQ_MC8Qh6OywvnbRTRufVegJRGNOArEpFb6RRbkIF_mYO-3nyLI55IR3ny2xpwtyR5L4pExPCB391oJTjAcX5ugSy6fBFxLgrwmfLPLMK3iAGJ6gUZnAccYSs4qCH87hpd897oiUlpIhLYylX9X4GQu"/>
+<body class="bg-surface font-body text-on-surface">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar - JSON Instruction Execution -->
+<aside class="flex flex-col h-screen p-4 bg-emerald-50/70 dark:bg-emerald-950/70 backdrop-blur-xl h-full w-64 border-r-0 font-inter tracking-tight">
+<div class="flex items-center gap-3 px-2 mb-8">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mosque</span>
 </div>
 <div>
-<h2 class="text-lg font-bold text-emerald-950 dark:text-emerald-50 leading-none">myAzan</h2>
-<p class="text-[10px] text-on-surface-variant/70 tracking-widest uppercase mt-1">Digital Sanctuary</p>
+<h1 class="text-xl font-bold text-emerald-900 dark:text-emerald-100">myAzan</h1>
+<p class="text-[10px] uppercase tracking-widest text-emerald-600/70">Digital Sanctuary</p>
 </div>
 </div>
-<nav class="space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<nav class="flex-1 space-y-1">
+<!-- Tab 1 -->
+<a class="flex items-center gap-3 px-3 py-2 text-emerald-600/70 dark:text-emerald-400/70 hover:bg-emerald-100/80 dark:hover:bg-emerald-800/40 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
 <span class="font-medium text-sm">Papan Pemuka</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-900 dark:text-emerald-100 rounded-lg font-semibold" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<!-- Tab 2 (Active based on Intent: Settings/Tetapan) -->
+<a class="flex items-center gap-3 px-3 py-2 text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-100 dark:bg-emerald-800/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined active-nav-item">settings</span>
 <span class="font-medium text-sm">Tetapan</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="volume_up">volume_up</span>
+<!-- Tab 3 -->
+<a class="flex items-center gap-3 px-3 py-2 text-emerald-600/70 dark:text-emerald-400/70 hover:bg-emerald-100/80 dark:hover:bg-emerald-800/40 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">volume_up</span>
 <span class="font-medium text-sm">Audio</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="info">info</span>
+<!-- Tab 4 -->
+<a class="flex items-center gap-3 px-3 py-2 text-emerald-600/70 dark:text-emerald-400/70 hover:bg-emerald-100/80 dark:hover:bg-emerald-800/40 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">info</span>
 <span class="font-medium text-sm">Tentang</span>
 </a>
 </nav>
+<div class="mt-auto pt-4 border-t border-emerald-100/50 dark:border-emerald-900/30">
+<div class="p-3 bg-surface-container-low rounded-xl flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a man in business attire looking calmly at camera with neutral soft background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx67D-sG5pjcX_OkhKW_i9G5dZUgroIRgw8VptmOyS_UJjfR7gphTQQ1cI05bftEJHFtSR0GT82eACyfhzHIvI8mwT7v3H7p0ohx20utIhitJqdpTgArbUzOgueUc6q2Khq07Yqz9qGvkKVbmMEZcwvMtMn437-sJrRioKRUAAtAPKyrsnaHvHDBMiiWveAxDwmpQO14zdCHjpw8QBRgJ3VNtZQfpMbn2VMAT6gQIQ6gNbd9M9fX39i12il3837_xjLKHl-LARukux"/>
 </div>
-<div class="mt-auto p-6 border-t border-emerald-900/5">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
-<span class="font-medium text-sm">Bantuan</span>
-</a>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold truncate">Ahmad Fauzi</p>
+<p class="text-[10px] text-on-surface-variant truncate">Premium User</p>
+</div>
+<span class="material-symbols-outlined text-sm">logout</span>
+</div>
 </div>
 </aside>
-<main class="ml-64 pt-20 px-8 pb-12 max-w-6xl mx-auto">
-<header class="mb-10">
-<h1 class="text-3xl font-bold text-primary tracking-tight">Tetapan Zon &amp; Lokasi</h1>
-<p class="text-on-surface-variant mt-2 max-w-2xl">Sila pilih negeri dan zon mengikut ketetapan JAKIM untuk mendapatkan waktu solat yang tepat bagi kawasan anda.</p>
-</header>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-<section class="lg:col-span-7 space-y-6">
-<div class="bg-surface-container-lowest p-8 rounded-xl ring-1 ring-black/[0.03]">
-<h2 class="text-sm font-bold text-primary-container tracking-wider uppercase mb-6">Konfigurasi Zon</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="space-y-2">
-<label class="block text-xs font-semibold text-on-surface-variant tracking-wide uppercase">Negeri</label>
-<div class="relative group">
-<select class="w-full bg-surface-container-highest border-none rounded-md py-3 px-4 text-on-surface focus:ring-2 focus:ring-primary/20 appearance-none transition-all">
-<option>Wilayah Persekutuan</option>
-<option selected="">Selangor</option>
-<option>Johor</option>
-<option>Kedah</option>
-<option>Kelantan</option>
-</select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-</div>
-</div>
-<div class="space-y-2">
-<label class="block text-xs font-semibold text-on-surface-variant tracking-wide uppercase">Zon JAKIM</label>
-<div class="relative group">
-<select class="w-full bg-surface-container-highest border-none rounded-md py-3 px-4 text-on-surface focus:ring-2 focus:ring-primary/20 appearance-none transition-all">
-<option>SGR01 (Gombak, Petaling, Sepang)</option>
-<option selected="">SGR02 (Kuala Selangor, Sabak Bernam)</option>
-<option>SGR03 (Klang, Kuala Langat)</option>
-</select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-</div>
-</div>
-</div>
-<div class="mt-8 flex items-center justify-between p-4 bg-emerald-50 rounded-lg border border-emerald-100/50">
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- TopNavBar - JSON Instruction Execution -->
+<header class="flex justify-between items-center px-6 w-full h-14 bg-emerald-50 dark:bg-emerald-950 font-inter text-sm">
 <div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-<span class="material-symbols-outlined text-emerald-700" style="font-variation-settings: 'FILL' 1;">cloud_done</span>
+<h2 class="text-lg font-semibold text-emerald-900 dark:text-emerald-100">Tetapan</h2>
+<span class="text-on-surface-variant/40">/</span>
+<span class="text-on-surface-variant font-medium">Konfigurasi Sistem</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 transition-colors">
+<span class="material-symbols-outlined text-lg">remove</span>
+</button>
+<button class="p-2 rounded-full hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 transition-colors">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- Hero Header for Settings -->
+<div class="relative overflow-hidden rounded-xl bg-primary-container/40 p-10 flex flex-col justify-end min-h-[160px]">
+<div class="absolute inset-0 z-0 opacity-10">
+<img class="w-full h-full object-cover" data-alt="abstract architectural details of a modern mosque dome with geometric patterns and soft ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUt9XsxRuT1tv94pLqrPXO10j7pWmcdNggdNbW5ngZF9p9Ch_vNoj97eqVU3yxpAjAs2pXnnJg4Xiebz62nHmobXmzKJWTrotAhtuQx4ohjfk2ND4jDJVvbEslDRu1zN4fZSs8XQIuVEujVapIQpZ2fQQpyb5dPcwj_hIGnIkBXLyzyqtZ-y1Dwf4PA09pAJ2C2C0pR6DN9TTxqP5mp3LmWb39bThoJcHpgbuzidL7QDqMO_epghBDViYYaQfJriA-Br3lKxcRXbCa"/>
+</div>
+<div class="relative z-10">
+<h3 class="text-3xl font-extrabold text-on-primary-container tracking-tight mb-2">Peribadikan Pengalaman Anda</h3>
+<p class="text-on-primary-container/80 max-w-md">Sesuaikan zon waktu, bunyi Azan, dan tetapan visual untuk ketenangan rohani yang berterusan.</p>
+</div>
+</div>
+<!-- Structured Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Section: Zon & Lokasi -->
+<section class="md:col-span-8 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<h4 class="headline-md font-bold text-on-surface">Zon &amp; Lokasi</h4>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Wilayah / Negeri</label>
+<select class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 appearance-none">
+<option>W.P. Kuala Lumpur</option>
+<option>Selangor</option>
+<option>Johor</option>
+<option>Pulau Pinang</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Zon</label>
+<select class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20">
+<option>Kuala Lumpur &amp; Putrajaya</option>
+<option>Gombak, Petaling, Sepang</option>
+</select>
+</div>
+<div class="sm:col-span-2 relative h-48 rounded-lg overflow-hidden mt-2 group">
+<img class="w-full h-full object-cover" data-alt="stylized map view of Kuala Lumpur city center with minimalist green accents and location markers" data-location="Kuala Lumpur" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrAXkuonQvwHZRCX_ZkwCX2gctyfVYLcbj7sqetjdh6zgWBO9xTZYULX4NFSaWc_7oySgCbCVv1wku9ZVnexRyyQIkxlUHAURewefp7m6MALVWCVhW8Qjv0CkV1HmBvxuz6mUotl1lVKhHaogSH-9AVY0yX9Z6PqvYyU-AdKRT0Bqagydo3JxGG1-vNE6rVEB9gxsAHCMAlotWiY_c69jSNA3QqhPwmLiv2CERfOUUJONTubIrXDxct90bp_vB1CrER0B5rupfKF8D"/>
+<div class="absolute inset-0 bg-gradient-to-t from-emerald-900/60 to-transparent flex items-end p-4">
+<div class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined text-sm">my_location</span>
+<span class="text-xs font-medium">Lokasi semasa dikesan secara automatik</span>
+</div>
+</div>
+<button class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-bold text-primary flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-sm">refresh</span> KEMAS KINI
+                                </button>
+</div>
+</div>
+</section>
+<!-- Section: Audio Azan (Compact/Asymmetric) -->
+<section class="md:col-span-4 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<h4 class="headline-md font-bold text-on-surface">Audio Azan</h4>
+</div>
+<div class="flex-1 space-y-6">
+<div class="p-4 bg-primary-container/20 rounded-xl border border-primary/10">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined">play_arrow</span>
 </div>
 <div>
-<p class="text-sm font-bold text-emerald-900 leading-none">Mod Luar Talian Aktif</p>
-<p class="text-xs text-emerald-700/80 mt-1">Data disimpan secara lokal untuk kegunaan tanpa internet.</p>
+<p class="text-xs font-bold text-primary">SEDANG DIPILIH</p>
+<p class="text-sm font-semibold">Azan Makkah (Syeikh Baleela)</p>
 </div>
 </div>
-<div class="text-right">
-<p class="text-[10px] text-emerald-900/60 font-medium uppercase tracking-tighter">Kemas Kini Terakhir</p>
-<p class="text-xs font-semibold text-emerald-900">12 Okt 2023, 14:30</p>
+<div class="w-full h-1 bg-primary/10 rounded-full overflow-hidden">
+<div class="w-1/3 h-full bg-primary"></div>
 </div>
 </div>
+<div class="space-y-4">
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant">Kelantangan Utama</label>
+<span class="text-xs font-bold text-primary px-2 py-0.5 bg-primary/10 rounded">75%</span>
 </div>
-<div class="bg-surface-container-low p-8 rounded-xl">
-<div class="flex items-start gap-4">
-<div class="p-3 rounded-xl bg-surface-container-lowest">
-<span class="material-symbols-outlined text-primary" data-icon="update">update</span>
+<input class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
 </div>
-<div class="flex-1">
-<h3 class="text-lg font-bold text-primary">Data Tahunan 2024</h3>
-<p class="text-on-surface-variant text-sm mt-1 leading-relaxed">Muat turun jadual waktu solat lengkap untuk sepanjang tahun bagi kegunaan luar talian. Saiz fail anggaran: 1.2 MB.</p>
-<button class="mt-6 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-container text-white rounded-md font-bold text-sm shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-95">
-<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
-                                Muat Turun Data Baharu
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant">Audio Pra-Azan</label>
+<span class="text-xs font-bold text-primary px-2 py-0.5 bg-primary/10 rounded">40%</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
+</div>
+</div>
+<button class="w-full mt-auto py-3 bg-primary text-white rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">library_music</span> TUKAR AUDIO
                             </button>
 </div>
+</section>
+<!-- Section: Notifikasi (Compact Table Layout) -->
+<section class="md:col-span-7 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+<h4 class="headline-md font-bold text-on-surface">Pemberitahuan</h4>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Semua Aktif</span>
+<div class="w-8 h-4 bg-primary rounded-full relative">
+<div class="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="border-b border-outline-variant/10">
+<tr>
+<th class="pb-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Waktu Solat</th>
+<th class="pb-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider text-center">Azan</th>
+<th class="pb-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider text-center">Bip (5m)</th>
+<th class="pb-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider text-right">Tindakan</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr>
+<td class="py-4 text-sm font-semibold">Subuh</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-lg">tune</span></button>
+</td>
+</tr>
+<tr>
+<td class="py-4 text-sm font-semibold">Syuruk</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input class="rounded bg-surface-container-high border-none w-4 h-4" disabled="" type="checkbox"/>
+</div>
+</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-lg">tune</span></button>
+</td>
+</tr>
+<tr>
+<td class="py-4 text-sm font-semibold">Zohor / Jumaat</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input class="rounded border-outline-variant/40 w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-lg">tune</span></button>
+</td>
+</tr>
+<tr>
+<td class="py-4 text-sm font-semibold">Asar</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4">
+<div class="flex justify-center">
+<input class="rounded border-outline-variant/40 w-4 h-4" type="checkbox"/>
+</div>
+</td>
+<td class="py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-lg">tune</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Section: Mod Idle & Visual -->
+<section class="md:col-span-5 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">mobile_screensaver</span>
+<h4 class="headline-md font-bold text-on-surface">Mod Idle &amp; Visual</h4>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div>
+<p class="text-sm font-bold">Skrin Penuh Automatik</p>
+<p class="text-xs text-on-surface-variant">Paparan besar selepas 2 minit tidak aktif</p>
+</div>
+<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant">Tema Warna</label>
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded-full bg-primary border-2 border-primary ring-2 ring-offset-2 ring-primary/20 flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-[#795931] border-2 border-transparent"></div>
+<div class="w-10 h-10 rounded-full bg-[#8a5200] border-2 border-transparent"></div>
+<div class="w-10 h-10 rounded-full bg-[#191c1e] border-2 border-transparent"></div>
+</div>
+</div>
+<div class="space-y-3 pt-2">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant">Kecerahan Skrin Idle</label>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant/60 text-sm">dark_mode</span>
+<input class="flex-1 h-1 bg-surface-container-high rounded-lg appearance-none accent-primary" type="range"/>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">light_mode</span>
+</div>
+</div>
+<div class="p-3 border border-outline-variant/10 rounded-lg flex gap-3">
+<div class="w-16 h-12 rounded-md overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover grayscale opacity-50" data-alt="minimalist desktop screen showing a prayer time digital clock with soft emerald background and gold highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_MV24GK16RroY54IPs9XkmEa9vgY-o9mV_fEVxMdQGkJjpbnu92Otalh32_XcGkzawl8UKK9u8tLZO-1l2oqmfdWnfz-j9QAi8wdUOIlbOs85rMXeV0GyYuR34XpaMOuYnKsPmCZUYdn15VZd3PXGCWC8XQ3JL7LYvFqd0LFLbbNlpyHILdD4VK2qFhSU2zunQBbhBkcDusv3izYS1dMGZGGvtSbFpl8VzwXgWGMAPCl99VjiSYXxNCiBW_hrhwKU9nXlttEM0IVh"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold">Latar Belakang Dinamik</p>
+<p class="text-[10px] text-on-surface-variant">Bertukar mengikut waktu siang &amp; malam</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-lg self-center">chevron_right</span>
 </div>
 </div>
 </section>
-<section class="lg:col-span-5 space-y-6">
-<div class="relative h-64 w-full rounded-xl overflow-hidden shadow-sm group">
-<img alt="Location Map" class="w-full h-full object-cover" data-alt="a clean, minimal digital map interface showing a pinpoint in Selangor, Malaysia with subtle emerald green highlights and soft UI shadows" data-location="Selangor, Malaysia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1Cl_s6dn-H33YdN61StCdhpjq11sEx4wkP6VtyKHysk-KHelrDEwH8mtUiaDxlQPLkZM2BvrMQUctzo0qR8R3WLB3owYtHpOMOM3eqP9UEBye6MgQPNpzfgIrwwQYS35pL6yVcq2Rlifyat0LG_FG1bh8M0WsBFn4HMctrpJk-zc7kLiqA9UgCAPBKWNO44Xa6Lu8oE6-apafM85eInxTAGmxq87PNCbglz077Pfjh4qVNa4qESDrJDq59lAVwGtXmZzOP1BPsaLz"/>
-<div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent pointer-events-none"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-surface-container-lowest/90 backdrop-blur-md p-4 rounded-lg flex items-center justify-between">
-<div>
-<p class="text-[10px] text-on-surface-variant font-bold tracking-widest uppercase">Koordinat Semasa</p>
-<p class="text-sm font-bold text-primary">3.1390° N, 101.6869° E</p>
 </div>
-<button class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center hover:scale-105 transition-transform shadow-md">
-<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">my_location</span>
-</button>
+<!-- Footer Actions -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 pb-12">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">cloud_done</span>
+<span class="text-xs font-medium">Tetapan disimpan secara automatik pada 14:20</span>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-6 py-2.5 rounded-lg border border-outline-variant/30 text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">SET SEMULA</button>
+<button class="flex-1 sm:flex-none px-8 py-2.5 rounded-lg bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">SIMPAN PERUBAHAN</button>
 </div>
 </div>
-<div class="bg-surface-container-highest/30 p-8 rounded-xl border border-outline-variant/10">
-<h2 class="text-sm font-bold text-primary-container tracking-wider uppercase mb-6">Ringkasan Zon</h2>
-<ul class="space-y-4">
-<li class="flex items-center justify-between pb-4 border-b border-outline-variant/10">
-<span class="text-sm text-on-surface-variant">Negeri</span>
-<span class="text-sm font-bold text-on-surface">Selangor</span>
-</li>
-<li class="flex items-center justify-between pb-4 border-b border-outline-variant/10">
-<span class="text-sm text-on-surface-variant">Kod Zon</span>
-<span class="text-sm font-bold text-on-surface">SGR02</span>
-</li>
-<li class="flex items-center justify-between pb-4 border-b border-outline-variant/10">
-<span class="text-sm text-on-surface-variant">Kaedah Pengiraan</span>
-<span class="text-sm font-bold text-on-surface">JAKIM</span>
-</li>
-<li class="flex items-center justify-between">
-<span class="text-sm text-on-surface-variant">Penyelarasan Hijri</span>
-<span class="text-sm font-bold text-on-surface">+1 Hari</span>
-</li>
-</ul>
-</div>
-<div class="p-6 rounded-xl bg-tertiary-container/10 border border-tertiary-fixed-dim/20">
-<div class="flex gap-4">
-<span class="material-symbols-outlined text-tertiary-fixed-dim">info</span>
-<div>
-<p class="text-sm text-tertiary-container font-medium leading-relaxed">Penyelarasan zon JAKIM dikemaskini secara automatik setiap kali aplikasi bersambung dengan internet.</p>
-</div>
-</div>
-</div>
-</section>
 </div>
 </main>
-<div class="fixed bottom-8 right-8 z-50">
-<button class="flex items-center gap-3 px-6 py-4 bg-primary text-white rounded-full shadow-2xl hover:bg-primary-container transition-all group active:scale-95">
-<span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500" data-icon="sync">sync</span>
-<span class="font-bold text-sm">Semak Kemas Kini</span>
-</button>
 </div>
 </body></html>
