@@ -687,3 +687,28 @@ a.tentang-kenalan-nilai:hover {
   color: var(--warna-teks-ringan);
   white-space: nowrap;
 }
+
+/* Kawalan kelantangan (volume slider) */
+.volume-kawalan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+
+.volume-gelangsar {
+  flex: 1;
+  height: 6px;
+  cursor: pointer;
+  accent-color: var(--warna-utama-cerah);
+}
+
+.volume-nilai {
+  min-width: 40px;
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--warna-utama-cerah);
+}

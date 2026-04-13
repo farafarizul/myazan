@@ -58,6 +58,9 @@ export function getSettings(): AppSettings {
     azanOtherFilePath: audio?.azan_other_file_path ?? null,
     idleFolderPath: audio?.idle_folder_path ?? null,
     idleEnabled: (audio?.idle_enabled ?? 0) === 1,
+    azanVolume: audio?.azan_volume ?? 100,
+    notificationVolume: audio?.notification_volume ?? 100,
+    idleVolume: audio?.idle_volume ?? 100,
     notificationSettings,
   };
 }
@@ -71,6 +74,12 @@ export class SettingsValidationError extends Error {
     super(message);
     this.name = 'SettingsValidationError';
   }
+}
+
+/** Pastikan nilai kelantangan berada dalam julat 0–100. */
+function clampVolume(value: number | undefined): number {
+  if (value === undefined || isNaN(value)) return 100;
+  return Math.max(0, Math.min(100, Math.round(value)));
 }
 
 /**
@@ -116,6 +125,12 @@ export function saveSettings(payload: SaveSettingsPayload): void {
     audioUpdate['idle_folder_path'] = payload.idleFolderPath ?? null;
   if ('idleEnabled' in payload)
     audioUpdate['idle_enabled'] = payload.idleEnabled ? 1 : 0;
+  if ('azanVolume' in payload)
+    audioUpdate['azan_volume'] = clampVolume(payload.azanVolume);
+  if ('notificationVolume' in payload)
+    audioUpdate['notification_volume'] = clampVolume(payload.notificationVolume);
+  if ('idleVolume' in payload)
+    audioUpdate['idle_volume'] = clampVolume(payload.idleVolume);
 
   if (Object.keys(audioUpdate).length > 0) {
     saveAudioSettings(audioUpdate as Parameters<typeof saveAudioSettings>[0]);

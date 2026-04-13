@@ -43,7 +43,8 @@ window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.send(AUDIO_IPC.AZAN_ERROR, azanEl.error?.message ?? 'ralat audio azan');
   });
 
-  ipcRenderer.on(AUDIO_IPC.PLAY_AZAN, (_event: unknown, filePath: string) => {
+  ipcRenderer.on(AUDIO_IPC.PLAY_AZAN, (_event: unknown, filePath: string, volume: number) => {
+    azanEl.volume = Math.max(0, Math.min(1, (volume ?? 100) / 100));
     azanEl.src = toFileUrl(filePath);
     azanEl.load();
     azanEl.play().catch((err: unknown) => {
@@ -64,7 +65,8 @@ window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.send(AUDIO_IPC.NOTIFICATION_ERROR, notifEl.error?.message ?? 'ralat audio notifikasi');
   });
 
-  ipcRenderer.on(AUDIO_IPC.PLAY_NOTIFICATION, (_event: unknown, filePath: string) => {
+  ipcRenderer.on(AUDIO_IPC.PLAY_NOTIFICATION, (_event: unknown, filePath: string, volume: number) => {
+    notifEl.volume = Math.max(0, Math.min(1, (volume ?? 100) / 100));
     notifEl.src = toFileUrl(filePath);
     notifEl.load();
     notifEl.play().catch((err: unknown) => {
@@ -85,7 +87,8 @@ window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.send(AUDIO_IPC.IDLE_ERROR, idleEl.error?.message ?? 'ralat audio idle');
   });
 
-  ipcRenderer.on(AUDIO_IPC.PLAY_IDLE, (_event: unknown, filePath: string) => {
+  ipcRenderer.on(AUDIO_IPC.PLAY_IDLE, (_event: unknown, filePath: string, volume: number) => {
+    idleEl.volume = Math.max(0, Math.min(1, (volume ?? 100) / 100));
     idleEl.src = toFileUrl(filePath);
     idleEl.load();
     idleEl.play().catch((err: unknown) => {

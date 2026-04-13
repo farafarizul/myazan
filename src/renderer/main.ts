@@ -258,6 +258,10 @@ interface TetapanState {
   azanSubuhFilePath: string | null;
   azanOtherFilePath: string | null;
   idleFolderPath: string | null;
+  /** Kelantangan setiap player (0–100). */
+  azanVolume: number;
+  notificationVolume: number;
+  idleVolume: number;
   /** Tetapan notifikasi semasa (boleh diubah di UI sebelum disimpan). */
   notificationSettings: NotificationSetting[];
 }
@@ -268,6 +272,9 @@ const tetapanState: TetapanState = {
   azanSubuhFilePath: null,
   azanOtherFilePath: null,
   idleFolderPath: null,
+  azanVolume: 100,
+  notificationVolume: 100,
+  idleVolume: 100,
   notificationSettings: [],
 };
 
@@ -288,7 +295,24 @@ function tunjukStatusTetapan(mesej: string, jenis: 'berjaya' | 'ralat'): void {
   }, 5000);
 }
 
-/** Potong laluan panjang untuk paparan, tunjukkan nama fail sahaja. */
+/** Ikat gelangsar volume kepada nilai teks dan kemas kini state. */
+function initGelansarVolume(
+  sliderId: string,
+  nilaiId: string,
+  stateKey: 'azanVolume' | 'notificationVolume' | 'idleVolume',
+): void {
+  const slider = document.getElementById(sliderId) as HTMLInputElement | null;
+  const nilaiEl = document.getElementById(nilaiId);
+  if (!slider || !nilaiEl) return;
+
+  slider.addEventListener('input', () => {
+    const v = parseInt(slider.value, 10);
+    nilaiEl.textContent = `${v}%`;
+    tetapanState[stateKey] = v;
+  });
+}
+
+
 function namaFail(laluan: string | null): string {
   if (!laluan) return 'Tiada fail dipilih';
   const bahagian = laluan.replace(/\\/g, '/').split('/');
@@ -452,6 +476,9 @@ async function muatTetapan(): Promise<void> {
     tetapanState.azanSubuhFilePath = settings.azanSubuhFilePath;
     tetapanState.azanOtherFilePath = settings.azanOtherFilePath;
     tetapanState.idleFolderPath = settings.idleFolderPath;
+    tetapanState.azanVolume = settings.azanVolume ?? 100;
+    tetapanState.notificationVolume = settings.notificationVolume ?? 100;
+    tetapanState.idleVolume = settings.idleVolume ?? 100;
     // Salin notifikasi supaya boleh diubah tanpa terus mengubah tetapan asal
     tetapanState.notificationSettings = settings.notificationSettings.map((n) => ({ ...n }));
 
@@ -471,6 +498,17 @@ async function muatTetapan(): Promise<void> {
     // Togol idle
     const togolIdle = document.getElementById('idle-aktif') as HTMLInputElement | null;
     if (togolIdle) togolIdle.checked = settings.idleEnabled;
+
+    // Gelangsar volume
+    const setSlider = (id: string, nilaiId: string, val: number) => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      const nilaiEl = document.getElementById(nilaiId);
+      if (el) el.value = String(val);
+      if (nilaiEl) nilaiEl.textContent = `${val}%`;
+    };
+    setSlider('azan-volume', 'azan-volume-nilai', tetapanState.azanVolume);
+    setSlider('notifikasi-volume', 'notifikasi-volume-nilai', tetapanState.notificationVolume);
+    setSlider('idle-volume', 'idle-volume-nilai', tetapanState.idleVolume);
 
     // Bina senarai notifikasi
     binaSenaraiNotifikasi(tetapanState.notificationSettings);
@@ -515,6 +553,9 @@ async function simpanTetapan(): Promise<void> {
     azanOtherFilePath: tetapanState.azanOtherFilePath,
     idleFolderPath: tetapanState.idleFolderPath,
     idleEnabled: togolIdle?.checked ?? false,
+    azanVolume: tetapanState.azanVolume,
+    notificationVolume: tetapanState.notificationVolume,
+    idleVolume: tetapanState.idleVolume,
     notificationSettings,
   };
 
@@ -617,6 +658,11 @@ async function initHalamanTetapan(): Promise<void> {
 
   // Muatkan data awal
   await muatTetapan();
+
+  // Ikat gelangsar volume
+  initGelansarVolume('azan-volume', 'azan-volume-nilai', 'azanVolume');
+  initGelansarVolume('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume');
+  initGelansarVolume('idle-volume', 'idle-volume-nilai', 'idleVolume');
 }
 
 async function main(): Promise<void> {
