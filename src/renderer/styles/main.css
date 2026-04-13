@@ -152,32 +152,219 @@ body {
 }
 
 /* Halaman Tentang */
-.tentang-card h3 {
-  font-size: 1.05rem;
-  color: var(--warna-utama);
-  margin-bottom: 12px;
+.tentang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 820px;
 }
 
-.tentang-card p {
-  margin-bottom: 8px;
+.tentang-kad {
+  background: var(--warna-latar-kad);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: var(--bayang);
+  border: 1px solid var(--warna-border);
+}
+
+/* Kad pembangun – bentang 2 lajur */
+.tentang-kad-pembangun {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.tentang-avatar {
+  font-size: 3rem;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--warna-aktif);
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 3px solid var(--warna-utama-cerah);
+}
+
+.tentang-pembangun-butiran {
+  flex: 1;
+}
+
+.tentang-nama {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--warna-teks);
+  margin-bottom: 2px;
+}
+
+.tentang-jawatan {
+  font-size: 0.85rem;
+  color: var(--warna-utama-cerah);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.tentang-kenalan {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tentang-kenalan-baris {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--warna-latar);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  border: 1px solid var(--warna-border);
+}
+
+.tentang-ikon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tentang-kenalan-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+  color: var(--warna-teks-ringan);
+  margin-bottom: 2px;
+}
+
+.tentang-kenalan-nilai {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--warna-teks);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+a.tentang-kenalan-nilai:hover {
+  color: var(--warna-utama);
+  text-decoration: underline;
+}
+
+/* Kad maklumat perisian */
+.tentang-kad-perisian {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tentang-seksyen-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+  color: var(--warna-teks-ringan);
+  margin-bottom: 4px;
+}
+
+.tentang-perisian-senarai {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tentang-perisian-baris {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--warna-border);
+}
+
+.tentang-perisian-baris:last-child {
+  border-bottom: none;
+}
+
+.tentang-perisian-kunci {
+  font-size: 0.875rem;
+  color: var(--warna-teks-ringan);
+}
+
+.tentang-perisian-nilai {
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--warna-teks);
 }
 
-.tentang-card .label {
-  font-weight: 600;
-  color: var(--warna-teks-ringan);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.tentang-versi-teg {
+  font-family: 'Courier New', monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: var(--warna-aktif);
+  color: var(--warna-utama);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-.tentang-lesen {
-  margin-top: 16px;
-  padding: 12px;
+.tentang-lesen-teg {
+  font-weight: 600;
+  color: #856404;
+  background: #fff3cd;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+}
+
+/* Kad objektif */
+.tentang-kad-objektif {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tentang-objektif-teks {
+  font-size: 0.9rem;
+  color: var(--warna-teks);
+  line-height: 1.6;
+}
+
+/* Notis lesen proprietari */
+.tentang-lesen-notis {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
   background: #fff3cd;
   border: 1px solid #ffc107;
   border-radius: var(--radius);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
+  color: #665200;
+  line-height: 1.5;
+}
+
+.tentang-lesen-notis p {
+  margin: 0;
+}
+
+/* Footer */
+.tentang-footer {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 16px 0 4px;
+  border-top: 1px solid var(--warna-border);
+}
+
+.tentang-footer p {
+  font-size: 0.78rem;
+  color: var(--warna-teks-ringan);
+  margin-bottom: 4px;
+}
+
+/* Heading halaman tentang */
+#page-tentang h2 {
+  font-size: 1.1rem;
+  color: var(--warna-utama);
+  margin-bottom: 16px;
 }
 
 /* Teks maklumat */
