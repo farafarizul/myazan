@@ -42,7 +42,7 @@ const TICK_INTERVAL_MS = 10_000; // 10 saat
  * Trigger dianggap sah jika masa semasa berada antara
  * [scheduledTime, scheduledTime + TRIGGER_TOLERANCE_SECS].
  */
-const TRIGGER_TOLERANCE_SECS = 30;
+const TRIGGER_TOLERANCE_SECS = 60;
 
 /** Bilangan hari untuk menyimpan trigger_log sebelum dipadam. */
 const LOG_RETENTION_DAYS = 90;
@@ -131,8 +131,14 @@ async function tick(): Promise<void> {
     const prayerTimes = getPrayerTimesForDate(zoneCode, todayDate);
     if (!prayerTimes) {
       console.warn(
-        `[scheduler] Tiada data waktu solat untuk ${zoneCode}/${todayDate} — tunggu sync.`,
+        `[scheduler] Tiada data waktu solat untuk ${zoneCode}/${todayDate} — cuba sync semula.`,
       );
+      // Cuba sync semula secara async; tick berikutnya akan semak sekali lagi
+      void syncPrayerTimesForZone(zoneCode).catch((err) => {
+        console.warn(
+          `[scheduler] Sync gagal: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      });
       return;
     }
 
@@ -313,7 +319,12 @@ function formatDate(date: Date): string {
 
 /** Tolak bilangan hari dari tarikh YYYY-MM-DD dan pulangkan tarikh baharu. */
 function subtractDays(dateStr: string, days: number): string {
-  const date = new Date(dateStr);
+  // Parse menggunakan komponen tarikh tempatan untuk elak isu UTC midnight
+  const parts = dateStr.split('-');
+  const y = parseInt(parts[0] ?? '2000', 10);
+  const mo = parseInt(parts[1] ?? '1', 10) - 1;
+  const d = parseInt(parts[2] ?? '1', 10);
+  const date = new Date(y, mo, d);
   date.setDate(date.getDate() - days);
   return formatDate(date);
 }
