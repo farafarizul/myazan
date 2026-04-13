@@ -1,9 +1,36 @@
+import path from 'path';
 import { APP_NAME, APP_VERSION } from '../../shared/constants';
-import { openDatabase, runMigrations } from '../database';
+import { openDatabase, runMigrations, getAudioSettings, saveAudioSettings } from '../database';
 import { getActiveZoneCode } from '../services/settings';
 import { syncPrayerTimesForZone, PrayerTimeSyncError } from '../services/prayer-time';
 import { startScheduler } from '../services/scheduler';
 import { startAudioEngine } from '../services/audio';
+
+/**
+ * Tetapkan laluan fail/folder audio lalai yang dibundel bersama aplikasi,
+ * hanya jika tetapan audio dalam database masih kosong (null).
+ * Fail-fail ini disimpan dalam dist/assets/ semasa build.
+ */
+function setDefaultAudioPaths(): void {
+  const audio = getAudioSettings();
+  const assetsDir = path.join(__dirname, '../assets');
+  const updates: Record<string, string> = {};
+
+  if (!audio?.azan_subuh_file_path) {
+    updates['azan_subuh_file_path'] = path.join(assetsDir, 'audio', 'default_azan_biasa.mp3');
+  }
+  if (!audio?.azan_other_file_path) {
+    updates['azan_other_file_path'] = path.join(assetsDir, 'audio', 'default_azan_subuh.mp3');
+  }
+  if (!audio?.idle_folder_path) {
+    updates['idle_folder_path'] = path.join(assetsDir, 'zikir_default');
+  }
+
+  if (Object.keys(updates).length > 0) {
+    saveAudioSettings(updates as Parameters<typeof saveAudioSettings>[0]);
+    console.log('[bootstrap] Laluan audio lalai telah ditetapkan.');
+  }
+}
 
 /**
  * Bootstrap aplikasi semasa startup.
@@ -21,6 +48,9 @@ export async function bootstrap(): Promise<void> {
   // Fasa 1 — buka sambungan database dan jalankan migration
   openDatabase();
   runMigrations();
+
+  // Fasa 1b — tetapkan laluan audio lalai jika belum dikonfigurasi
+  setDefaultAudioPaths();
 
   // Fasa 2 — semak dan muat turun data waktu solat untuk zon + tahun semasa
   const activeZoneCode = getActiveZoneCode();
