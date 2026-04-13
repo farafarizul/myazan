@@ -7,7 +7,7 @@
  * - getPlaybackStatus()  — dapatkan status playback semasa
  */
 import { createAudioWindow, destroyAudioWindow } from './audio-window';
-import { startCoordinator, stopCoordinator, getPlaybackStatus } from './coordinator';
+import { startCoordinator, stopCoordinator, getPlaybackStatus, applySettingsChange } from './coordinator';
 import type { PlaybackStatus } from '../../../shared/types';
 
 let engineStarted = false;
@@ -41,6 +41,6 @@ export function stopAudioEngine(): void {
 /**
  * Dapatkan status playback semasa untuk paparan UI.
  */
-export { getPlaybackStatus };
+export { getPlaybackStatus, applySettingsChange };
 export type { PlaybackStatus };
 

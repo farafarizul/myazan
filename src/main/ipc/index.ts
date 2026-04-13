@@ -15,7 +15,7 @@ import {
   getPrayerTimesForDate,
   PrayerTimeSyncError,
 } from '../services/prayer-time';
-import { getPlaybackStatus } from '../services/audio';
+import { getPlaybackStatus, applySettingsChange } from '../services/audio';
 
 /**
  * Daftarkan semua IPC handler untuk komunikasi renderer ↔ main.
@@ -53,6 +53,8 @@ export function registerIpcHandlers(): void {
     (_event, payload: SaveSettingsPayload) => {
       try {
         saveSettings(payload);
+        // Pakai semula tetapan audio serta-merta supaya audio mencerminkan perubahan
+        applySettingsChange();
         return { ok: true };
       } catch (err) {
         if (err instanceof SettingsValidationError) {
