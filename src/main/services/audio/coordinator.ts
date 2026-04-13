@@ -90,6 +90,34 @@ export function getPlaybackStatus(): PlaybackStatus {
   };
 }
 
+/**
+ * Pakai semula tetapan terkini dari pangkalan data.
+ * Dipanggil selepas pengguna menyimpan tetapan supaya audio
+ * segera mencerminkan perubahan (contoh: nyahaktif idle).
+ */
+export function applySettingsChange(): void {
+  const settings = getAudioSettings();
+
+  // Hentikan idle jika sedang bermain atau dijeda
+  const idleActive = state.activePriority === 'idle' || state.idlePaused;
+  if (idleActive) {
+    sendToAudioWindow(AUDIO_IPC.STOP_IDLE);
+    if (state.activePriority === 'idle') {
+      state.activePriority = 'none';
+    }
+    state.idlePaused = false;
+    state.currentIdleTrack = null;
+    state.idlePlaylist = [];
+    state.idleIndex = 0;
+    console.log('[audio-coordinator] Idle dihentikan semasa aplikasi tetapan baharu.');
+  }
+
+  // Mulakan semula idle jika diaktifkan dan tiada audio berkeutamaan tinggi
+  if (settings?.idle_enabled && state.activePriority === 'none') {
+    startIdleIfEnabled();
+  }
+}
+
 // ============================================================
 // Pengendalian trigger scheduler
 // ============================================================
