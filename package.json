@@ -11,6 +11,7 @@
   "private": true,
   "scripts": {
     "compile": "node scripts/build.js",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
     "start": "npm run compile && electron .",
     "dev": "concurrently -k \"node scripts/build.js --watch\" \"wait-on dist/main/index.js && electron . --dev\"",
     "typecheck": "tsc --noEmit && tsc --noEmit --project tsconfig.renderer.json",
@@ -24,6 +25,7 @@
     "concurrently": "^9.0.0",
     "electron": "^41.2.0",
     "electron-builder": "^26.8.2",
+    "electron-rebuild": "^3.2.9",
     "esbuild": "^0.28.0",
     "eslint": "^9.0.0",
     "prettier": "^3.0.0",
