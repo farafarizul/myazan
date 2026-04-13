@@ -628,9 +628,13 @@ async function muatTetapan(): Promise<void> {
     isiDropdownNegeri(zones, settings.activeZoneCode);
 
     // Preview fail azan di bento card settings
-    const settingsSubuhPreview = document.getElementById('settings-azan-subuh-preview');
-    if (settingsSubuhPreview) {
-      settingsSubuhPreview.textContent = namaFail(settings.azanSubuhFilePath);
+    const subuhNamaEl = document.getElementById('audio-subuh-nama');
+    if (subuhNamaEl) {
+      subuhNamaEl.textContent = namaFail(settings.azanSubuhFilePath);
+    }
+    const lainNamaEl = document.getElementById('azan-lain-nama');
+    if (lainNamaEl) {
+      lainNamaEl.textContent = namaFail(settings.azanOtherFilePath);
     }
 
     // Togol idle & folder
@@ -724,12 +728,6 @@ async function simpanTetapan(): Promise<void> {
         notificationSettings,
       } as AppSettings;
 
-      // Kemas kini preview di bento card audio
-      const settingsSubuhPreview = document.getElementById('settings-azan-subuh-preview');
-      if (settingsSubuhPreview) {
-        settingsSubuhPreview.textContent = namaFail(tetapanState.azanSubuhFilePath);
-      }
-
       // Muat semula waktu solat pada papan pemuka
       loadHalamanUtama().catch((err) => {
         console.error('[utama] gagal muat semula:', err);
@@ -749,13 +747,6 @@ async function simpanTetapan(): Promise<void> {
 
 /** Sync semula UI halaman Audio dari tetapanState semasa navigasi ke halaman Audio. */
 function syncAudioPage(): void {
-  // Nama fail azan
-  const subuhNama = document.getElementById('audio-subuh-nama');
-  if (subuhNama) subuhNama.textContent = namaFail(tetapanState.azanSubuhFilePath);
-
-  const lainNama = document.getElementById('azan-lain-nama');
-  if (lainNama) lainNama.textContent = namaFail(tetapanState.azanOtherFilePath);
-
   // Folder idle
   const idleFolderNama = document.getElementById('audio-idle-folder-nama');
   if (idleFolderNama) idleFolderNama.textContent = namaFolder(tetapanState.idleFolderPath);
@@ -788,6 +779,36 @@ async function initHalamanTetapan(): Promise<void> {
     isiDropdownZon(tetapanState.zones, selectNegeri.value, null);
   });
 
+  // Pilih fail azan Subuh (settings page)
+  document.getElementById('btn-azan-subuh')?.addEventListener('click', async () => {
+    const laluan = await window.myAzan.selectAudioFile();
+    if (laluan === null) return;
+    tetapanState.azanSubuhFilePath = laluan;
+    const span = document.getElementById('audio-subuh-nama');
+    if (span) span.textContent = namaFail(laluan);
+  });
+
+  document.getElementById('btn-azan-subuh-padam')?.addEventListener('click', () => {
+    tetapanState.azanSubuhFilePath = null;
+    const span = document.getElementById('audio-subuh-nama');
+    if (span) span.textContent = 'Tiada fail dipilih';
+  });
+
+  // Pilih fail azan lain (settings page)
+  document.getElementById('btn-azan-lain')?.addEventListener('click', async () => {
+    const laluan = await window.myAzan.selectAudioFile();
+    if (laluan === null) return;
+    tetapanState.azanOtherFilePath = laluan;
+    const span = document.getElementById('azan-lain-nama');
+    if (span) span.textContent = namaFail(laluan);
+  });
+
+  document.getElementById('btn-azan-lain-padam')?.addEventListener('click', () => {
+    tetapanState.azanOtherFilePath = null;
+    const span = document.getElementById('azan-lain-nama');
+    if (span) span.textContent = 'Tiada fail dipilih';
+  });
+
   // Idle folder picker (settings page)
   document.getElementById('btn-idle-folder')?.addEventListener('click', async () => {
     const laluan = await window.myAzan.selectAudioFolder();
@@ -813,12 +834,6 @@ async function initHalamanTetapan(): Promise<void> {
     muatTetapan().catch((err) => { console.error('[tetapan] ralat set semula:', err); });
   });
 
-  // Butang goto audio page
-  document.getElementById('btn-goto-audio')?.addEventListener('click', () => {
-    const audioNavItem = document.querySelector<HTMLButtonElement>('.nav-item[data-page="audio"]');
-    audioNavItem?.click();
-  });
-
   // Muatkan data awal
   await muatTetapan();
 
@@ -833,41 +848,6 @@ async function initHalamanTetapan(): Promise<void> {
 // ============================================================
 
 function initHalamanAudio(): void {
-  // Pilih fail azan Subuh
-  document.getElementById('btn-azan-subuh')?.addEventListener('click', async () => {
-    const laluan = await window.myAzan.selectAudioFile();
-    if (laluan === null) return;
-    tetapanState.azanSubuhFilePath = laluan;
-    const span = document.getElementById('audio-subuh-nama');
-    if (span) span.textContent = namaFail(laluan);
-    // Kemas kini preview di settings juga
-    const settingsPreview = document.getElementById('settings-azan-subuh-preview');
-    if (settingsPreview) settingsPreview.textContent = namaFail(laluan);
-  });
-
-  document.getElementById('btn-azan-subuh-padam')?.addEventListener('click', () => {
-    tetapanState.azanSubuhFilePath = null;
-    const span = document.getElementById('audio-subuh-nama');
-    if (span) span.textContent = 'Tiada fail dipilih';
-    const settingsPreview = document.getElementById('settings-azan-subuh-preview');
-    if (settingsPreview) settingsPreview.textContent = 'Tiada fail';
-  });
-
-  // Pilih fail azan lain
-  document.getElementById('btn-azan-lain')?.addEventListener('click', async () => {
-    const laluan = await window.myAzan.selectAudioFile();
-    if (laluan === null) return;
-    tetapanState.azanOtherFilePath = laluan;
-    const span = document.getElementById('azan-lain-nama');
-    if (span) span.textContent = namaFail(laluan);
-  });
-
-  document.getElementById('btn-azan-lain-padam')?.addEventListener('click', () => {
-    tetapanState.azanOtherFilePath = null;
-    const span = document.getElementById('azan-lain-nama');
-    if (span) span.textContent = 'Tiada fail dipilih';
-  });
-
   // Folder idle (audio page)
   document.getElementById('audio-btn-idle-folder')?.addEventListener('click', async () => {
     const laluan = await window.myAzan.selectAudioFolder();
