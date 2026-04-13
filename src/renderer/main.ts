@@ -133,6 +133,12 @@ function masaSekarang(): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
+/** Tukar masa 'HH:MM' atau 'HH:MM:SS' kepada minit sejak tengah malam. */
+function masaKeMinit(masa: string): number {
+  const [jam, minit] = masa.split(':').map(Number);
+  return (jam ?? 0) * 60 + (minit ?? 0);
+}
+
 /**
  * Muatkan dan paparkan waktu solat hari ini pada halaman utama.
  * Jika tiada data tempatan, cuba sync terlebih dahulu.
@@ -186,7 +192,7 @@ async function loadHalamanUtama(): Promise<void> {
   }
 
   // Tentukan waktu solat berikutnya untuk ditonjolkan
-  const sekarang = masaSekarang();
+  const sekarangMinit = masaKeMinit(masaSekarang());
   const waktuBerurutan: Array<[string, string | null]> = [
     ['imsak', data.imsak],
     ['fajr', data.fajr],
@@ -202,7 +208,7 @@ async function loadHalamanUtama(): Promise<void> {
   let indexBerikutnya = -1;
   for (let i = 0; i < waktuBerurutan.length; i++) {
     const masa = waktuBerurutan[i]?.[1];
-    if (masa && masa.substring(0, 5) > sekarang) {
+    if (masa && masaKeMinit(masa) > sekarangMinit) {
       indexBerikutnya = i;
       break;
     }
