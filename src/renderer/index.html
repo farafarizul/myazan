@@ -81,58 +81,107 @@
            Halaman: Papan Pemuka
            =================================================== -->
       <section id="page-papan-pemuka" class="page active">
-        <div class="page-content">
-          <!-- Hero: clock + next prayer -->
-          <div class="dashboard-hero">
-            <div>
-              <p class="text-label text-muted" id="dashboard-zon-label">— Pilih Zon —</p>
+        <div class="db-wrapper">
+
+          <!-- 1. Countdown Strip -->
+          <div class="db-strip">
+            <div class="db-strip-bar">
+              <div class="db-strip-bar-fill" id="next-prayer-bar-fill" style="width:0%"></div>
+            </div>
+            <div class="db-strip-info">
+              <div class="db-strip-next">
+                <span class="db-pulse-dot"></span>
+                <span id="next-prayer-label">Seterusnya</span>
+              </div>
+              <div class="db-strip-countdown" id="next-prayer-countdown">—</div>
+            </div>
+          </div>
+
+          <!-- 2. Hero: Clock + Mini Status Cards -->
+          <div class="db-hero">
+            <div class="db-clock-block">
+              <div class="db-zone-pill">
+                <span class="material-symbols-outlined">location_on</span>
+                <span id="dashboard-zon-label">— Pilih Zon —</span>
+              </div>
               <div class="dashboard-clock" id="dashboard-jam">00:00</div>
               <div class="dashboard-date-row">
-                <span style="display:flex;align-items:center;gap:6px;">
-                  <span class="material-symbols-outlined">calendar_today</span>
-                  <span id="dashboard-tarikh-masihi">—</span>
-                </span>
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span id="dashboard-tarikh-masihi">—</span>
               </div>
             </div>
-            <div class="next-prayer-card">
-              <div class="next-prayer-label" id="next-prayer-label">Seterusnya</div>
-              <div class="next-prayer-countdown" id="next-prayer-countdown">—</div>
-              <div class="next-prayer-bar">
-                <div class="next-prayer-bar-fill" id="next-prayer-bar-fill" style="width:0%"></div>
+
+            <div class="db-mini-cards">
+              <!-- Zikir Idle Status -->
+              <div class="db-mini-card" id="db-idle-mini-card">
+                <div class="db-mini-icon" id="db-idle-icon-wrap">
+                  <span class="material-symbols-outlined">library_music</span>
+                </div>
+                <div class="db-mini-body">
+                  <div class="db-mini-label">Zikir / Idle</div>
+                  <div class="db-mini-value" id="db-idle-status-text">Tidak Aktif</div>
+                  <div class="db-mini-sub truncate" id="db-idle-track">Tiada folder dipilih</div>
+                </div>
+              </div>
+              <!-- Audio & Sistem Status -->
+              <div class="db-mini-card db-mini-card-sys">
+                <div class="db-mini-icon db-mini-icon-sys">
+                  <span class="material-symbols-outlined icon-fill">settings_applications</span>
+                </div>
+                <div class="db-mini-body">
+                  <div class="db-mini-label">Sistem Audio</div>
+                  <div class="db-mini-value" id="audio-status-text">Idle</div>
+                  <div class="db-mini-sub" id="db-sys-status">Beroperasi</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Audio status strip -->
-          <div class="audio-strip" id="audio-strip">
-            <div class="audio-strip-card">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                <div>
-                  <div style="font-size:1rem;font-weight:600;">Audio</div>
-                  <div class="text-muted" style="font-size:0.75rem;" id="audio-status-text">Idle</div>
-                </div>
-                <div style="width:36px;height:36px;border-radius:50%;background:rgba(164,242,209,0.3);display:flex;align-items:center;justify-content:center;">
-                  <span class="material-symbols-outlined icon-fill" style="color:var(--primary);font-size:20px;">graphic_eq</span>
-                </div>
-              </div>
-            </div>
-            <div class="audio-strip-card" style="grid-column:span 2;">
-              <div style="font-size:0.8125rem;font-weight:600;margin-bottom:8px;color:var(--on-surface-variant);">Waktu Solat Hari Ini</div>
-              <div id="waktu-solat-list" style="font-size:0.875rem;">
-                <p class="info-teks">Memuat data waktu solat...</p>
-              </div>
+          <!-- 3. Bento Prayer Grid -->
+          <div class="db-section">
+            <h3 class="db-section-title">
+              <span class="material-symbols-outlined">mosque</span>
+              Waktu Solat Hari Ini
+            </h3>
+            <div class="db-prayer-bento" id="db-prayer-bento">
+              <p class="info-teks">Memuat waktu solat...</p>
             </div>
           </div>
 
-          <!-- Prayer schedule -->
-          <div class="prayer-schedule">
-            <div class="prayer-schedule-header">
-              <h3 style="font-size:1.1rem;font-weight:700;">Jadual Waktu Solat</h3>
+          <!-- 4. Timeline Chart + Full Schedule -->
+          <div class="db-bottom">
+
+            <!-- SVG Timeline Chart -->
+            <div class="db-card db-chart-card">
+              <div class="db-card-header">
+                <span class="material-symbols-outlined">timeline</span>
+                Garis Masa Waktu Solat
+              </div>
+              <div class="db-timeline-wrap">
+                <svg id="db-timeline-svg" class="db-timeline-svg"
+                     viewBox="0 0 760 90" preserveAspectRatio="xMidYMid meet">
+                  <text x="380" y="50" text-anchor="middle"
+                        font-size="12" fill="var(--on-surface-variant)">Memuat...</text>
+                </svg>
+              </div>
             </div>
-            <div id="prayer-schedule-rows">
-              <p class="info-teks">Memuat jadual...</p>
+
+            <!-- Full Schedule Table -->
+            <div class="db-card">
+              <div class="db-card-header">
+                <span class="material-symbols-outlined">format_list_bulleted</span>
+                Jadual Terperinci
+              </div>
+              <div id="prayer-schedule-rows">
+                <p class="info-teks">Memuat jadual...</p>
+              </div>
             </div>
+
           </div>
+
+          <!-- Hidden compat elements kept for JS compatibility -->
+          <div id="waktu-solat-list" hidden></div>
+
         </div>
       </section>
 

@@ -109,19 +109,29 @@ function formatTarikhMasihi(d: Date): string {
   return d.toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/** Format minit ke format jam:minit yang konsisten (HH:MM). */
-function formatCountdown(totalMinit: number): string {
-  if (totalMinit <= 0) return '00:00';
-  const jam = Math.floor(totalMinit / 60);
-  const minit = Math.floor(totalMinit % 60);
-  return `${String(jam).padStart(2, '0')}:${String(minit).padStart(2, '0')}`;
-}
+// ============================================================
+// Ikon untuk setiap waktu solat
+// ============================================================
+
+const IKON_WAKTU: Record<string, string> = {
+  imsak:   'nightlight',
+  fajr:    'bedtime',
+  syuruk:  'wb_sunny',
+  dhuha:   'flare',
+  dhuhr:   'light_mode',
+  asr:     'partly_cloudy_day',
+  maghrib: 'wb_twilight',
+  isha:    'dark_mode',
+};
 
 // ============================================================
 // Clock ticker (halaman Papan Pemuka)
 // ============================================================
 
 let clockInterval: ReturnType<typeof setInterval> | null = null;
+
+// Simpan data solat semasa supaya clock tick boleh kemas kini countdown
+let _prayerWaktu: Array<[string, string | null]> = [];
 
 function startClock(): void {
   function tick(): void {
@@ -134,15 +144,66 @@ function startClock(): void {
     if (tarikhEl) {
       tarikhEl.textContent = formatTarikhMasihi(now);
     }
+
+    // Kemas kini countdown & progress bar secara langsung
+    if (_prayerWaktu.length > 0) {
+      const sekarangMinit = masaKeMinit(
+        `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+      );
+      kemaskiniCountdown(_prayerWaktu, sekarangMinit);
+    }
   }
   tick();
   if (clockInterval) clearInterval(clockInterval);
   clockInterval = setInterval(tick, 1000);
 }
 
-// ============================================================
-// Halaman Papan Pemuka
-// ============================================================
+/** Kemas kini countdown bar dan teks "seterusnya". */
+function kemaskiniCountdown(waktu: Array<[string, string | null]>, sekarangMinit: number): void {
+  let indexBerikutnya = -1;
+  for (let i = 0; i < waktu.length; i++) {
+    const masa = waktu[i]?.[1];
+    if (masa && masaKeMinit(masa) > sekarangMinit) {
+      indexBerikutnya = i;
+      break;
+    }
+  }
+
+  if (indexBerikutnya < 0) return;
+
+  const nextEntry = waktu[indexBerikutnya];
+  if (!nextEntry) return;
+  const [nextEvent, nextMasa] = nextEntry;
+
+  const labelEl = document.getElementById('next-prayer-label');
+  const countdownEl = document.getElementById('next-prayer-countdown');
+  const barFill = document.getElementById('next-prayer-bar-fill');
+
+  if (labelEl) labelEl.textContent = `Seterusnya: ${NAMA_WAKTU[nextEvent] ?? nextEvent}`;
+
+  if (nextMasa && countdownEl) {
+    const totalSaat = (masaKeMinit(nextMasa) - sekarangMinit) * 60;
+    const jam = Math.floor(totalSaat / 3600);
+    const minit = Math.floor((totalSaat % 3600) / 60);
+    const saat = totalSaat % 60;
+    countdownEl.textContent = [
+      String(jam).padStart(2, '0'),
+      String(minit).padStart(2, '0'),
+      String(saat).padStart(2, '0'),
+    ].join(':');
+  }
+
+  if (barFill && nextMasa) {
+    const prevIndex = indexBerikutnya - 1;
+    const prevMasa = prevIndex >= 0 ? (waktu[prevIndex]?.[1] ?? null) : null;
+    if (prevMasa) {
+      const total = masaKeMinit(nextMasa) - masaKeMinit(prevMasa);
+      const elapsed = sekarangMinit - masaKeMinit(prevMasa);
+      const pct = total > 0 ? Math.max(0, Math.min(100, (elapsed / total) * 100)) : 0;
+      barFill.style.width = `${pct}%`;
+    }
+  }
+}
 
 /**
  * Muatkan dan paparkan waktu solat hari ini.
@@ -150,10 +211,10 @@ function startClock(): void {
  */
 async function loadHalamanUtama(): Promise<void> {
   const scheduleEl = document.getElementById('prayer-schedule-rows');
-  const listEl = document.getElementById('waktu-solat-list');
+  const bentoEl = document.getElementById('db-prayer-bento');
 
   if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Memuat jadual...</p>';
-  if (listEl) listEl.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
+  if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
 
   startClock();
 
@@ -173,13 +234,13 @@ async function loadHalamanUtama(): Promise<void> {
     zonLabelEl.textContent = zoneCode ?? '— Pilih Zon di Tetapan —';
   }
 
+  // Kemas kini status idle audio
+  kemaskiniStatusIdle(settings);
+
   if (!zoneCode) {
-    if (scheduleEl) {
-      scheduleEl.innerHTML = '<p class="info-teks">Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.</p>';
-    }
-    if (listEl) {
-      listEl.innerHTML = '<p class="info-teks">Tiada zon dipilih.</p>';
-    }
+    const msg = '<p class="info-teks">Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.</p>';
+    if (scheduleEl) scheduleEl.innerHTML = msg;
+    if (bentoEl) bentoEl.innerHTML = msg;
     return;
   }
 
@@ -187,22 +248,28 @@ async function loadHalamanUtama(): Promise<void> {
   let data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
 
   if (!data) {
-    if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Memuat turun data waktu solat...</p>';
+    if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Memuat turun data waktu solat...</p>';
     try {
       const syncResult = await window.myAzan.syncPrayerTimes({ zoneCode });
       if (!syncResult.ok) {
-        if (scheduleEl) scheduleEl.innerHTML = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}.</p>`;
+        const errMsg = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}.</p>`;
+        if (scheduleEl) scheduleEl.innerHTML = errMsg;
+        if (bentoEl) bentoEl.innerHTML = errMsg;
         return;
       }
       data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
     } catch {
-      if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Gagal memuat turun data waktu solat.</p>';
+      const errMsg = '<p class="info-teks">Gagal memuat turun data waktu solat.</p>';
+      if (scheduleEl) scheduleEl.innerHTML = errMsg;
+      if (bentoEl) bentoEl.innerHTML = errMsg;
       return;
     }
   }
 
   if (!data) {
-    if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
+    const errMsg = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
+    if (scheduleEl) scheduleEl.innerHTML = errMsg;
+    if (bentoEl) bentoEl.innerHTML = errMsg;
     return;
   }
 
@@ -218,7 +285,10 @@ async function loadHalamanUtama(): Promise<void> {
     ['isha', data.isha],
   ];
 
-  // Cari waktu berikutnya dan waktu sebelumnya (sedang berlangsung)
+  // Simpan untuk clock tick
+  _prayerWaktu = waktuBerurutan;
+
+  // Cari waktu berikutnya
   let indexBerikutnya = -1;
   for (let i = 0; i < waktuBerurutan.length; i++) {
     const masa = waktuBerurutan[i]?.[1];
@@ -228,35 +298,16 @@ async function loadHalamanUtama(): Promise<void> {
     }
   }
 
-  // Kemas kini next prayer countdown
-  if (indexBerikutnya >= 0) {
-    const nextEntry = waktuBerurutan[indexBerikutnya];
-    if (nextEntry) {
-      const [nextEvent, nextMasa] = nextEntry;
-      const nextLabel = document.getElementById('next-prayer-label');
-      const nextCountdown = document.getElementById('next-prayer-countdown');
-      const barFill = document.getElementById('next-prayer-bar-fill');
+  // Countdown strip (initial render — clock tick akan terus kemas kini)
+  kemaskiniCountdown(waktuBerurutan, sekarangMinit);
 
-      if (nextLabel) nextLabel.textContent = `Seterusnya: ${NAMA_WAKTU[nextEvent] ?? nextEvent}`;
-      if (nextMasa && nextCountdown) {
-        const minutesLeft = masaKeMinit(nextMasa) - sekarangMinit;
-        nextCountdown.textContent = formatCountdown(minutesLeft);
-      }
-      // Progress bar: dari subuh ke maghrib sebagai contoh
-      if (barFill && nextMasa) {
-        const prevIndex = indexBerikutnya - 1;
-        const prevMasa = prevIndex >= 0 ? (waktuBerurutan[prevIndex]?.[1] ?? null) : null;
-        if (prevMasa) {
-          const total = masaKeMinit(nextMasa) - masaKeMinit(prevMasa);
-          const elapsed = sekarangMinit - masaKeMinit(prevMasa);
-          const pct = total > 0 ? Math.max(0, Math.min(100, (elapsed / total) * 100)) : 0;
-          barFill.style.width = `${pct}%`;
-        }
-      }
-    }
-  }
+  // Bento prayer grid
+  renderPrayerBentoCards(waktuBerurutan, sekarangMinit, indexBerikutnya, settings);
 
-  // Bina jadual waktu solat
+  // SVG Timeline chart
+  renderTimelineSvg(waktuBerurutan, sekarangMinit, indexBerikutnya);
+
+  // Full prayer schedule table
   if (scheduleEl) {
     const rowsHtml = waktuBerurutan
       .map(([event, masa], i) => {
@@ -279,21 +330,206 @@ async function loadHalamanUtama(): Promise<void> {
     scheduleEl.innerHTML = rowsHtml || '<p class="info-teks">Tiada data.</p>';
   }
 
-  // Bina mini list untuk strip
+  // Hidden compat: waktu-solat-list
+  const listEl = document.getElementById('waktu-solat-list');
   if (listEl) {
-    const miniHtml = waktuBerurutan
+    listEl.innerHTML = waktuBerurutan
       .map(([event, masa], i) => {
         if (!masa) return '';
         const nama = NAMA_WAKTU[event] ?? event;
         const isActive = i === indexBerikutnya;
-        return `<div style="display:flex;justify-content:space-between;padding:3px 0;
-                     ${isActive ? 'color:var(--primary);font-weight:700;' : 'color:var(--on-surface-variant);'}">
+        return `<div style="display:flex;justify-content:space-between;padding:2px 0;
+                     ${isActive ? 'color:var(--primary);font-weight:700;' : ''}">
                   <span>${nama}</span>
                   <span style="font-variant-numeric:tabular-nums;">${masa.substring(0, 5)}</span>
                 </div>`;
       })
       .join('');
-    listEl.innerHTML = miniHtml || '<p class="info-teks">Tiada data.</p>';
+  }
+}
+
+// ============================================================
+// Render: Bento Prayer Cards
+// ============================================================
+
+function renderPrayerBentoCards(
+  waktu: Array<[string, string | null]>,
+  sekarangMinit: number,
+  indexBerikutnya: number,
+  settings: AppSettings,
+): void {
+  const bento = document.getElementById('db-prayer-bento');
+  if (!bento) return;
+
+  const html = waktu
+    .map(([event, masa], i) => {
+      if (!masa) return '';
+      const nama = NAMA_WAKTU[event] ?? event;
+      const ikon = IKON_WAKTU[event] ?? 'schedule';
+      const masaMenit = masaKeMinit(masa);
+      const isNext = i === indexBerikutnya;
+      const isCurrent = i === indexBerikutnya - 1 && indexBerikutnya > 0;
+      const isPast = masaMenit < sekarangMinit && !isNext;
+
+      let cardClass = 'db-prayer-card';
+      if (isNext) cardClass += ' db-prayer-active';
+      else if (isCurrent) cardClass += ' db-prayer-current';
+      else if (isPast) cardClass += ' db-prayer-past';
+
+      const notifEnabled = settings.notificationSettings?.find((n) => n.eventName === event)?.enabled ?? false;
+      const notifDotClass = `db-prayer-notif-dot${notifEnabled ? ' db-notif-on' : ''}`;
+
+      const ikonFill = isNext
+        ? 'font-variation-settings:\"FILL\" 1,\"wght\" 400,\"GRAD\" 0,\"opsz\" 24;'
+        : '';
+
+      return `
+        <div class="${cardClass}">
+          <span class="${notifDotClass}" title="${notifEnabled ? 'Notifikasi Aktif' : 'Notifikasi Tidak Aktif'}"></span>
+          <div class="db-prayer-card-icon">
+            <span class="material-symbols-outlined" style="${ikonFill}">${ikon}</span>
+          </div>
+          <div class="db-prayer-card-name">${nama}</div>
+          <div class="db-prayer-card-time">${masa.substring(0, 5)}</div>
+        </div>`;
+    })
+    .join('');
+
+  bento.innerHTML = html || '<p class="info-teks">Tiada data.</p>';
+}
+
+// ============================================================
+// Render: SVG Timeline Chart
+// ============================================================
+
+function renderTimelineSvg(
+  waktu: Array<[string, string | null]>,
+  sekarangMinit: number,
+  indexBerikutnya: number,
+): void {
+  const svg = document.getElementById('db-timeline-svg');
+  if (!svg) return;
+
+  const validWaktu = waktu.filter(([, masa]) => masa !== null) as Array<[string, string]>;
+  if (validWaktu.length < 2) {
+    svg.innerHTML = `<text x="380" y="50" text-anchor="middle"
+      font-size="12" fill="var(--on-surface-variant)" font-family="Inter,sans-serif">Tiada data</text>`;
+    return;
+  }
+
+  const allMinutes = validWaktu.map(([, masa]) => masaKeMinit(masa));
+  const minTime = Math.max(0, (allMinutes[0] ?? 0) - 20);
+  const maxTime = Math.min(1439, (allMinutes[allMinutes.length - 1] ?? 1439) + 40);
+  const timeRange = maxTime - minTime || 1;
+
+  const svgW = 760;
+  const padX = 24;
+  const trackW = svgW - padX * 2;
+  const trackY = 44;
+  const trackH = 7;
+  const dotCY = trackY + trackH / 2;
+  const dotR = 6;
+
+  const timeToX = (minutes: number): number =>
+    padX + Math.max(0, Math.min(1, (minutes - minTime) / timeRange)) * trackW;
+
+  const currentX = timeToX(sekarangMinit);
+
+  let h = '';
+
+  // Background track
+  h += `<rect x="${padX}" y="${trackY}" width="${trackW}" height="${trackH}"
+    rx="${trackH / 2}" fill="var(--surface-container-high)" />`;
+
+  // Elapsed fill
+  const elapsedW = Math.max(0, Math.min(trackW, currentX - padX));
+  if (elapsedW > 0) {
+    h += `<rect x="${padX}" y="${trackY}" width="${elapsedW}" height="${trackH}"
+      rx="${trackH / 2}" fill="var(--primary)" opacity="0.45" />`;
+  }
+
+  // Prayer markers (alternate labels above/below to prevent overlap)
+  validWaktu.forEach(([event, masa], i) => {
+    const x = timeToX(masaKeMinit(masa));
+    const nama = NAMA_WAKTU[event] ?? event;
+    const masaMenit = masaKeMinit(masa);
+    const isNext = waktu.findIndex(([e]) => e === event) === indexBerikutnya;
+    const isPast = masaMenit < sekarangMinit;
+    const isAbove = i % 2 === 0;
+
+    const dotFill = isPast || isNext ? 'var(--primary)' : 'var(--surface-container-lowest)';
+    const dotStroke = isPast || isNext ? 'var(--primary)' : 'var(--outline-variant)';
+    const r = isNext ? dotR + 2 : dotR;
+    const textFill = isNext ? 'var(--primary)' : 'var(--on-surface-variant)';
+    const fontWeight = isNext ? '700' : '500';
+
+    h += `<circle cx="${x}" cy="${dotCY}" r="${r}"
+      fill="${dotFill}" stroke="${dotStroke}" stroke-width="1.5" />`;
+    if (isNext) {
+      h += `<circle cx="${x}" cy="${dotCY}" r="${r + 5}"
+        fill="none" stroke="var(--primary)" stroke-width="1" opacity="0.35" />`;
+    }
+
+    if (isAbove) {
+      h += `<text x="${x}" y="${trackY - 14}" text-anchor="middle"
+        font-size="9" font-weight="${fontWeight}" fill="${textFill}"
+        font-family="Inter,sans-serif">${nama}</text>`;
+      h += `<text x="${x}" y="${trackY - 25}" text-anchor="middle"
+        font-size="8" fill="${textFill}" opacity="0.7"
+        font-family="Inter,sans-serif">${masa.substring(0, 5)}</text>`;
+    } else {
+      h += `<text x="${x}" y="${trackY + trackH + 16}" text-anchor="middle"
+        font-size="9" font-weight="${fontWeight}" fill="${textFill}"
+        font-family="Inter,sans-serif">${nama}</text>`;
+      h += `<text x="${x}" y="${trackY + trackH + 28}" text-anchor="middle"
+        font-size="8" fill="${textFill}" opacity="0.7"
+        font-family="Inter,sans-serif">${masa.substring(0, 5)}</text>`;
+    }
+  });
+
+  // Current time indicator
+  h += `<line x1="${currentX}" y1="${trackY - 10}" x2="${currentX}" y2="${trackY + trackH + 10}"
+    stroke="var(--tertiary-container)" stroke-width="2" stroke-dasharray="3,2" />`;
+  h += `<circle cx="${currentX}" cy="${dotCY}" r="4"
+    fill="var(--tertiary-container)" stroke="var(--secondary)" stroke-width="1.5" />`;
+
+  svg.innerHTML = h;
+}
+
+// ============================================================
+// Kemas kini Status Idle Audio
+// ============================================================
+
+function kemaskiniStatusIdle(settings: AppSettings): void {
+  const iconWrap = document.getElementById('db-idle-icon-wrap');
+  const statusText = document.getElementById('db-idle-status-text');
+  const trackEl = document.getElementById('db-idle-track');
+  const card = document.getElementById('db-idle-mini-card');
+
+  const aktif = settings.idleEnabled && !!settings.idleFolderPath;
+
+  if (statusText) statusText.textContent = aktif ? 'Aktif' : 'Tidak Aktif';
+
+  if (trackEl) {
+    if (settings.idleFolderPath) {
+      const bahagian = settings.idleFolderPath.replace(/\\/g, '/').split('/');
+      trackEl.textContent = bahagian[bahagian.length - 1] ?? settings.idleFolderPath;
+    } else {
+      trackEl.textContent = 'Tiada folder dipilih';
+    }
+  }
+
+  if (iconWrap) {
+    const icon = iconWrap.querySelector<HTMLSpanElement>('.material-symbols-outlined');
+    if (icon) icon.textContent = aktif ? 'graphic_eq' : 'library_music';
+  }
+
+  if (card) {
+    if (aktif) {
+      card.classList.add('db-idle-active');
+    } else {
+      card.classList.remove('db-idle-active');
+    }
   }
 }
 
