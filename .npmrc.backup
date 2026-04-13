@@ -1,0 +1,6 @@
+# Electron binary mirror — prevents download stall on slow connections
+# electron_mirror=https://github.com/electron/electron/releases/download/
+# electron_custom_dir=v{{ version }}
+
+# Electron native module headers
+# electron_builder_binaries_mirror=https://github.com/electron/electron/releases/download/
