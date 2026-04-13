@@ -44,12 +44,21 @@
       "icon": "src/assets/icons/icon.ico",
       "target": [
         {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
           "target": "dir",
           "arch": [
             "x64"
           ]
         }
       ]
+    },
+    "portable": {
+      "artifactName": "myAzan-${version}-portable.exe"
     },
     "mac": {
       "icon": "src/assets/icons/icon.icns"
