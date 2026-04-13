@@ -3,6 +3,7 @@ import path from 'path';
 import { bootstrap } from './bootstrap';
 import { registerIpcHandlers } from './ipc';
 import { closeDatabase } from './database';
+import { stopScheduler } from './services/scheduler';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -52,5 +53,6 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  stopScheduler();
   closeDatabase();
 });
