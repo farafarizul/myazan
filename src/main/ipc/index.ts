@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { ipcMain, dialog } from 'electron';
 import { IPC_CHANNELS } from '../../shared/constants';
 import {
   AppInfo,
@@ -15,6 +15,7 @@ import {
   getPrayerTimesForDate,
   PrayerTimeSyncError,
 } from '../services/prayer-time';
+import { getPlaybackStatus } from '../services/audio';
 
 /**
  * Daftarkan semua IPC handler untuk komunikasi renderer ↔ main.
@@ -111,6 +112,37 @@ export function registerIpcHandlers(): void {
     },
   );
 
-  // TODO: Fasa 4 — SELECT_AUDIO_FILE, SELECT_AUDIO_FOLDER
-  // TODO: Fasa 4 — GET_PLAYBACK_STATUS
+  /**
+   * Buka dialog pilih fail audio (MP3) untuk azan atau notifikasi.
+   * Pulangkan laluan fail yang dipilih atau null jika pengguna membatal.
+   */
+  ipcMain.handle(IPC_CHANNELS.SELECT_AUDIO_FILE, async (): Promise<string | null> => {
+    const result = await dialog.showOpenDialog({
+      title: 'Pilih Fail Audio',
+      filters: [{ name: 'Fail Audio', extensions: ['mp3', 'wav', 'ogg', 'm4a'] }],
+      properties: ['openFile'],
+    });
+    if (result.canceled || result.filePaths.length === 0) return null;
+    return result.filePaths[0] ?? null;
+  });
+
+  /**
+   * Buka dialog pilih folder audio untuk audio idle (al-Quran / zikir).
+   * Pulangkan laluan folder yang dipilih atau null jika pengguna membatal.
+   */
+  ipcMain.handle(IPC_CHANNELS.SELECT_AUDIO_FOLDER, async (): Promise<string | null> => {
+    const result = await dialog.showOpenDialog({
+      title: 'Pilih Folder Audio Idle',
+      properties: ['openDirectory'],
+    });
+    if (result.canceled || result.filePaths.length === 0) return null;
+    return result.filePaths[0] ?? null;
+  });
+
+  /**
+   * Dapatkan status playback audio semasa.
+   */
+  ipcMain.handle(IPC_CHANNELS.GET_PLAYBACK_STATUS, () => {
+    return getPlaybackStatus();
+  });
 }

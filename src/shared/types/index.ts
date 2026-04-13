@@ -112,6 +112,16 @@ export interface PrayerTimeForDate {
 }
 
 /**
+ * Status semasa playback audio engine.
+ */
+export interface PlaybackStatus {
+  /** Keutamaan aktif: 'azan', 'notification', 'idle', atau 'none'. */
+  activePriority: 'azan' | 'notification' | 'idle' | 'none';
+  /** Nama fail idle yang sedang dimainkan (tanpa laluan penuh), atau null. */
+  idleTrack: string | null;
+}
+
+/**
  * Payload untuk menyimpan tetapan — semua medan adalah pilihan.
  * Hanya medan yang disediakan akan dikemas kini.
  */
