@@ -296,7 +296,7 @@ function tunjukStatusTetapan(mesej: string, jenis: 'berjaya' | 'ralat'): void {
 }
 
 /** Ikat gelangsar volume kepada nilai teks dan kemas kini state. */
-function initVolumeGelangsar(
+function initGelansarVolume(
   sliderId: string,
   nilaiId: string,
   stateKey: 'azanVolume' | 'notificationVolume' | 'idleVolume',
@@ -660,9 +660,9 @@ async function initHalamanTetapan(): Promise<void> {
   await muatTetapan();
 
   // Ikat gelangsar volume
-  initVolumeGelangsar('azan-volume', 'azan-volume-nilai', 'azanVolume');
-  initVolumeGelangsar('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume');
-  initVolumeGelangsar('idle-volume', 'idle-volume-nilai', 'idleVolume');
+  initGelansarVolume('azan-volume', 'azan-volume-nilai', 'azanVolume');
+  initGelansarVolume('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume');
+  initGelansarVolume('idle-volume', 'idle-volume-nilai', 'idleVolume');
 }
 
 async function main(): Promise<void> {
