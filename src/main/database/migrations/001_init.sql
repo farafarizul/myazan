@@ -113,6 +113,12 @@ INSERT OR IGNORE INTO audio_settings (
   strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 );
 
+-- Nilai kelantangan lalai: azan=100, notifikasi=100, zikir=50
+-- (lajur ini ditambah oleh migration 003; dikemaskini di sini untuk install baru)
+UPDATE audio_settings SET
+  idle_volume = 50
+WHERE id = 1;
+
 -- ============================================================
 -- Seed: notification_settings (satu rekod per waktu solat)
 -- ============================================================
@@ -120,19 +126,19 @@ INSERT OR IGNORE INTO notification_settings
   (event_name, enabled, minutes_before, audio_file_path, volume, updated_at)
 VALUES
   ('imsak',   0, 10, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-  ('fajr',    1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('fajr',    1, 15, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   ('syuruk',  0,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   ('dhuha',   0,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-  ('dhuhr',   1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-  ('asr',     1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-  ('maghrib', 1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-  ('isha',    1,  5, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));
+  ('dhuhr',   1, 15, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('asr',     1, 15, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('maghrib', 1, 15, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('isha',    1, 15, NULL, NULL, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));
 
 -- ============================================================
 -- Seed: app_settings (nilai lalai)
 -- ============================================================
 INSERT OR IGNORE INTO app_settings (key, value, value_type, updated_at)
 VALUES
-  ('active_zone_code',        NULL,    'string',  strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  ('active_zone_code',        'SGR01', 'string',  strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   ('idle_enabled',            'false', 'boolean', strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   ('auto_download_next_year', 'true',  'boolean', strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));
