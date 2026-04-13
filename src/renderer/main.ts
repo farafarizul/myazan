@@ -455,6 +455,8 @@ function initGelansarVolume(
   sliderId: string,
   nilaiId: string,
   stateKey: 'azanVolume' | 'notificationVolume' | 'idleVolume',
+  mirrorId?: string,
+  mirrorNilaiId?: string,
 ): void {
   const slider = document.getElementById(sliderId) as HTMLInputElement | null;
   const nilaiEl = document.getElementById(nilaiId);
@@ -464,6 +466,12 @@ function initGelansarVolume(
     const v = parseInt(slider.value, 10);
     nilaiEl.textContent = `${v}%`;
     tetapanState[stateKey] = v;
+    if (mirrorId) {
+      const mirror = document.getElementById(mirrorId) as HTMLInputElement | null;
+      const mirrorNilai = mirrorNilaiId ? document.getElementById(mirrorNilaiId) : null;
+      if (mirror) mirror.value = String(v);
+      if (mirrorNilai) mirrorNilai.textContent = `${v}%`;
+    }
   });
 }
 
@@ -654,6 +662,9 @@ async function muatTetapan(): Promise<void> {
     setSlider('azan-volume', 'azan-volume-nilai', tetapanState.azanVolume);
     setSlider('notifikasi-volume', 'notifikasi-volume-nilai', tetapanState.notificationVolume);
     setSlider('idle-volume', 'idle-volume-nilai', tetapanState.idleVolume);
+    setSlider('audio-azan-volume', 'audio-azan-volume-nilai', tetapanState.azanVolume);
+    setSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', tetapanState.notificationVolume);
+    setSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', tetapanState.idleVolume);
 
     binaSenaraiNotifikasi(tetapanState.notificationSettings);
   } catch (err) {
@@ -762,10 +773,7 @@ function syncAudioPage(): void {
     if (el) el.value = String(val);
     if (nilaiEl) nilaiEl.textContent = `${val}%`;
   };
-  setSlider('audio-azan-volume', 'audio-azan-volume-nilai', tetapanState.azanVolume);
-  setSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', tetapanState.notificationVolume);
   setSlider('audio-idle-volume', 'audio-idle-volume-nilai', tetapanState.idleVolume);
-  setSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', tetapanState.idleVolume);
 }
 
 // ============================================================
@@ -837,10 +845,42 @@ async function initHalamanTetapan(): Promise<void> {
   // Muatkan data awal
   await muatTetapan();
 
-  // Ikat gelangsar volume (settings page)
-  initGelansarVolume('azan-volume', 'azan-volume-nilai', 'azanVolume');
-  initGelansarVolume('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume');
-  initGelansarVolume('idle-volume', 'idle-volume-nilai', 'idleVolume');
+  // Ikat gelangsar volume (settings page) — mirror ke Kawalan Kelantangan
+  initGelansarVolume('azan-volume', 'azan-volume-nilai', 'azanVolume', 'audio-azan-volume', 'audio-azan-volume-nilai');
+  initGelansarVolume('notifikasi-volume', 'notifikasi-volume-nilai', 'notificationVolume', 'audio-notifikasi-volume', 'audio-notifikasi-volume-nilai');
+  initGelansarVolume('idle-volume', 'idle-volume-nilai', 'idleVolume', 'audio-idle-volume2', 'audio-idle-volume2-nilai');
+
+  // Ikat gelangsar Kawalan Kelantangan (Settings page) — mirror ke individual sliders
+  bindVolumeSlider('audio-azan-volume', 'audio-azan-volume-nilai', 'azanVolume', 'azan-volume', 'azan-volume-nilai');
+  bindVolumeSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', 'notificationVolume', 'notifikasi-volume', 'notifikasi-volume-nilai');
+  bindVolumeSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
+}
+
+// ============================================================
+// Ikat gelangsar volume dengan mirror
+// ============================================================
+
+function bindVolumeSlider(
+  sliderId: string,
+  nilaiId: string,
+  stateKey: 'azanVolume' | 'notificationVolume' | 'idleVolume',
+  mirrorId?: string,
+  mirrorNilaiId?: string,
+): void {
+  const slider = document.getElementById(sliderId) as HTMLInputElement | null;
+  const nilaiEl = document.getElementById(nilaiId);
+  if (!slider) return;
+  slider.addEventListener('input', () => {
+    const v = parseInt(slider.value, 10);
+    if (nilaiEl) nilaiEl.textContent = `${v}%`;
+    tetapanState[stateKey] = v;
+    if (mirrorId) {
+      const mirror = document.getElementById(mirrorId) as HTMLInputElement | null;
+      const mirrorNilai = mirrorNilaiId ? document.getElementById(mirrorNilaiId) : null;
+      if (mirror) mirror.value = String(v);
+      if (mirrorNilai) mirrorNilai.textContent = `${v}%`;
+    }
+  });
 }
 
 // ============================================================
@@ -875,30 +915,8 @@ function initHalamanAudio(): void {
     if (togolSettings) togolSettings.checked = togolAudioIdle.checked;
   });
 
-  // Volume sliders dalam audio page → sync state
-  const bindAudioSlider = (sliderId: string, nilaiId: string, stateKey: 'azanVolume' | 'notificationVolume' | 'idleVolume', mirrorId?: string, mirrorNilaiId?: string): void => {
-    const slider = document.getElementById(sliderId) as HTMLInputElement | null;
-    const nilaiEl = document.getElementById(nilaiId);
-    if (!slider) return;
-    slider.addEventListener('input', () => {
-      const v = parseInt(slider.value, 10);
-      if (nilaiEl) nilaiEl.textContent = `${v}%`;
-      tetapanState[stateKey] = v;
-      // Mirror ke settings page slider
-      if (mirrorId) {
-        const mirror = document.getElementById(mirrorId) as HTMLInputElement | null;
-        const mirrorNilai = mirrorNilaiId ? document.getElementById(mirrorNilaiId) : null;
-        if (mirror) mirror.value = String(v);
-        if (mirrorNilai) mirrorNilai.textContent = `${v}%`;
-      }
-    });
-  };
-
-  bindAudioSlider('audio-azan-volume', 'audio-azan-volume-nilai', 'azanVolume', 'azan-volume', 'azan-volume-nilai');
-  bindAudioSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', 'notificationVolume', 'notifikasi-volume', 'notifikasi-volume-nilai');
-  // idle volume: dua slider mirror each other
-  bindAudioSlider('audio-idle-volume', 'audio-idle-volume-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
-  bindAudioSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
+  // Volume slider idle dalam audio page
+  bindVolumeSlider('audio-idle-volume', 'audio-idle-volume-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
 
   // Butang simpan audio page
   document.getElementById('btn-simpan-audio')?.addEventListener('click', () => {
