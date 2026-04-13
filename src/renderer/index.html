@@ -39,7 +39,83 @@
         <!-- Halaman Tetapan -->
         <section id="page-tetapan" class="page">
           <h2>Tetapan</h2>
-          <p class="info-teks">Tetapan akan disediakan pada fasa seterusnya.</p>
+
+          <!-- Mesej status simpan -->
+          <div id="tetapan-status" class="tetapan-status" role="alert" aria-live="polite" hidden></div>
+
+          <!-- Seksyen: Pilih Zon -->
+          <div class="tetapan-seksyen">
+            <h3 class="tetapan-seksyen-tajuk">📍 Zon Waktu Solat</h3>
+            <div class="tetapan-baris">
+              <label class="tetapan-label" for="pilih-negeri">Negeri</label>
+              <select id="pilih-negeri" class="tetapan-select">
+                <option value="">-- Pilih Negeri --</option>
+              </select>
+            </div>
+            <div class="tetapan-baris">
+              <label class="tetapan-label" for="pilih-zon">Zon JAKIM</label>
+              <select id="pilih-zon" class="tetapan-select">
+                <option value="">-- Pilih Zon --</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Seksyen: Audio Azan -->
+          <div class="tetapan-seksyen">
+            <h3 class="tetapan-seksyen-tajuk">🔊 Fail Audio Azan</h3>
+            <div class="tetapan-baris">
+              <label class="tetapan-label">Azan Subuh</label>
+              <div class="tetapan-fail-pilih">
+                <span id="azan-subuh-nama" class="tetapan-fail-nama info-teks">Tiada fail dipilih</span>
+                <button id="btn-azan-subuh" class="tetapan-btn-pilih" type="button">Pilih Fail</button>
+                <button id="btn-azan-subuh-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
+              </div>
+            </div>
+            <div class="tetapan-baris">
+              <label class="tetapan-label">Azan Selain Subuh</label>
+              <div class="tetapan-fail-pilih">
+                <span id="azan-lain-nama" class="tetapan-fail-nama info-teks">Tiada fail dipilih</span>
+                <button id="btn-azan-lain" class="tetapan-btn-pilih" type="button">Pilih Fail</button>
+                <button id="btn-azan-lain-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seksyen: Notifikasi Awal -->
+          <div class="tetapan-seksyen">
+            <h3 class="tetapan-seksyen-tajuk">🔔 Notifikasi Sebelum Waktu Solat</h3>
+            <p class="info-teks" style="margin-bottom:12px;">
+              Tetapkan minit awal notifikasi dan pilih fail audio untuk setiap waktu.
+            </p>
+            <div id="notifikasi-senarai" class="notifikasi-grid">
+              <!-- Diisi secara dinamik -->
+            </div>
+          </div>
+
+          <!-- Seksyen: Audio Idle -->
+          <div class="tetapan-seksyen">
+            <h3 class="tetapan-seksyen-tajuk">🎵 Audio al-Quran / Zikir (Idle)</h3>
+            <div class="tetapan-baris">
+              <label class="tetapan-label">Folder Audio</label>
+              <div class="tetapan-fail-pilih">
+                <span id="idle-folder-nama" class="tetapan-fail-nama info-teks">Tiada folder dipilih</span>
+                <button id="btn-idle-folder" class="tetapan-btn-pilih" type="button">Pilih Folder</button>
+                <button id="btn-idle-folder-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
+              </div>
+            </div>
+            <div class="tetapan-baris">
+              <label class="tetapan-label" for="idle-aktif">Aktifkan Audio Idle</label>
+              <label class="tetapan-togol">
+                <input type="checkbox" id="idle-aktif" />
+                <span class="togol-gelangsar"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Butang Simpan -->
+          <div class="tetapan-tindakan">
+            <button id="btn-simpan-tetapan" class="btn-utama" type="button">💾 Simpan Tetapan</button>
+          </div>
         </section>
 
         <!-- Halaman Tentang -->

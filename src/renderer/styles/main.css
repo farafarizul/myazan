@@ -192,3 +192,311 @@ body {
   color: var(--warna-utama);
   margin-bottom: 16px;
 }
+
+/* Seksyen tetapan */
+.tetapan-seksyen {
+  background: var(--warna-latar-kad);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--bayang);
+  border: 1px solid var(--warna-border);
+}
+
+.tetapan-seksyen-tajuk {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--warna-utama);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--warna-aktif);
+}
+
+/* Baris label + kawalan */
+.tetapan-baris {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.tetapan-baris:last-child {
+  margin-bottom: 0;
+}
+
+.tetapan-label {
+  min-width: 180px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--warna-teks);
+}
+
+/* Select dropdown */
+.tetapan-select {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+  padding: 8px 12px;
+  border: 1px solid var(--warna-border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  background: var(--warna-latar);
+  color: var(--warna-teks);
+  cursor: pointer;
+}
+
+.tetapan-select:focus {
+  outline: none;
+  border-color: var(--warna-utama-cerah);
+  box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.2);
+}
+
+/* Pemilih fail */
+.tetapan-fail-pilih {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.tetapan-fail-nama {
+  flex: 1;
+  min-width: 120px;
+  font-size: 0.85rem;
+  word-break: break-all;
+  padding: 6px 0;
+}
+
+.tetapan-btn-pilih {
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  background: var(--warna-utama-cerah);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.tetapan-btn-pilih:hover {
+  background: var(--warna-utama);
+}
+
+.tetapan-btn-padam {
+  padding: 7px 10px;
+  font-size: 0.85rem;
+  background: transparent;
+  color: var(--warna-teks-ringan);
+  border: 1px solid var(--warna-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  line-height: 1;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.tetapan-btn-padam:hover {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Grid notifikasi */
+.notifikasi-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notifikasi-baris {
+  display: grid;
+  grid-template-columns: 130px 48px 130px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--warna-latar);
+  border-radius: var(--radius);
+  border: 1px solid var(--warna-border);
+  flex-wrap: wrap;
+}
+
+.notifikasi-waktu {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--warna-teks);
+}
+
+.notifikasi-minit-input {
+  width: 60px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px solid var(--warna-border);
+  border-radius: var(--radius);
+  background: var(--warna-latar-kad);
+}
+
+.notifikasi-minit-input:focus {
+  outline: none;
+  border-color: var(--warna-utama-cerah);
+}
+
+.notifikasi-fail-nama {
+  font-size: 0.8rem;
+  color: var(--warna-teks-ringan);
+  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.notifikasi-btn-audio {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  background: var(--warna-latar-kad);
+  color: var(--warna-utama-cerah);
+  border: 1px solid var(--warna-utama-cerah);
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.notifikasi-btn-audio:hover {
+  background: var(--warna-aktif);
+}
+
+.notifikasi-btn-padam {
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  background: transparent;
+  color: var(--warna-teks-ringan);
+  border: 1px solid var(--warna-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.notifikasi-btn-padam:hover {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Toggle switch */
+.tetapan-togol {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.tetapan-togol input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.togol-gelangsar {
+  position: absolute;
+  inset: 0;
+  background-color: var(--warna-border);
+  border-radius: 24px;
+  transition: background-color 0.2s;
+}
+
+.togol-gelangsar::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.tetapan-togol input:checked + .togol-gelangsar {
+  background-color: var(--warna-utama-cerah);
+}
+
+.tetapan-togol input:checked + .togol-gelangsar::before {
+  transform: translateX(20px);
+}
+
+/* Togol kecil dalam notifikasi */
+.togol-kecil {
+  width: 36px;
+  height: 20px;
+}
+
+.togol-kecil .togol-gelangsar::before {
+  width: 14px;
+  height: 14px;
+}
+
+.togol-kecil input:checked + .togol-gelangsar::before {
+  transform: translateX(16px);
+}
+
+/* Butang utama simpan */
+.tetapan-tindakan {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-utama {
+  padding: 10px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: var(--warna-utama);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-utama:hover {
+  background: var(--warna-utama-cerah);
+}
+
+.btn-utama:active {
+  transform: scale(0.98);
+}
+
+/* Mesej status */
+.tetapan-status {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.tetapan-status.berjaya {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.tetapan-status.ralat {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Minit label dalam notifikasi */
+.notifikasi-minit-label {
+  font-size: 0.78rem;
+  color: var(--warna-teks-ringan);
+  white-space: nowrap;
+}
