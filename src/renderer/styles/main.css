@@ -1582,16 +1582,17 @@ a.about-contact-value:hover { color: var(--primary); text-decoration: underline;
   position: relative;
   min-height: 220px;
   flex-shrink: 0;
-  background: linear-gradient(135deg, var(--primary-container) 0%, var(--primary) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
-.tentang-dev-avatar {
-  font-size: 80px;
-  color: var(--primary-fixed);
-  opacity: 0.7;
+.tentang-dev-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  position: absolute;
+  inset: 0;
 }
 
 .tentang-dev-img-overlay {

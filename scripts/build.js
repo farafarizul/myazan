@@ -137,6 +137,9 @@ function copyRendererAssets() {
 
   // Copy self-hosted fonts
   copyDir(path.join(srcDir, 'fonts'), path.join(outDir, 'fonts'));
+
+  // Copy renderer images
+  copyDir(path.join(srcDir, 'images'), path.join(outDir, 'images'));
 }
 
 async function build() {
