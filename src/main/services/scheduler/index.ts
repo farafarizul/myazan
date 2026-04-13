@@ -160,10 +160,13 @@ async function tick(): Promise<void> {
         });
       }
 
-      // Semak trigger notifikasi (sebelum waktu)
+      // Semak trigger notifikasi (sebelum waktu atau tepat pada waktu jika minutes_before = 0)
       const notifSetting = notificationSettings.find((n) => n.event_name === eventName);
-      if (notifSetting && notifSetting.enabled === 1 && notifSetting.minutes_before > 0) {
-        const notifHHMM = subtractMinutes(prayerTimeHHMM, notifSetting.minutes_before);
+      if (notifSetting && notifSetting.enabled === 1) {
+        const notifHHMM =
+          notifSetting.minutes_before > 0
+            ? subtractMinutes(prayerTimeHHMM, notifSetting.minutes_before)
+            : prayerTimeHHMM;
         if (notifHHMM) {
           checkAndTrigger({
             now,

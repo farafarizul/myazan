@@ -116,6 +116,8 @@ function handleAzanTrigger(event: SchedulerEvent): void {
     return;
   }
 
+  const volume = settings?.azan_volume ?? 100;
+
   console.log(`[audio-coordinator] Main azan '${event.eventName}' — ${filePath}`);
 
   // Keutamaan tinggi: hentikan notification dan idle
@@ -125,7 +127,7 @@ function handleAzanTrigger(event: SchedulerEvent): void {
   state.activePriority = 'azan';
   state.idlePaused = true;
 
-  sendToAudioWindow(AUDIO_IPC.PLAY_AZAN, filePath);
+  sendToAudioWindow(AUDIO_IPC.PLAY_AZAN, filePath, volume);
 }
 
 function handleNotificationTrigger(event: SchedulerEvent): void {
@@ -155,13 +157,17 @@ function handleNotificationTrigger(event: SchedulerEvent): void {
     `[audio-coordinator] Main notifikasi '${event.eventName}' — ${notif.audio_file_path}`,
   );
 
+  // Gunakan kelantangan notifikasi global; guna per-event jika ada
+  const globalSettings = getAudioSettings();
+  const volume = notif.volume ?? globalSettings?.notification_volume ?? 100;
+
   // Jeda idle
   pauseIdlePlayer();
 
   state.activePriority = 'notification';
   state.idlePaused = true;
 
-  sendToAudioWindow(AUDIO_IPC.PLAY_NOTIFICATION, notif.audio_file_path);
+  sendToAudioWindow(AUDIO_IPC.PLAY_NOTIFICATION, notif.audio_file_path, volume);
 }
 
 // ============================================================
@@ -292,11 +298,14 @@ function playCurrentIdleTrack(): void {
     return;
   }
 
+  const settings = getAudioSettings();
+  const volume = settings?.idle_volume ?? 100;
+
   state.activePriority = 'idle';
   state.currentIdleTrack = path.basename(filePath);
   state.idlePaused = false;
 
-  sendToAudioWindow(AUDIO_IPC.PLAY_IDLE, filePath);
+  sendToAudioWindow(AUDIO_IPC.PLAY_IDLE, filePath, volume);
 }
 
 /**

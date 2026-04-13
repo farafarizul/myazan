@@ -79,14 +79,28 @@
                 <button id="btn-azan-lain-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
               </div>
             </div>
+            <div class="tetapan-baris">
+              <label class="tetapan-label" for="azan-volume">🔈 Kelantangan Azan</label>
+              <div class="volume-kawalan">
+                <input type="range" id="azan-volume" class="volume-gelangsar" min="0" max="100" step="1" value="100" />
+                <span id="azan-volume-nilai" class="volume-nilai">100%</span>
+              </div>
+            </div>
           </div>
 
           <!-- Seksyen: Notifikasi Awal -->
           <div class="tetapan-seksyen">
             <h3 class="tetapan-seksyen-tajuk">🔔 Notifikasi Sebelum Waktu Solat</h3>
             <p class="info-teks" style="margin-bottom:12px;">
-              Tetapkan minit awal notifikasi dan pilih fail audio untuk setiap waktu.
+              Tetapkan minit awal notifikasi dan pilih fail audio untuk setiap waktu. Tetapkan 0 minit untuk mainkan tepat pada waktu solat.
             </p>
+            <div class="tetapan-baris">
+              <label class="tetapan-label" for="notifikasi-volume">🔈 Kelantangan Notifikasi</label>
+              <div class="volume-kawalan">
+                <input type="range" id="notifikasi-volume" class="volume-gelangsar" min="0" max="100" step="1" value="100" />
+                <span id="notifikasi-volume-nilai" class="volume-nilai">100%</span>
+              </div>
+            </div>
             <div id="notifikasi-senarai" class="notifikasi-grid">
               <!-- Diisi secara dinamik -->
             </div>
@@ -109,6 +123,13 @@
                 <input type="checkbox" id="idle-aktif" />
                 <span class="togol-gelangsar"></span>
               </label>
+            </div>
+            <div class="tetapan-baris">
+              <label class="tetapan-label" for="idle-volume">🔈 Kelantangan Idle</label>
+              <div class="volume-kawalan">
+                <input type="range" id="idle-volume" class="volume-gelangsar" min="0" max="100" step="1" value="100" />
+                <span id="idle-volume-nilai" class="volume-nilai">100%</span>
+              </div>
             </div>
           </div>
 

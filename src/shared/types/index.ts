@@ -72,6 +72,12 @@ export interface AppSettings {
   idleFolderPath: string | null;
   /** Sama ada audio idle diaktifkan. */
   idleEnabled: boolean;
+  /** Kelantangan player azan (0–100). */
+  azanVolume: number;
+  /** Kelantangan player notifikasi (0–100). */
+  notificationVolume: number;
+  /** Kelantangan player idle (0–100). */
+  idleVolume: number;
   /** Tetapan notifikasi untuk setiap waktu solat. */
   notificationSettings: NotificationSetting[];
 }
@@ -131,5 +137,8 @@ export interface SaveSettingsPayload {
   azanOtherFilePath?: string | null;
   idleFolderPath?: string | null;
   idleEnabled?: boolean;
+  azanVolume?: number;
+  notificationVolume?: number;
+  idleVolume?: number;
   notificationSettings?: NotificationSetting[];
 }
