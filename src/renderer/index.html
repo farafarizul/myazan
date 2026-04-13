@@ -488,13 +488,171 @@
            =================================================== -->
       <section id="page-tentang" class="page">
         <div class="page-content">
-          <div class="page-header">
-            <h2 class="page-header-title">Tentang myAzan</h2>
-            <p class="page-header-subtitle">Aplikasi utiliti waktu solat digital yang direka untuk membawa ketenangan ke ruang kerja moden anda.</p>
-          </div>
-          <div id="tentang-info">
-            <p class="info-teks">Memuatkan maklumat...</p>
-          </div>
+
+          <!-- Header -->
+          <header class="tentang-header">
+            <span class="tentang-header-label">Mengenai Projek</span>
+            <h2 class="tentang-header-title">Digital Sanctuary</h2>
+            <p class="tentang-header-desc">
+              myAzan bukan sekadar aplikasi; ia merupakan ruang tenang digital yang direka untuk
+              membawa kedamaian dan ketepatan dalam kehidupan harian seorang Muslim melalui
+              teknologi moden.
+            </p>
+          </header>
+
+          <!-- Bento Grid -->
+          <div class="tentang-grid">
+
+            <!-- Card: Profil Pembangun -->
+            <div class="tentang-card-dev">
+              <div class="tentang-dev-img-wrap">
+                <span class="material-symbols-outlined tentang-dev-avatar">person</span>
+                <div class="tentang-dev-img-overlay"></div>
+              </div>
+              <div class="tentang-dev-body">
+                <div>
+                  <h3 class="tentang-dev-name">Fara Farizul</h3>
+                  <p class="tentang-dev-role">Pembangun Utama</p>
+                </div>
+                <div class="tentang-dev-contacts">
+                  <div class="tentang-dev-contact-row">
+                    <span class="material-symbols-outlined">mail</span>
+                    <span>farxpeace@gmail.com</span>
+                  </div>
+                  <div class="tentang-dev-contact-row">
+                    <span class="material-symbols-outlined">call</span>
+                    <span>+60137974467</span>
+                  </div>
+                </div>
+                <p class="tentang-dev-quote">
+                  "Membina jambatan antara tradisi dan teknologi melalui reka bentuk yang berjiwa."
+                </p>
+              </div>
+            </div>
+
+            <!-- Card: Informasi Perisian -->
+            <div class="tentang-card-info">
+              <div>
+                <h3 class="tentang-card-info-title">Informasi Perisian</h3>
+                <div class="tentang-info-rows">
+                  <div class="tentang-info-row">
+                    <span class="tentang-info-label">Aplikasi</span>
+                    <span class="tentang-info-value">myAzan</span>
+                  </div>
+                  <div class="tentang-info-row">
+                    <span class="tentang-info-label">Versi</span>
+                    <span class="tentang-info-value" id="tentang-app-version">0.1.0</span>
+                  </div>
+                  <div class="tentang-info-row">
+                    <span class="tentang-info-label">Platform</span>
+                    <span class="tentang-info-value">Windows 10 / 11</span>
+                  </div>
+                  <div class="tentang-info-row">
+                    <span class="tentang-info-label">Status</span>
+                    <span class="tentang-info-badge">Proprietary</span>
+                  </div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined tentang-card-info-bg-icon">mosque</span>
+            </div>
+
+            <!-- Card: Ciri Utama -->
+            <div class="tentang-card-ciri">
+              <div class="tentang-card-ciri-header">
+                <div class="tentang-card-ciri-header-line"></div>
+                <h3 class="tentang-card-ciri-title">Ciri Utama</h3>
+              </div>
+              <div class="tentang-ciri-grid">
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">volume_up</span>
+                  <h4 class="tentang-ciri-name">Azan Automatik</h4>
+                  <p class="tentang-ciri-desc">Memainkan azan tepat pada waktunya mengikut zon JAKIM yang dipilih.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">notifications_active</span>
+                  <h4 class="tentang-ciri-name">Notifikasi Awal</h4>
+                  <p class="tentang-ciri-desc">Bunyi peringatan beberapa minit sebelum masuk waktu solat.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">auto_stories</span>
+                  <h4 class="tentang-ciri-name">Audio Idle</h4>
+                  <p class="tentang-ciri-desc">Lantunan al-Quran atau zikir berterusan semasa tiada audio lain dimainkan.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">cloud_off</span>
+                  <h4 class="tentang-ciri-name">Offline-First</h4>
+                  <p class="tentang-ciri-desc">Berfungsi sepenuhnya tanpa internet selepas data waktu solat tahunan tersimpan.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">travel_explore</span>
+                  <h4 class="tentang-ciri-name">58 Zon JAKIM</h4>
+                  <p class="tentang-ciri-desc">Sokongan penuh semua zon merangkumi 14 negeri seluruh Malaysia.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">storage</span>
+                  <h4 class="tentang-ciri-name">Simpanan Lokal</h4>
+                  <p class="tentang-ciri-desc">Data waktu solat disimpan dalam SQLite, tiada kebergantungan pada awan.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">event_repeat</span>
+                  <h4 class="tentang-ciri-name">Kitaran Tahunan</h4>
+                  <p class="tentang-ciri-desc">Auto muat turun data tahun baru pada Oktober–Disember secara senyap.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">tune</span>
+                  <h4 class="tentang-ciri-name">Kawalan Kelantangan</h4>
+                  <p class="tentang-ciri-desc">Kelantangan berasingan untuk azan, notifikasi, dan audio idle.</p>
+                </div>
+                <div class="tentang-ciri-item">
+                  <span class="material-symbols-outlined tentang-ciri-icon">translate</span>
+                  <h4 class="tentang-ciri-name">Bahasa Melayu</h4>
+                  <p class="tentang-ciri-desc">Semua UI, butang, dan mesej sepenuhnya dalam Bahasa Melayu.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Objektif Projek -->
+            <div class="tentang-card-objektif">
+              <div class="tentang-card-objektif-header">
+                <div class="tentang-card-objektif-header-line"></div>
+                <h3 class="tentang-card-objektif-title">Objektif Projek</h3>
+              </div>
+              <div class="tentang-objektif-grid">
+                <div class="tentang-objektif-item">
+                  <span class="material-symbols-outlined tentang-objektif-icon">center_focus_strong</span>
+                  <h4 class="tentang-objektif-name">Ketepatan Mutlak</h4>
+                  <p class="tentang-objektif-desc">
+                    Memastikan setiap waktu solat dikira dengan algoritma terkini yang selaras
+                    dengan JAKIM untuk ketenangan minda pengguna.
+                  </p>
+                </div>
+                <div class="tentang-objektif-item">
+                  <span class="material-symbols-outlined tentang-objektif-icon">spa</span>
+                  <h4 class="tentang-objektif-name">Pengalaman Serene</h4>
+                  <p class="tentang-objektif-desc">
+                    Mengutamakan reka bentuk minimalis yang mengurangkan gangguan visual,
+                    membolehkan fokus sepenuhnya kepada ibadah.
+                  </p>
+                </div>
+                <div class="tentang-objektif-item">
+                  <span class="material-symbols-outlined tentang-objektif-icon">devices</span>
+                  <h4 class="tentang-objektif-name">Integrasi Desktop</h4>
+                  <p class="tentang-objektif-desc">
+                    Membangunkan utiliti yang berfungsi secara harmoni dalam persekitaran kerja
+                    harian tanpa membebankan prestasi sistem.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /tentang-grid -->
+
+          <!-- Footer -->
+          <footer class="tentang-footer">
+            <span class="tentang-footer-copy">© 2025 Fara Farizul. Hak Cipta Terpelihara.</span>
+            <span class="tentang-footer-made">Dibuat dengan ♥ di Malaysia</span>
+          </footer>
+
         </div>
       </section>
 

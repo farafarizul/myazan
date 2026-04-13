@@ -1522,3 +1522,371 @@ a.about-contact-value:hover { color: var(--primary); text-decoration: underline;
   font-style: italic;
   font-size: 0.875rem;
 }
+
+/* ============================================================
+   Halaman Tentang — Bento Grid
+   ============================================================ */
+.tentang-header {
+  margin-bottom: 40px;
+}
+
+.tentang-header-label {
+  font-size: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.tentang-header-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 14px;
+}
+
+.tentang-header-desc {
+  font-size: 1rem;
+  color: var(--on-surface-variant);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* Bento grid layout */
+.tentang-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+/* Developer profile card */
+.tentang-card-dev {
+  grid-column: span 8;
+  background: var(--surface-container-lowest);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  box-shadow: var(--shadow-ambient);
+  transition: box-shadow 0.25s ease;
+}
+.tentang-card-dev:hover {
+  box-shadow: 0 12px 32px rgba(25, 28, 30, 0.10);
+}
+
+.tentang-dev-img-wrap {
+  width: 38%;
+  position: relative;
+  min-height: 220px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--primary-container) 0%, var(--primary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tentang-dev-avatar {
+  font-size: 80px;
+  color: var(--primary-fixed);
+  opacity: 0.7;
+}
+
+.tentang-dev-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,53,38,0.35) 0%, transparent 60%);
+}
+
+.tentang-dev-body {
+  flex: 1;
+  padding: 36px 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tentang-dev-name {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.tentang-dev-role {
+  font-size: var(--font-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+
+.tentang-dev-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.tentang-dev-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--on-surface-variant);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tentang-dev-contact-row .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--primary);
+  opacity: 0.7;
+}
+
+.tentang-dev-quote {
+  padding-top: 24px;
+  border-top: 1px solid var(--surface-container-high);
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+/* Software info card */
+.tentang-card-info {
+  grid-column: span 4;
+  background: linear-gradient(135deg, rgba(0,78,57,0.12) 0%, rgba(0,78,57,0.04) 100%);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,78,57,0.08);
+}
+
+.tentang-card-info-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
+}
+
+.tentang-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+}
+
+.tentang-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0,78,57,0.10);
+}
+.tentang-info-row:last-child {
+  border-bottom: none;
+}
+
+.tentang-info-label {
+  font-size: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+
+.tentang-info-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.tentang-info-badge {
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.tentang-card-info-bg-icon {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  font-size: 120px;
+  color: var(--primary);
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Ciri Utama card */
+.tentang-card-ciri {
+  grid-column: span 12;
+  background: var(--surface-container-low);
+  border-radius: var(--radius-xl);
+  padding: 36px 40px;
+}
+
+.tentang-card-ciri-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.tentang-card-ciri-header-line {
+  width: 40px;
+  height: 2px;
+  background: var(--primary);
+  flex-shrink: 0;
+}
+
+.tentang-card-ciri-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.01em;
+}
+
+.tentang-ciri-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px 32px;
+}
+
+.tentang-ciri-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tentang-ciri-icon {
+  font-size: 32px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+
+.tentang-ciri-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+.tentang-ciri-item:hover .tentang-ciri-name {
+  color: var(--primary);
+}
+
+.tentang-ciri-desc {
+  font-size: 0.8125rem;
+  color: var(--on-surface-variant);
+  line-height: 1.65;
+}
+
+/* Objektif Projek card */
+.tentang-card-objektif {
+  grid-column: span 12;
+  background: var(--surface-container-low);
+  border-radius: var(--radius-xl);
+  padding: 36px 40px;
+}
+
+.tentang-card-objektif-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.tentang-card-objektif-header-line {
+  width: 40px;
+  height: 2px;
+  background: var(--primary);
+  flex-shrink: 0;
+}
+
+.tentang-card-objektif-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.01em;
+}
+
+.tentang-objektif-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px 32px;
+}
+
+.tentang-objektif-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tentang-objektif-icon {
+  font-size: 36px;
+  color: var(--primary);
+  margin-bottom: 14px;
+  opacity: 0.85;
+}
+
+.tentang-objektif-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+.tentang-objektif-item:hover .tentang-objektif-name {
+  color: var(--primary);
+}
+
+.tentang-objektif-desc {
+  font-size: 0.8125rem;
+  color: var(--on-surface-variant);
+  line-height: 1.65;
+}
+
+/* Footer */
+.tentang-footer {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--surface-container-highest);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.tentang-footer-copy {
+  font-size: var(--font-label);
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.tentang-footer-made {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  opacity: 0.55;
+}
