@@ -79,7 +79,29 @@ function copyMigrations() {
 }
 
 /**
- * Copy static renderer assets (HTML, CSS) to dist/renderer/
+ * Recursively copy all files and subdirectories from src to dest.
+ * Silently returns if src does not exist.
+ * Used to copy self-hosted font assets (@fontsource/inter, material-symbols)
+ * into the dist/renderer/fonts directory during the build step.
+ * @param {string} src  - Source directory path.
+ * @param {string} dest - Destination directory path.
+ */
+function copyDir(src, dest) {
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+/**
+ * Copy static renderer assets (HTML, CSS, fonts) to dist/renderer/
  */
 function copyRendererAssets() {
   const srcDir = path.join(__dirname, '../src/renderer');
@@ -102,6 +124,9 @@ function copyRendererAssets() {
       fs.copyFileSync(srcFile, outFile);
     }
   }
+
+  // Copy self-hosted fonts
+  copyDir(path.join(srcDir, 'fonts'), path.join(outDir, 'fonts'));
 }
 
 async function build() {

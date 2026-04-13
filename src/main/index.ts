@@ -36,7 +36,7 @@ function createMainWindow(): void {
 }
 
 app.whenReady().then(async () => {
-  registerIpcHandlers();
+  registerIpcHandlers(() => mainWindow);
   await bootstrap();
   createMainWindow();
 

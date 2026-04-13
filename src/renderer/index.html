@@ -4,150 +4,465 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self';"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>myAzan</title>
     <link rel="stylesheet" href="styles/main.css" />
   </head>
   <body>
-    <div id="app">
-      <header class="app-header">
-        <h1 class="app-title">🕌 myAzan</h1>
-        <nav class="app-nav">
-          <button class="nav-btn active" data-page="utama">Utama</button>
-          <button class="nav-btn" data-page="tetapan">Tetapan</button>
-          <button class="nav-btn" data-page="tentang">Tentang</button>
-        </nav>
-      </header>
+    <!-- Top App Bar -->
+    <header class="top-bar">
+      <span class="top-bar-wordmark">myAzan</span>
+      <div class="top-bar-actions">
+        <button class="top-bar-btn" id="btn-wifi-status" title="Status Rangkaian" tabindex="-1">
+          <span class="material-symbols-outlined">wifi</span>
+        </button>
+        <button class="top-bar-btn" id="btn-audio-status" title="Status Audio" tabindex="-1">
+          <span class="material-symbols-outlined">graphic_eq</span>
+        </button>
+        <button class="top-bar-btn" id="btn-minimize" title="Minimumkan">
+          <span class="material-symbols-outlined">minimize</span>
+        </button>
+        <button class="top-bar-btn btn-close" id="btn-close" title="Tutup">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </header>
 
-      <main class="app-content">
-        <!-- Halaman Utama -->
-        <section id="page-utama" class="page active">
-          <div class="waktu-card">
-            <h2>Waktu Solat Hari Ini</h2>
-            <div id="waktu-solat-list" class="waktu-grid">
-              <p class="info-teks">Memuat data waktu solat...</p>
-            </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="material-symbols-outlined">mosque</span>
+        </div>
+        <div>
+          <div class="sidebar-brand-name">myAzan</div>
+          <div class="sidebar-brand-tag">Digital Sanctuary</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item nav-item-active" data-page="papan-pemuka">
+          <span class="material-symbols-outlined">dashboard</span>
+          Papan Pemuka
+        </button>
+        <button class="nav-item" data-page="tetapan">
+          <span class="material-symbols-outlined">settings</span>
+          Tetapan
+        </button>
+        <button class="nav-item" data-page="audio">
+          <span class="material-symbols-outlined">volume_up</span>
+          Audio
+        </button>
+        <button class="nav-item" data-page="tentang">
+          <span class="material-symbols-outlined">info</span>
+          Tentang
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-status-card">
+          <div class="sidebar-status-icon">
+            <span class="material-symbols-outlined">cloud_done</span>
           </div>
-          <div class="status-card">
-            <h2>Status Audio</h2>
-            <p id="status-audio" class="status-idle">Idle</p>
+          <div>
+            <div class="sidebar-status-label">Status</div>
+            <div class="sidebar-status-value" id="sidebar-status-value">Sistem Beroperasi</div>
           </div>
-        </section>
+        </div>
+      </div>
+    </aside>
 
-        <!-- Halaman Tetapan -->
-        <section id="page-tetapan" class="page">
-          <h2>Tetapan</h2>
+    <!-- Main Content -->
+    <main class="main-content">
 
-          <!-- Mesej status simpan -->
-          <div id="tetapan-status" class="tetapan-status" role="alert" aria-live="polite" hidden></div>
-
-          <!-- Seksyen: Pilih Zon -->
-          <div class="tetapan-seksyen">
-            <h3 class="tetapan-seksyen-tajuk">📍 Zon Waktu Solat</h3>
-            <div class="tetapan-baris">
-              <label class="tetapan-label" for="pilih-negeri">Negeri</label>
-              <select id="pilih-negeri" class="tetapan-select">
-                <option value="">-- Pilih Negeri --</option>
-              </select>
-            </div>
-            <div class="tetapan-baris">
-              <label class="tetapan-label" for="pilih-zon">Zon JAKIM</label>
-              <select id="pilih-zon" class="tetapan-select">
-                <option value="">-- Pilih Zon --</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Seksyen: Audio Azan -->
-          <div class="tetapan-seksyen">
-            <h3 class="tetapan-seksyen-tajuk">🔊 Fail Audio Azan</h3>
-            <div class="tetapan-baris">
-              <label class="tetapan-label">Azan Subuh</label>
-              <div class="tetapan-fail-pilih">
-                <span id="azan-subuh-nama" class="tetapan-fail-nama info-teks">Tiada fail dipilih</span>
-                <button id="btn-azan-subuh" class="tetapan-btn-pilih" type="button">Pilih Fail</button>
-                <button id="btn-azan-subuh-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
+      <!-- ===================================================
+           Halaman: Papan Pemuka
+           =================================================== -->
+      <section id="page-papan-pemuka" class="page active">
+        <div class="page-content">
+          <!-- Hero: clock + next prayer -->
+          <div class="dashboard-hero">
+            <div>
+              <p class="text-label text-muted" id="dashboard-zon-label">— Pilih Zon —</p>
+              <div class="dashboard-clock" id="dashboard-jam">00:00</div>
+              <div class="dashboard-date-row">
+                <span style="display:flex;align-items:center;gap:6px;">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <span id="dashboard-tarikh-masihi">—</span>
+                </span>
               </div>
             </div>
-            <div class="tetapan-baris">
-              <label class="tetapan-label">Azan Selain Subuh</label>
-              <div class="tetapan-fail-pilih">
-                <span id="azan-lain-nama" class="tetapan-fail-nama info-teks">Tiada fail dipilih</span>
-                <button id="btn-azan-lain" class="tetapan-btn-pilih" type="button">Pilih Fail</button>
-                <button id="btn-azan-lain-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
-              </div>
-            </div>
-            <div class="tetapan-baris">
-              <label class="tetapan-label" for="azan-volume">🔈 Kelantangan Azan</label>
-              <div class="volume-kawalan">
-                <input type="range" id="azan-volume" class="volume-gelangsar" min="0" max="100" step="1" value="100" />
-                <span id="azan-volume-nilai" class="volume-nilai">100%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Seksyen: Notifikasi Awal -->
-          <div class="tetapan-seksyen">
-            <h3 class="tetapan-seksyen-tajuk">🔔 Notifikasi Sebelum Waktu Solat</h3>
-            <p class="info-teks" style="margin-bottom:12px;">
-              Tetapkan minit awal notifikasi dan pilih fail audio untuk setiap waktu. Jika tetapkan 0 minit, notifikasi akan dimainkan tepat pada waktu solat.
-            </p>
-            <div class="tetapan-baris">
-              <label class="tetapan-label" for="notifikasi-volume">🔈 Kelantangan Notifikasi</label>
-              <div class="volume-kawalan">
-                <input type="range" id="notifikasi-volume" class="volume-gelangsar" min="0" max="100" step="1" value="100" />
-                <span id="notifikasi-volume-nilai" class="volume-nilai">100%</span>
-              </div>
-            </div>
-            <div id="notifikasi-senarai" class="notifikasi-grid">
-              <!-- Diisi secara dinamik -->
-            </div>
-          </div>
-
-          <!-- Seksyen: Audio Idle -->
-          <div class="tetapan-seksyen">
-            <h3 class="tetapan-seksyen-tajuk">🎵 Audio al-Quran / Zikir (Idle)</h3>
-            <div class="tetapan-baris">
-              <label class="tetapan-label">Folder Audio</label>
-              <div class="tetapan-fail-pilih">
-                <span id="idle-folder-nama" class="tetapan-fail-nama info-teks">Tiada folder dipilih</span>
-                <button id="btn-idle-folder" class="tetapan-btn-pilih" type="button">Pilih Folder</button>
-                <button id="btn-idle-folder-padam" class="tetapan-btn-padam" type="button" title="Padam">✕</button>
-              </div>
-            </div>
-            <div class="tetapan-baris">
-              <label class="tetapan-label" for="idle-aktif">Aktifkan Audio Idle</label>
-              <label class="tetapan-togol">
-                <input type="checkbox" id="idle-aktif" />
-                <span class="togol-gelangsar"></span>
-              </label>
-            </div>
-            <div class="tetapan-baris">
-              <label class="tetapan-label" for="idle-volume">🔈 Kelantangan Idle</label>
-              <div class="volume-kawalan">
-                <input type="range" id="idle-volume" class="volume-gelangsar" min="0" max="100" step="1" value="100" />
-                <span id="idle-volume-nilai" class="volume-nilai">100%</span>
+            <div class="next-prayer-card">
+              <div class="next-prayer-label" id="next-prayer-label">Seterusnya</div>
+              <div class="next-prayer-countdown" id="next-prayer-countdown">—</div>
+              <div class="next-prayer-bar">
+                <div class="next-prayer-bar-fill" id="next-prayer-bar-fill" style="width:0%"></div>
               </div>
             </div>
           </div>
 
-          <!-- Butang Simpan -->
-          <div class="tetapan-tindakan">
-            <button id="btn-simpan-tetapan" class="btn-utama" type="button">💾 Simpan Tetapan</button>
+          <!-- Audio status strip -->
+          <div class="audio-strip" id="audio-strip">
+            <div class="audio-strip-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div>
+                  <div style="font-size:1rem;font-weight:600;">Audio</div>
+                  <div class="text-muted" style="font-size:0.75rem;" id="audio-status-text">Idle</div>
+                </div>
+                <div style="width:36px;height:36px;border-radius:50%;background:rgba(164,242,209,0.3);display:flex;align-items:center;justify-content:center;">
+                  <span class="material-symbols-outlined icon-fill" style="color:var(--primary);font-size:20px;">graphic_eq</span>
+                </div>
+              </div>
+            </div>
+            <div class="audio-strip-card" style="grid-column:span 2;">
+              <div style="font-size:0.8125rem;font-weight:600;margin-bottom:8px;color:var(--on-surface-variant);">Waktu Solat Hari Ini</div>
+              <div id="waktu-solat-list" style="font-size:0.875rem;">
+                <p class="info-teks">Memuat data waktu solat...</p>
+              </div>
+            </div>
           </div>
-        </section>
 
-        <!-- Halaman Tentang -->
-        <section id="page-tentang" class="page">
-          <h2>Tentang Pembangun</h2>
+          <!-- Prayer schedule -->
+          <div class="prayer-schedule">
+            <div class="prayer-schedule-header">
+              <h3 style="font-size:1.1rem;font-weight:700;">Jadual Waktu Solat</h3>
+            </div>
+            <div id="prayer-schedule-rows">
+              <p class="info-teks">Memuat jadual...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================
+           Halaman: Tetapan
+           =================================================== -->
+      <section id="page-tetapan" class="page">
+        <div class="page-content">
+
+          <!-- Status alert -->
+          <div id="tetapan-status" class="alert" role="alert" aria-live="polite" hidden
+               style="margin-bottom:20px;"></div>
+
+          <!-- Hero banner -->
+          <div class="settings-hero">
+            <div class="settings-hero-title">Peribadikan Pengalaman Anda</div>
+            <p class="settings-hero-subtitle">Sesuaikan zon waktu, bunyi Azan, dan tetapan notifikasi untuk ketenangan rohani yang berterusan.</p>
+          </div>
+
+          <!-- Bento grid -->
+          <div class="settings-bento">
+
+            <!-- Zon & Lokasi (8 cols) -->
+            <div class="bento-card bento-8">
+              <div class="bento-card-header">
+                <span class="material-symbols-outlined">location_on</span>
+                <span class="bento-card-title">Zon &amp; Lokasi</span>
+              </div>
+              <div class="grid-2col">
+                <div class="form-row">
+                  <label class="form-label" for="pilih-negeri">Wilayah / Negeri</label>
+                  <select id="pilih-negeri" class="input-field">
+                    <option value="">-- Pilih Negeri --</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label class="form-label" for="pilih-zon">Zon JAKIM</label>
+                  <select id="pilih-zon" class="input-field">
+                    <option value="">-- Pilih Zon --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audio Azan (4 cols) -->
+            <div class="bento-card bento-4" style="justify-content:space-between;">
+              <div class="bento-card-header">
+                <span class="material-symbols-outlined">volume_up</span>
+                <span class="bento-card-title">Audio Azan</span>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Fail Dipilih</div>
+                <div style="font-size:0.8125rem;color:var(--on-surface-variant);padding:8px 0;"
+                     id="settings-azan-subuh-preview">Tiada fail</div>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Kelantangan Azan</label>
+                <div class="volume-row">
+                  <input type="range" id="azan-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                  <span id="azan-volume-nilai" class="volume-value">100%</span>
+                </div>
+              </div>
+              <button class="btn-primary w-full mt-3" id="btn-goto-audio" type="button"
+                      style="margin-top:auto;">
+                <span class="material-symbols-outlined">library_music</span>
+                Urus Audio
+              </button>
+            </div>
+
+            <!-- Notifikasi (7 cols) -->
+            <div class="bento-card bento-7">
+              <div class="bento-card-header" style="justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span class="material-symbols-outlined">notifications_active</span>
+                  <span class="bento-card-title">Pemberitahuan</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="form-label" style="margin:0;">Kelantangan</span>
+                  <input type="range" id="notifikasi-volume" class="volume-slider"
+                         min="0" max="100" step="1" value="100" style="width:80px;" />
+                  <span id="notifikasi-volume-nilai" class="volume-value">100%</span>
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-bottom:0;">
+                <p style="font-size:0.75rem;color:var(--on-surface-variant);margin-bottom:12px;">
+                  Tetapkan minit awal dan pilih fail audio untuk setiap waktu solat. Nilai 0 = tepat pada waktu.
+                </p>
+                <div id="notifikasi-senarai">
+                  <!-- Diisi secara dinamik -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Mod Idle (5 cols) -->
+            <div class="bento-card bento-5">
+              <div class="bento-card-header">
+                <span class="material-symbols-outlined">music_note</span>
+                <span class="bento-card-title">Audio Idle</span>
+              </div>
+
+              <div class="form-row">
+                <label class="form-label">Folder al-Quran / Zikir</label>
+                <div class="file-picker-row">
+                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--on-surface-variant);">folder</span>
+                  <span id="idle-folder-nama" class="file-picker-name info-teks">Tiada folder dipilih</span>
+                  <button id="btn-idle-folder" class="btn-icon" type="button" title="Pilih Folder">
+                    <span class="material-symbols-outlined">folder_open</span>
+                  </button>
+                  <button id="btn-idle-folder-padam" class="btn-icon" type="button" title="Padam">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-row" style="display:flex;align-items:center;justify-content:space-between;">
+                <label class="form-label" for="idle-aktif" style="margin:0;">Aktifkan Audio Idle</label>
+                <label class="toggle-wrap">
+                  <input type="checkbox" id="idle-aktif" />
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+
+              <div class="form-row">
+                <label class="form-label">Kelantangan Idle</label>
+                <div class="volume-row">
+                  <input type="range" id="idle-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                  <span id="idle-volume-nilai" class="volume-value">100%</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /settings-bento -->
+
+          <!-- Footer actions -->
+          <div class="settings-footer">
+            <div class="settings-footer-info">
+              <span class="material-symbols-outlined">cloud_done</span>
+              <span id="settings-last-saved">Tetapan belum disimpan.</span>
+            </div>
+            <div style="display:flex;gap:12px;">
+              <button id="btn-set-semula" class="btn-ghost" type="button">Set Semula</button>
+              <button id="btn-simpan-tetapan" class="btn-primary" type="button">
+                <span class="material-symbols-outlined">save</span>
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           Halaman: Audio
+           =================================================== -->
+      <section id="page-audio" class="page">
+        <div class="page-content">
+          <div class="page-header">
+            <h2 class="page-header-title">Tetapan Audio &amp; Notifikasi</h2>
+            <p class="page-header-subtitle">Konfigurasi suara azan dan sistem pemberitahuan waktu solat anda.</p>
+          </div>
+
+          <div class="audio-grid">
+            <!-- Fail Audio Azan -->
+            <div class="audio-file-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+                <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">audio_file</span>
+                <h3 style="font-size:1rem;font-weight:700;">Fail Audio Azan</h3>
+              </div>
+
+              <!-- Subuh -->
+              <div style="margin-bottom:20px;">
+                <div style="margin-bottom:8px;">
+                  <div style="font-weight:700;font-size:0.875rem;">Waktu Subuh</div>
+                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Audio khas untuk azan Subuh</div>
+                </div>
+                <div id="audio-subuh-preview" class="audio-file-preview">
+                  <div class="audio-play-icon">
+                    <span class="material-symbols-outlined">music_note</span>
+                  </div>
+                  <div>
+                    <div class="audio-file-name" id="audio-subuh-nama">Tiada fail dipilih</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button id="btn-azan-subuh" class="btn-primary flex-1" type="button">
+                    <span class="material-symbols-outlined">upload</span>
+                    Pilih Fail
+                  </button>
+                  <button id="btn-azan-subuh-padam" class="btn-icon" type="button" title="Padam">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Selain Subuh -->
+              <div>
+                <div style="margin-bottom:8px;">
+                  <div style="font-weight:700;font-size:0.875rem;">Waktu-waktu Lain</div>
+                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Zohor, Asar, Maghrib &amp; Isyak</div>
+                </div>
+                <div id="audio-lain-preview" class="audio-file-preview">
+                  <div class="audio-play-icon">
+                    <span class="material-symbols-outlined">music_note</span>
+                  </div>
+                  <div>
+                    <div class="audio-file-name" id="azan-lain-nama">Tiada fail dipilih</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button id="btn-azan-lain" class="btn-primary flex-1" type="button">
+                    <span class="material-symbols-outlined">upload</span>
+                    Pilih Fail
+                  </button>
+                  <button id="btn-azan-lain-padam" class="btn-icon" type="button" title="Padam">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audio Idle -->
+            <div class="audio-file-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+                <span class="material-symbols-outlined icon-fill" style="color:var(--secondary);">library_music</span>
+                <h3 style="font-size:1rem;font-weight:700;">Audio Latar (Idle)</h3>
+              </div>
+
+              <p style="font-size:0.875rem;color:var(--on-surface-variant);margin-bottom:16px;">
+                Mainkan bacaan Al-Quran atau Zikir secara automatik di antara waktu solat.
+              </p>
+
+              <div style="margin-bottom:16px;">
+                <label class="form-label">Folder Audio</label>
+                <div class="file-picker-row" style="margin-bottom:8px;">
+                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--on-surface-variant);">folder</span>
+                  <span id="audio-idle-folder-nama" class="file-picker-name info-teks">Tiada folder dipilih</span>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button id="audio-btn-idle-folder" class="btn-secondary flex-1" type="button">
+                    <span class="material-symbols-outlined">folder_open</span>
+                    Pilih Folder
+                  </button>
+                  <button id="audio-btn-idle-folder-padam" class="btn-icon" type="button" title="Padam">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;
+                          background:var(--surface-container-low);border-radius:var(--radius-lg);margin-bottom:12px;">
+                <div>
+                  <div style="font-size:0.875rem;font-weight:600;">Aktifkan Audio Idle</div>
+                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Main secara automatik semasa idle</div>
+                </div>
+                <label class="toggle-wrap">
+                  <input type="checkbox" id="audio-idle-aktif" />
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+
+              <div>
+                <label class="form-label">Kelantangan Idle</label>
+                <div class="volume-row">
+                  <input type="range" id="audio-idle-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                  <span id="audio-idle-volume-nilai" class="volume-value">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Volume master card -->
+          <div class="audio-volume-card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+              <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">tune</span>
+              <h3 style="font-size:1rem;font-weight:700;">Kawalan Kelantangan</h3>
+            </div>
+            <div class="volume-item">
+              <span class="material-symbols-outlined" style="color:var(--primary);font-size:20px;">mosque</span>
+              <span class="volume-item-label">Azan</span>
+              <div class="volume-row flex-1">
+                <input type="range" id="audio-azan-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="audio-azan-volume-nilai" class="volume-value">100%</span>
+              </div>
+            </div>
+            <div class="volume-item">
+              <span class="material-symbols-outlined" style="color:var(--primary);font-size:20px;">notifications</span>
+              <span class="volume-item-label">Notifikasi</span>
+              <div class="volume-row flex-1">
+                <input type="range" id="audio-notifikasi-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="audio-notifikasi-volume-nilai" class="volume-value">100%</span>
+              </div>
+            </div>
+            <div class="volume-item">
+              <span class="material-symbols-outlined" style="color:var(--secondary);font-size:20px;">library_music</span>
+              <span class="volume-item-label">Idle</span>
+              <div class="volume-row flex-1">
+                <input type="range" id="audio-idle-volume2" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="audio-idle-volume2-nilai" class="volume-value">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <div style="display:flex;justify-content:flex-end;margin-top:24px;">
+            <button id="btn-simpan-audio" class="btn-primary" type="button">
+              <span class="material-symbols-outlined">save</span>
+              Simpan Tetapan Audio
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           Halaman: Tentang
+           =================================================== -->
+      <section id="page-tentang" class="page">
+        <div class="page-content">
+          <div class="page-header">
+            <h2 class="page-header-title">Tentang myAzan</h2>
+            <p class="page-header-subtitle">Aplikasi utiliti waktu solat digital yang direka untuk membawa ketenangan ke ruang kerja moden anda.</p>
+          </div>
           <div id="tentang-info">
             <p class="info-teks">Memuatkan maklumat...</p>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+
+    </main><!-- /main-content -->
 
     <script src="main.js"></script>
   </body>

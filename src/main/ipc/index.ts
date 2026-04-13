@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, BrowserWindow } from 'electron';
 import { IPC_CHANNELS } from '../../shared/constants';
 import {
   AppInfo,
@@ -20,8 +20,9 @@ import { getPlaybackStatus, applySettingsChange } from '../services/audio';
 /**
  * Daftarkan semua IPC handler untuk komunikasi renderer ↔ main.
  * Hanya channel yang disenaraikan di IPC_CHANNELS dibenarkan.
+ * @param getMainWindow - Fungsi yang mengembalikan tetingkap utama aplikasi.
  */
-export function registerIpcHandlers(): void {
+export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): void {
   ipcMain.handle(IPC_CHANNELS.GET_APP_INFO, (): AppInfo => {
     return {
       name: APP_NAME,
@@ -151,5 +152,19 @@ export function registerIpcHandlers(): void {
    */
   ipcMain.handle(IPC_CHANNELS.GET_PLAYBACK_STATUS, () => {
     return getPlaybackStatus();
+  });
+
+  /**
+   * Minimumkan tetingkap utama.
+   */
+  ipcMain.handle(IPC_CHANNELS.WINDOW_MINIMIZE, () => {
+    getMainWindow()?.minimize();
+  });
+
+  /**
+   * Tutup tetingkap utama.
+   */
+  ipcMain.handle(IPC_CHANNELS.WINDOW_CLOSE, () => {
+    getMainWindow()?.close();
   });
 }
