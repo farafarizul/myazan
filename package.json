@@ -40,6 +40,9 @@
     "directories": {
       "output": "dist-build"
     },
+    "toolsets": {
+      "winCodeSign": "1.1.0"
+    },
     "win": {
       "icon": "src/assets/icons/icon.ico",
       "target": [
