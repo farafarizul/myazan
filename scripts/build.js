@@ -34,6 +34,19 @@ const preloadConfig = {
 };
 
 /** @type {import('esbuild').BuildOptions} */
+const audioWindowPreloadConfig = {
+  entryPoints: [path.join(__dirname, '../src/preload/audio-window.ts')],
+  bundle: true,
+  platform: 'node',
+  target: 'node20',
+  format: 'cjs',
+  outfile: path.join(__dirname, '../dist/preload/audio-window.js'),
+  external: ['electron'],
+  sourcemap: true,
+  tsconfig: path.join(__dirname, '../tsconfig.json'),
+};
+
+/** @type {import('esbuild').BuildOptions} */
 const rendererConfig = {
   entryPoints: [path.join(__dirname, '../src/renderer/main.ts')],
   bundle: true,
@@ -76,7 +89,7 @@ function copyRendererAssets() {
     fs.mkdirSync(outDir, { recursive: true });
   }
 
-  const staticFiles = ['index.html', 'styles/main.css'];
+  const staticFiles = ['index.html', 'audio.html', 'styles/main.css'];
   for (const file of staticFiles) {
     const srcFile = path.join(srcDir, file);
     const outFile = path.join(outDir, file);
@@ -95,11 +108,13 @@ async function build() {
   if (isWatch) {
     const mainCtx = await esbuild.context(mainConfig);
     const preloadCtx = await esbuild.context(preloadConfig);
+    const audioWindowPreloadCtx = await esbuild.context(audioWindowPreloadConfig);
     const rendererCtx = await esbuild.context(rendererConfig);
 
     await Promise.all([
       mainCtx.watch(),
       preloadCtx.watch(),
+      audioWindowPreloadCtx.watch(),
       rendererCtx.watch(),
     ]);
 
@@ -110,6 +125,7 @@ async function build() {
     await Promise.all([
       esbuild.build(mainConfig),
       esbuild.build(preloadConfig),
+      esbuild.build(audioWindowPreloadConfig),
       esbuild.build(rendererConfig),
     ]);
 

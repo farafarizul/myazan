@@ -8,6 +8,7 @@ import type {
   SyncPrayerTimesPayload,
   SyncResult,
   PrayerTimeForDate,
+  PlaybackStatus,
 } from '../shared/types';
 
 /**
@@ -65,6 +66,23 @@ contextBridge.exposeInMainWorld('myAzan', {
   ): Promise<PrayerTimeForDate | null> =>
     ipcRenderer.invoke(IPC_CHANNELS.GET_PRAYER_TIMES_FOR_DATE, zoneCode, date),
 
-  // TODO: Fasa 4 — selectAudioFile, selectAudioFolder
-  // TODO: Fasa 4 — getPlaybackStatus
+  /**
+   * Buka dialog sistem untuk pilih fail audio (MP3/WAV/OGG/M4A).
+   * Pulangkan laluan fail atau null jika pengguna membatal.
+   */
+  selectAudioFile: (): Promise<string | null> =>
+    ipcRenderer.invoke(IPC_CHANNELS.SELECT_AUDIO_FILE),
+
+  /**
+   * Buka dialog sistem untuk pilih folder audio idle (al-Quran / zikir).
+   * Pulangkan laluan folder atau null jika pengguna membatal.
+   */
+  selectAudioFolder: (): Promise<string | null> =>
+    ipcRenderer.invoke(IPC_CHANNELS.SELECT_AUDIO_FOLDER),
+
+  /**
+   * Dapatkan status playback audio semasa.
+   */
+  getPlaybackStatus: (): Promise<PlaybackStatus> =>
+    ipcRenderer.invoke(IPC_CHANNELS.GET_PLAYBACK_STATUS),
 });

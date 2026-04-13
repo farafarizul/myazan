@@ -4,6 +4,7 @@ import { bootstrap } from './bootstrap';
 import { registerIpcHandlers } from './ipc';
 import { closeDatabase } from './database';
 import { stopScheduler } from './services/scheduler';
+import { stopAudioEngine } from './services/audio';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -53,6 +54,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  stopAudioEngine();
   stopScheduler();
   closeDatabase();
 });

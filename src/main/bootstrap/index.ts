@@ -3,6 +3,7 @@ import { openDatabase, runMigrations } from '../database';
 import { getActiveZoneCode } from '../services/settings';
 import { syncPrayerTimesForZone, PrayerTimeSyncError } from '../services/prayer-time';
 import { startScheduler } from '../services/scheduler';
+import { startAudioEngine } from '../services/audio';
 
 /**
  * Bootstrap aplikasi semasa startup.
@@ -41,7 +42,8 @@ export async function bootstrap(): Promise<void> {
   // TODO: Fasa 3 — mulakan scheduler
   startScheduler();
 
-  // TODO: Fasa 4 — mulakan audio engine
+  // Fasa 4 — mulakan audio engine
+  startAudioEngine();
 
   console.log('[bootstrap] Selesai.');
 }
