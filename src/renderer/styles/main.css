@@ -924,10 +924,10 @@ input, select, textarea { font-family: inherit; }
   box-shadow: 0 4px 12px rgba(0, 53, 38, 0.3);
 }
 
-.db-prayer-card.db-prayer-active .db-prayer-card-name { color: var(--primary); }
+.db-prayer-card.db-prayer-active .db-prayer-card-name { color: cyan; }
 .db-prayer-card.db-prayer-active .db-prayer-card-time {
   font-size: 1.5rem;
-  color: var(--on-primary-container);
+  color: cornsilk;
 }
 
 /* CURRENT (just passed, most recent) prayer */
