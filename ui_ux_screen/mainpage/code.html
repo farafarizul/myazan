@@ -3,9 +3,8 @@
 <html lang="ms"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>myAzan - Digital Sanctuary</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -14,53 +13,57 @@
         theme: {
           extend: {
             "colors": {
-                    "on-primary-fixed": "#002116",
-                    "error-container": "#ffdad6",
-                    "on-secondary-container": "#57657a",
-                    "surface-variant": "#e0e3e5",
-                    "on-surface-variant": "#404944",
-                    "on-primary": "#ffffff",
-                    "primary-fixed-dim": "#8bd6b6",
-                    "on-error": "#ffffff",
-                    "on-tertiary-container": "#31c98f",
-                    "on-background": "#191c1e",
-                    "secondary-container": "#d5e3fc",
-                    "surface-dim": "#d8dadc",
-                    "surface-container-highest": "#e0e3e5",
-                    "primary": "#003526",
-                    "on-secondary-fixed-variant": "#3a485b",
-                    "inverse-primary": "#8bd6b6",
-                    "background": "#f7f9fb",
-                    "on-secondary-fixed": "#0d1c2e",
-                    "on-tertiary-fixed": "#002113",
-                    "tertiary-fixed": "#6ffbbe",
-                    "surface": "#f7f9fb",
-                    "outline": "#707974",
-                    "error": "#ba1a1a",
-                    "on-error-container": "#93000a",
-                    "on-tertiary": "#ffffff",
-                    "primary-container": "#004e39",
-                    "primary-fixed": "#a6f2d1",
+                    "on-primary-container": "#005a44",
+                    "inverse-primary": "#88fed4",
+                    "tertiary-dim": "#794700",
+                    "tertiary-container": "#fcaa4a",
+                    "surface-tint": "#006c52",
+                    "surface-container-high": "#bef3e6",
+                    "primary-fixed-dim": "#6ee4bb",
+                    "secondary-dim": "#6b4d26",
+                    "on-tertiary-fixed-variant": "#603800",
+                    "secondary": "#795931",
+                    "error": "#ac3434",
+                    "primary-dim": "#005f48",
+                    "on-primary": "#e5fff2",
+                    "on-primary-fixed-variant": "#00644c",
+                    "on-surface": "#003a31",
+                    "error-container": "#f56965",
+                    "on-secondary-fixed": "#553a14",
+                    "on-secondary": "#fff7f3",
+                    "inverse-on-surface": "#84a39b",
+                    "outline": "#4b8579",
+                    "on-secondary-container": "#6a4c25",
+                    "secondary-fixed": "#ffddb7",
+                    "on-tertiary-container": "#543000",
+                    "error-dim": "#70030f",
+                    "on-secondary-fixed-variant": "#75562e",
+                    "on-error": "#fff7f6",
+                    "outline-variant": "#82bdb0",
+                    "inverse-surface": "#00110e",
+                    "surface-dim": "#a3e7d7",
+                    "primary": "#006c52",
+                    "tertiary-fixed": "#fcaa4a",
+                    "on-tertiary-fixed": "#361d00",
+                    "secondary-container": "#ffddb7",
+                    "surface-container-highest": "#b2efe0",
+                    "on-surface-variant": "#2e695d",
+                    "on-primary-fixed": "#004533",
+                    "on-error-container": "#65000b",
+                    "primary-fixed": "#7cf2c9",
+                    "surface-container-low": "#d5fcf1",
+                    "primary-container": "#7cf2c9",
+                    "surface": "#e5fff7",
+                    "on-tertiary": "#fff7f3",
                     "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "tertiary": "#003623",
-                    "secondary-fixed-dim": "#b9c7df",
-                    "outline-variant": "#bfc9c3",
-                    "tertiary-fixed-dim": "#4edea3",
-                    "on-tertiary-fixed-variant": "#005236",
-                    "surface-container-low": "#f2f4f6",
-                    "on-primary-fixed-variant": "#00513b",
-                    "surface-tint": "#1b6b51",
-                    "inverse-surface": "#2d3133",
-                    "on-primary-container": "#76c0a1",
-                    "surface-container": "#eceef0",
-                    "on-surface": "#191c1e",
-                    "surface-bright": "#f7f9fb",
-                    "inverse-on-surface": "#eff1f3",
-                    "secondary": "#515f74",
-                    "secondary-fixed": "#d5e3fc",
-                    "surface-container-high": "#e6e8ea",
-                    "tertiary-container": "#004f34"
+                    "surface-variant": "#b2efe0",
+                    "surface-bright": "#e5fff7",
+                    "surface-container": "#c9f7eb",
+                    "background": "#e5fff7",
+                    "tertiary": "#8a5200",
+                    "secondary-fixed-dim": "#f8cd9b",
+                    "on-background": "#003a31",
+                    "tertiary-fixed-dim": "#ec9d3e"
             },
             "borderRadius": {
                     "DEFAULT": "0.125rem",
@@ -71,244 +74,224 @@
             "fontFamily": {
                     "headline": ["Inter"],
                     "body": ["Inter"],
-                    "label": ["Inter"]
+                    "label": ["Inter"],
+                    "serif": ["Playfair Display"]
             }
           },
         },
       }
     </script>
 <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .bg-spiritual {
+            background: radial-gradient(circle at top right, #e5fff7 0%, #c9f7eb 40%, #bef3e6 100%);
+        }
+        .prayer-ring {
+            box-shadow: 0 0 15px rgba(0, 153, 117, 0.4);
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
-        .drag-region { -webkit-app-region: drag; }
-        .no-drag { -webkit-app-region: no-drag; }
-        .glass-effect {
-            backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.7);
-        }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
-<header class="flex justify-between items-center w-full px-4 h-10 drag-region bg-emerald-50 dark:bg-slate-950 fixed top-0 z-50">
-<div class="flex items-center gap-2">
-<span class="text-sm font-black text-emerald-900 dark:text-emerald-100 uppercase tracking-wider font-inter">myAzan</span>
+<body class="bg-spiritual min-h-screen font-body text-on-surface">
+<!-- TopNavBar Cluster -->
+<nav class="flex justify-end items-center px-4 w-full h-10 border-b border-emerald-900/5 bg-emerald-50 dark:bg-neutral-900 fixed top-0 z-50">
+<div class="flex items-center gap-6">
+<span class="text-emerald-700/50 hover:bg-red-500/10 hover:text-red-600 transition-all duration-200 cursor-pointer material-symbols-outlined" data-icon="remove">remove</span>
+<span class="text-emerald-700/50 hover:bg-red-500/10 hover:text-red-600 transition-all duration-200 cursor-pointer material-symbols-outlined" data-icon="close">close</span>
 </div>
-<div class="flex items-center no-drag">
-<button class="w-10 h-10 flex items-center justify-center hover:bg-red-500/10 dark:hover:bg-red-500/20 text-slate-400">
-<span class="material-symbols-outlined text-[18px]">wifi</span>
-</button>
-<button class="w-10 h-10 flex items-center justify-center hover:bg-red-500/10 dark:hover:bg-red-500/20 text-slate-400">
-<span class="material-symbols-outlined text-[18px]">graphic_eq</span>
-</button>
-<button class="w-10 h-10 flex items-center justify-center hover:bg-red-500/10 dark:hover:bg-red-500/20 text-slate-400">
-<span class="material-symbols-outlined text-[18px]">minimize</span>
-</button>
-<button class="w-10 h-10 flex items-center justify-center hover:bg-red-500/10 dark:hover:bg-red-500/20 text-slate-400">
-<span class="material-symbols-outlined text-[18px]">rectangle</span>
-</button>
-<button class="w-10 h-10 flex items-center justify-center hover:bg-red-600 hover:text-white text-slate-400 transition-colors">
-<span class="material-symbols-outlined text-[18px]">close</span>
-</button>
-</div>
-</header>
-<div class="flex min-h-screen pt-10">
-<aside class="fixed left-0 top-10 h-[calc(100vh-40px)] w-64 flex flex-col bg-emerald-50/70 dark:bg-slate-900/70 backdrop-blur-xl border-r border-emerald-900/5 z-40">
-<div class="p-6">
-<div class="flex items-center gap-3 mb-8">
-<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden">
-<img alt="myAzan Logo" class="w-full h-full object-cover" data-alt="abstract geometric Islamic pattern with deep emerald green and gold accents, professional clean logo style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFOWn2_ByL62vo-KmYbTbFFBO4HYl355jNM4jFUKyd-iYsFWoHaGFlsPSnNRT0FHaBGMZCZ4xOkjOWCQ7jtAOr38VtqJR8xcERUUlpejqk2j7WzOvHrE-RSSJxpA0eKYbj1CnX_3m6KKACi31qXQgyc3JzrbfUKRsSioPvMovFb5UUuHyMmYDJ5Cn7ckJUazEO5441EWPX0nbzHLYrxcAGJSkHlQn-eGJKIrmBQWywQx0ZjpIocqKiS7wseACkycBRLqqDtf5eHBxI"/>
+</nav>
+<!-- SideNavBar (The Anchor) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 bg-emerald-950/80 backdrop-blur-xl h-screen w-64 border-r-0 shadow-2xl z-40">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-400/20">
+<span class="material-symbols-outlined text-emerald-950" style="font-variation-settings: 'FILL' 1;">mosque</span>
 </div>
 <div>
-<h1 class="text-lg font-bold text-emerald-950 dark:text-emerald-50 leading-tight">myAzan</h1>
-<p class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-medium">Digital Sanctuary</p>
+<h1 class="text-emerald-50 font-bold tracking-widest uppercase text-lg leading-none">myAzan</h1>
+<p class="text-emerald-400/60 text-[10px] uppercase tracking-widest">Digital Sanctuary</p>
 </div>
 </div>
-<nav class="space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-900 dark:text-emerald-100 rounded-lg font-semibold transition-transform duration-200 active:opacity-80 scale-98" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="text-sm antialiased font-inter">Papan Pemuka</span>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-emerald-800/50 text-emerald-50 rounded-lg mx-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-medium">Papan Pemuka</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="text-sm antialiased font-inter">Tetapan</span>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-200/60 hover:text-emerald-50 hover:bg-emerald-800/30 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-medium">Tetapan</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors" href="#">
-<span class="material-symbols-outlined">volume_up</span>
-<span class="text-sm antialiased font-inter">Audio</span>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-200/60 hover:text-emerald-50 hover:bg-emerald-800/30 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="volume_up">volume_up</span>
+<span class="font-medium">Audio</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors" href="#">
-<span class="material-symbols-outlined">info</span>
-<span class="text-sm antialiased font-inter">Tentang</span>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-200/60 hover:text-emerald-50 hover:bg-emerald-800/30 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-medium">Tentang</span>
 </a>
 </nav>
-</div>
-<div class="mt-auto p-6">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-colors" href="#">
-<span class="material-symbols-outlined">help_outline</span>
-<span class="text-sm antialiased font-inter">Bantuan</span>
-</a>
+<div class="px-4 mt-auto">
+<button class="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-emerald-950 font-bold tracking-wide uppercase text-sm shadow-xl shadow-emerald-900/40 hover:brightness-110 transition-all active:scale-95">
+                Mula Azan
+            </button>
 </div>
 </aside>
-<main class="flex-1 ml-64 p-8 lg:p-12 overflow-y-auto">
-<div class="max-w-6xl mx-auto">
-<section class="mb-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-<div class="lg:col-span-8">
-<p class="label-md uppercase tracking-widest text-on-surface-variant mb-2">Kuala Lumpur, Malaysia</p>
-<h2 class="text-[5rem] font-extrabold leading-none text-primary tracking-tighter mb-4">15:42</h2>
-<div class="flex items-center gap-6 text-on-surface-variant">
+<!-- Main Content Area -->
+<main class="ml-64 pt-10 min-h-screen relative overflow-hidden">
+<!-- Background Imagery -->
+<div class="absolute inset-0 z-0 opacity-10 pointer-events-none">
+<img alt="" class="w-full h-full object-cover" data-alt="minimalist architectural photo of a modern mosque dome with clean geometric lines against a soft morning sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQC7G5EztaD4mpkigzs8x0b0gyjy1Jm1fvR8s7DAoL6wx4pdv5oYskQLos59HODRVWxOFJLZqFjmLzWv8FAfRjBvo5rT0R0efBfmi4mabuHMR7OtEBUJRPa0THGamOYyTLqmQvUqLTyDjmaMTtfJPoDxES9iBl12Y13QQFmJmNz9TYop_Y1UgT7NJfl57jElRQC74uqmBKrp7oSxmo6HXmEpK6eDrM_lJPC4RIGSiBFfPvlLOcAHTrbl7s5g-4amCwYDbCMtGDJitB"/>
+</div>
+<!-- Sleek Minimal Countdown Bar -->
+<div class="w-full h-1 bg-surface-container-high relative overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary w-[65%] transition-all duration-1000 shadow-[0_0_8px_rgba(0,108,82,0.5)]"></div>
+</div>
+<div class="flex justify-between items-center px-10 py-3 glass-panel border-b-0">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">calendar_today</span>
-<span class="text-sm font-medium">12 Syaaban 1445H</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">Seterusnya: Asar</span>
 </div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">event</span>
-<span class="text-sm font-medium">22 Februari 2024</span>
+<div class="text-xs font-medium text-primary">
+                01:42:15 berbaki
+            </div>
+</div>
+<div class="max-w-6xl mx-auto px-10 py-12 relative z-10">
+<!-- Hero Section: Central Clock -->
+<section class="text-center mb-16">
+<div class="inline-block relative">
+<p class="text-label-md font-bold uppercase tracking-[0.4em] text-on-surface-variant mb-4">Kuala Lumpur, SGR01</p>
+<h2 class="text-[9rem] font-serif leading-none text-primary-dim tracking-tighter">13:42</h2>
+<p class="text-xl font-light text-secondary italic mt-4">Khamis, 24 Syaaban 1445H</p>
+</div>
+</section>
+<!-- Bento Prayer Grid -->
+<section class="grid grid-cols-4 gap-6 mb-16">
+<!-- Imsak -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="wb_twilight">wb_twilight</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Imsak</p>
+<p class="text-xl font-headline font-semibold">05:52</p>
 </div>
 </div>
+<!-- Subuh -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="bedtime">bedtime</span>
 </div>
-<div class="lg:col-span-4 bg-primary-container p-8 rounded-xl text-on-primary-container relative overflow-hidden">
-<div class="relative z-10">
-<p class="text-xs uppercase tracking-[0.2em] opacity-80 mb-1">Seterusnya: Asar</p>
-<h3 class="text-4xl font-bold mb-4">00:24:18</h3>
-<div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
-<div class="bg-primary-fixed h-full w-3/4"></div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Subuh</p>
+<p class="text-xl font-headline font-semibold">06:02</p>
 </div>
 </div>
-<div class="absolute -right-8 -bottom-8 opacity-10">
-<span class="material-symbols-outlined text-[160px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<!-- Syuruk -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="wb_sunny">wb_sunny</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Syuruk</p>
+<p class="text-xl font-headline font-semibold">07:18</p>
+</div>
+</div>
+<!-- Zohor -->
+<div class="glass-panel p-6 rounded-xl border-primary bg-primary-container/20 flex flex-col items-center justify-center gap-4 prayer-ring scale-105 shadow-xl transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center bg-primary text-on-primary">
+<span class="material-symbols-outlined" data-icon="light_mode" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-primary">Zohor</p>
+<p class="text-2xl font-headline font-bold text-on-primary-container">13:24</p>
+</div>
+</div>
+<!-- Asar -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300 border-l-4 border-l-tertiary-container">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-tertiary group-hover:text-tertiary transition-colors">
+<span class="material-symbols-outlined" data-icon="partly_cloudy_day">partly_cloudy_day</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Asar</p>
+<p class="text-xl font-headline font-semibold">16:38</p>
+</div>
+</div>
+<!-- Maghrib -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="wb_twilight">wb_twilight</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Maghrib</p>
+<p class="text-xl font-headline font-semibold">19:25</p>
+</div>
+</div>
+<!-- Isyak -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Isyak</p>
+<p class="text-xl font-headline font-semibold">20:34</p>
+</div>
+</div>
+<!-- Dhuha -->
+<div class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:bg-white/80 transition-all duration-300">
+<div class="w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/30 text-on-surface-variant group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="flare">flare</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Dhuha</p>
+<p class="text-xl font-headline font-semibold">07:54</p>
 </div>
 </div>
 </section>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-<div class="bg-surface-container-low p-6 rounded-xl border-l-4 border-primary">
-<div class="flex justify-between items-start mb-8">
-<div>
-<h4 class="text-lg font-bold text-primary">Zohor</h4>
-<p class="text-xs text-on-surface-variant">Sedang Berlangsung</p>
+<!-- Bottom Control Cluster (Audio & Status) -->
+<div class="grid grid-cols-3 gap-8">
+<!-- Audio Status Panel -->
+<div class="col-span-2 glass-panel rounded-2xl p-8 flex items-center gap-10">
+<div class="relative w-20 h-20 rounded-full flex items-center justify-center bg-primary-container text-primary">
+<span class="material-symbols-outlined text-4xl" data-icon="equalizer" style="font-variation-settings: 'FILL' 1;">equalizer</span>
+<div class="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-[spin_3s_linear_infinite]"></div>
 </div>
-<span class="text-2xl font-black text-primary">13:24</span>
-</div>
-<div class="flex gap-1">
-<div class="h-1 flex-1 bg-primary rounded-full"></div>
-<div class="h-1 flex-1 bg-primary rounded-full"></div>
-<div class="h-1 flex-1 bg-primary/20 rounded-full"></div>
-<div class="h-1 flex-1 bg-primary/20 rounded-full"></div>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<h4 class="text-lg font-medium text-on-surface">Audio</h4>
-<p class="text-xs text-on-surface-variant">Sedang Dimainkan: Al-Quran</p>
-</div>
-<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">graphic_eq</span>
+<div class="flex-1">
+<h3 class="text-lg font-bold text-primary mb-1">Audio Sedang Aktif</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Peringatan automatik diaktifkan untuk semua waktu solat. Menggunakan audio: <span class="font-semibold text-secondary">Azan Makkah (Syeikh Ali Ahmed Mulla)</span></p>
+<div class="mt-4 flex gap-4">
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary text-xs font-bold uppercase tracking-wider hover:shadow-lg transition-shadow">Uji Suara</button>
+<button class="px-6 py-2 rounded-full border border-outline text-on-surface-variant text-xs font-bold uppercase tracking-wider hover:bg-white/50 transition-colors">Tetapan Audio</button>
 </div>
 </div>
-<div class="flex items-center gap-4 mt-6">
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">skip_previous</button>
-<button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined">pause</span>
+</div>
+<!-- Secondary Info: Qibla & Mosque -->
+<div class="glass-panel rounded-2xl p-8 flex flex-col justify-between">
+<div class="flex items-center justify-between mb-4">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Kiblat</span>
+<span class="material-symbols-outlined text-tertiary" data-icon="explore">explore</span>
+</div>
+<div class="flex items-end gap-2 mb-6">
+<span class="text-4xl font-serif text-primary-dim">292.4°</span>
+<span class="text-sm text-secondary mb-1">Utara</span>
+</div>
+<button class="text-left group flex items-center gap-2 text-sm font-semibold text-primary">
+<span>Cari Masjid Berdekatan</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
 </button>
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">skip_next</button>
-<div class="flex-1 h-1 bg-surface-container-high rounded-full overflow-hidden ml-2">
-<div class="bg-primary h-full w-1/3"></div>
 </div>
 </div>
-</div>
-<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col justify-between group cursor-pointer hover:bg-emerald-50 transition-colors">
-<div class="flex justify-between items-start">
-<div>
-<h4 class="text-lg font-medium text-on-surface">Arah Kiblat</h4>
-<p class="text-xs text-on-surface-variant">292° Barat Laut</p>
-</div>
-<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">explore</span>
-</div>
-<div class="flex justify-center py-2">
-<div class="relative w-20 h-20 border-2 border-outline-variant/30 rounded-full flex items-center justify-center">
-<div class="absolute w-1 h-12 bg-primary rounded-full -top-2 transform rotate-[292deg] origin-bottom"></div>
-<div class="w-2 h-2 bg-primary rounded-full"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-low rounded-xl p-8">
-<div class="flex justify-between items-center mb-8">
-<h3 class="text-xl font-bold text-on-surface">Jadual Waktu Solat</h3>
-<div class="flex gap-2">
-<button class="px-4 py-2 rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface-variant border border-outline-variant/20">Semalam</button>
-<button class="px-4 py-2 rounded-lg bg-primary text-on-primary text-sm font-medium">Hari Ini</button>
-<button class="px-4 py-2 rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface-variant border border-outline-variant/20">Esok</button>
-</div>
-</div>
-<div class="space-y-1">
-<div class="grid grid-cols-3 py-4 px-6 items-center">
-<span class="text-on-surface-variant font-medium">Imsak</span>
-<span class="text-center font-bold text-on-surface">05:58</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-outline-variant">notifications_off</span>
-</div>
-</div>
-<div class="grid grid-cols-3 py-4 px-6 items-center rounded-lg hover:bg-surface-container-high transition-colors">
-<span class="text-on-surface-variant font-medium">Subuh</span>
-<span class="text-center font-bold text-on-surface">06:08</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-primary">notifications_active</span>
-</div>
-</div>
-<div class="grid grid-cols-3 py-4 px-6 items-center rounded-lg hover:bg-surface-container-high transition-colors">
-<span class="text-on-surface-variant font-medium">Syuruk</span>
-<span class="text-center font-bold text-on-surface">07:24</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-outline-variant">notifications_off</span>
-</div>
-</div>
-<div class="grid grid-cols-3 py-4 px-6 items-center bg-emerald-100/50 rounded-lg">
-<span class="text-emerald-900 font-bold">Zohor</span>
-<span class="text-center font-black text-emerald-950">13:24</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-emerald-900" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
-</div>
-</div>
-<div class="grid grid-cols-3 py-4 px-6 items-center rounded-lg hover:bg-surface-container-high transition-colors">
-<span class="text-on-surface-variant font-medium">Asar</span>
-<span class="text-center font-bold text-on-surface">16:38</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-primary">notifications_active</span>
-</div>
-</div>
-<div class="grid grid-cols-3 py-4 px-6 items-center rounded-lg hover:bg-surface-container-high transition-colors">
-<span class="text-on-surface-variant font-medium">Maghrib</span>
-<span class="text-center font-bold text-on-surface">19:26</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-primary">notifications_active</span>
-</div>
-</div>
-<div class="grid grid-cols-3 py-4 px-6 items-center rounded-lg hover:bg-surface-container-high transition-colors">
-<span class="text-on-surface-variant font-medium">Isyak</span>
-<span class="text-center font-bold text-on-surface">20:36</span>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-primary">notifications_active</span>
-</div>
-</div>
-</div>
-</div>
-<footer class="mt-12 py-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-xs text-on-surface-variant">© 2024 myAzan Digital. Hak Cipta Terpelihara.</p>
-<div class="flex items-center gap-6">
-<button class="text-xs font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity">Mula Azan</button>
-<button class="text-xs font-bold uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors">Lihat Kiblat</button>
-<button class="text-xs font-bold uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors">Tetapan Audio</button>
-</div>
-</footer>
 </div>
 </main>
-</div>
-<div class="fixed bottom-6 right-6 z-50">
-<button class="flex items-center gap-3 px-6 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full shadow-2xl hover:scale-105 transition-transform duration-200">
-<span class="material-symbols-outlined">auto_awesome</span>
-<span class="font-bold text-sm tracking-wide">Mula Azan</span>
+<!-- Floating Action Button (FAB) - Suppression Logic: Included as it's the dashboard -->
+<button class="fixed bottom-10 right-10 w-16 h-16 rounded-full bg-tertiary-container text-on-tertiary-container shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
 </button>
-</div>
 </body></html>
