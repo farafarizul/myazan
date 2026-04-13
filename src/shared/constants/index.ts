@@ -17,6 +17,8 @@ export const IPC_CHANNELS = {
   SELECT_AUDIO_FILE: 'select-audio-file',
   SELECT_AUDIO_FOLDER: 'select-audio-folder',
   GET_PLAYBACK_STATUS: 'get-playback-status',
+  SYNC_PRAYER_TIMES: 'sync-prayer-times',
+  GET_PRAYER_TIMES_FOR_DATE: 'get-prayer-times-for-date',
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
