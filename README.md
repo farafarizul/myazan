@@ -94,6 +94,45 @@ Peraturan asas:
 - Azan mengambil keutamaan tertinggi dan perlu override audio lain.
 - Event yang sama tidak boleh dicetuskan berulang kali pada hari yang sama.
 
+## Persediaan & Pemasangan
+
+### Keperluan Sistem (Windows)
+
+Sebelum menjalankan `npm install`, pastikan perkara berikut telah dipasang:
+
+1. **Node.js** — muat turun dari [nodejs.org](https://nodejs.org) (cadangan: LTS terbaru)
+2. **Python 3.x** — diperlukan oleh `better-sqlite3` untuk kompilasi modul natif
+3. **Visual Studio Build Tools** dengan komponen **"Desktop development with C++"**
+   - Muat turun dari [visualstudio.microsoft.com/visual-cpp-build-tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+   - Atau jalankan: `npm install --global --production windows-build-tools` (sebagai Administrator)
+
+### Langkah Pemasangan
+
+```bash
+# 1. Clone repositori
+git clone <url-repositori>
+cd myazan
+
+# 2. Pasang semua kebergantungan
+#    (postinstall akan membina semula better-sqlite3 untuk Electron secara automatik)
+npm install
+
+# 3. Jalankan aplikasi dalam mod pembangunan
+npm start
+```
+
+> **Nota:** `npm install` akan memuat turun binari Electron (~150 MB) dan membina `better-sqlite3` terhadap versi Node.js Electron. Proses ini mungkin mengambil masa beberapa minit bergantung kepada kelajuan internet dan spesifikasi komputer. Ini adalah normal dan bukan ralat.
+
+### Membina Pemasang Windows
+
+```bash
+npm run build
+```
+
+Pemasang NSIS dan fail EXE mudah alih akan dihasilkan dalam folder `dist-build/`.
+
+---
+
 ## Cadangan Struktur Projek
 
 ```text
