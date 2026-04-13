@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { app } from 'electron';
 import {
   getActiveZoneCode,
   setActiveZoneCode,
@@ -6,6 +7,8 @@ import {
   saveAudioSettings,
   getAllNotificationSettings,
   saveNotificationSetting,
+  getSetting,
+  setSetting,
 } from '../../database';
 import type { AppSettings, SaveSettingsPayload, NotificationSetting } from '../../../shared/types';
 
@@ -62,6 +65,7 @@ export function getSettings(): AppSettings {
     notificationVolume: audio?.notification_volume ?? 100,
     idleVolume: audio?.idle_volume ?? 100,
     notificationSettings,
+    launchOnStartup: getSetting('launch_on_startup') !== 'false',
   };
 }
 
@@ -146,6 +150,13 @@ export function saveSettings(payload: SaveSettingsPayload): void {
         volume: ns.volume,
       });
     }
+  }
+
+  // Simpan dan pakai tetapan "buka pada startup"
+  if ('launchOnStartup' in payload && payload.launchOnStartup !== undefined) {
+    const enabled = payload.launchOnStartup;
+    setSetting('launch_on_startup', enabled ? 'true' : 'false', 'boolean');
+    app.setLoginItemSettings({ openAtLogin: enabled });
   }
 }
 
