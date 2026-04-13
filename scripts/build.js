@@ -101,6 +101,16 @@ function copyDir(src, dest) {
 }
 
 /**
+ * Copy application assets (icons) to dist/assets/
+ */
+function copyAppAssets() {
+  copyDir(
+    path.join(__dirname, '../src/assets'),
+    path.join(__dirname, '../dist/assets'),
+  );
+}
+
+/**
  * Copy static renderer assets (HTML, CSS, fonts) to dist/renderer/
  */
 function copyRendererAssets() {
@@ -145,6 +155,7 @@ async function build() {
 
     copyMigrations();
     copyRendererAssets();
+    copyAppAssets();
     console.log('[build] watching for changes...');
   } else {
     await Promise.all([
@@ -156,6 +167,7 @@ async function build() {
 
     copyMigrations();
     copyRendererAssets();
+    copyAppAssets();
     console.log('[build] done');
   }
 }
