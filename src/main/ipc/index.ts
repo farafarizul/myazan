@@ -36,7 +36,12 @@ export function registerIpcHandlers(): void {
   });
 
   ipcMain.handle(IPC_CHANNELS.GET_ZONES, () => {
-    return fetchAllZones();
+    return fetchAllZones().map((z) => ({
+      code: z.code,
+      stateName: z.state_name,
+      zoneName: z.zone_name,
+      sortOrder: z.sort_order,
+    }));
   });
 
   ipcMain.handle(IPC_CHANNELS.GET_SETTINGS, () => {
