@@ -182,7 +182,7 @@ function kemaskiniCountdown(waktu: Array<[string, string | null]>, sekarangMinit
   if (labelEl) labelEl.textContent = `Seterusnya: ${NAMA_WAKTU[nextEvent] ?? nextEvent}`;
 
   if (nextMasa && countdownEl) {
-    const totalSaat = masaKeMinit(nextMasa) * 60 - sekarangMinit * 60;
+    const totalSaat = (masaKeMinit(nextMasa) - sekarangMinit) * 60;
     const jam = Math.floor(totalSaat / 3600);
     const minit = Math.floor((totalSaat % 3600) / 60);
     const saat = totalSaat % 60;
@@ -204,10 +204,6 @@ function kemaskiniCountdown(waktu: Array<[string, string | null]>, sekarangMinit
     }
   }
 }
-
-// ============================================================
-// Ikon untuk setiap waktu solat
-// ============================================================
 
 /**
  * Muatkan dan paparkan waktu solat hari ini.
@@ -235,7 +231,7 @@ async function loadHalamanUtama(): Promise<void> {
   // Kemas kini label zon di papan pemuka
   const zonLabelEl = document.getElementById('dashboard-zon-label');
   if (zonLabelEl) {
-    zonLabelEl.textContent = zoneCode ?? '\u2014 Pilih Zon di Tetapan \u2014';
+    zonLabelEl.textContent = zoneCode ?? '— Pilih Zon di Tetapan —';
   }
 
   // Kemas kini status idle audio
