@@ -10,6 +10,8 @@ declare global {
       setActiveZone: (zoneCode: string) => Promise<{ ok: boolean }>;
       selectAudioFile: () => Promise<string | null>;
       selectAudioFolder: () => Promise<string | null>;
+      syncPrayerTimes: (payload: { zoneCode: string; year?: number }) => Promise<{ ok: boolean; error?: string }>;
+      getPrayerTimesForDate: (zoneCode: string, date: string) => Promise<import('../shared/types').PrayerTimeForDate | null>;
     };
   }
 }
@@ -116,17 +118,112 @@ async function loadAboutPage(): Promise<void> {
   }
 }
 
-/** Inisialisasi halaman utama — paparan waktu solat placeholder. */
-function initHalamanUtama(): void {
+/** Kembalikan tarikh hari ini dalam format YYYY-MM-DD (waktu tempatan). */
+function tarikhHariIni(): string {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/** Kembalikan waktu sekarang dalam format HH:MM (waktu tempatan). */
+function masaSekarang(): string {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+/**
+ * Muatkan dan paparkan waktu solat hari ini pada halaman utama.
+ * Jika tiada data tempatan, cuba sync terlebih dahulu.
+ */
+async function loadHalamanUtama(): Promise<void> {
   const list = document.getElementById('waktu-solat-list');
   if (!list) return;
 
-  // Placeholder — akan digantikan pada Fasa 2 dengan data sebenar dari database
-  list.innerHTML = `
-    <p class="info-teks">
-      Data waktu solat akan dipaparkan di sini selepas zon dan data JAKIM dikonfigurasi.
-    </p>
-  `;
+  list.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
+
+  let settings: AppSettings;
+  try {
+    settings = await window.myAzan.getSettings();
+  } catch {
+    list.innerHTML = '<p class="info-teks">Gagal mendapatkan tetapan.</p>';
+    return;
+  }
+
+  const zoneCode = settings.activeZoneCode;
+  if (!zoneCode) {
+    list.innerHTML = `
+      <p class="info-teks">
+        Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.
+      </p>
+    `;
+    return;
+  }
+
+  const tarikh = tarikhHariIni();
+  let data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
+
+  // Jika tiada data, cuba sync dulu kemudian ambil semula
+  if (!data) {
+    list.innerHTML = '<p class="info-teks">Memuat turun data waktu solat...</p>';
+    try {
+      const syncResult = await window.myAzan.syncPrayerTimes({ zoneCode });
+      if (!syncResult.ok) {
+        list.innerHTML = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}. Sila semak sambungan internet.</p>`;
+        return;
+      }
+      data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
+    } catch {
+      list.innerHTML = '<p class="info-teks">Gagal memuat turun data waktu solat. Sila semak sambungan internet.</p>';
+      return;
+    }
+  }
+
+  if (!data) {
+    list.innerHTML = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
+    return;
+  }
+
+  // Tentukan waktu solat berikutnya untuk ditonjolkan
+  const sekarang = masaSekarang();
+  const waktuBerurutan: Array<[string, string | null]> = [
+    ['imsak', data.imsak],
+    ['fajr', data.fajr],
+    ['syuruk', data.syuruk],
+    ['dhuha', data.dhuha],
+    ['dhuhr', data.dhuhr],
+    ['asr', data.asr],
+    ['maghrib', data.maghrib],
+    ['isha', data.isha],
+  ];
+
+  // Cari waktu pertama yang belum berlalu
+  let indexBerikutnya = -1;
+  for (let i = 0; i < waktuBerurutan.length; i++) {
+    const masa = waktuBerurutan[i]?.[1];
+    if (masa && masa.substring(0, 5) > sekarang) {
+      indexBerikutnya = i;
+      break;
+    }
+  }
+
+  // Bina HTML grid
+  const items = waktuBerurutan
+    .map(([event, masa], i) => {
+      if (!masa) return '';
+      const nama = NAMA_WAKTU[event] ?? event;
+      const aktifKelas = i === indexBerikutnya ? ' berikutnya' : '';
+      return `
+        <div class="waktu-item${aktifKelas}">
+          <div class="waktu-label">${nama}</div>
+          <div class="waktu-masa">${masa.substring(0, 5)}</div>
+        </div>
+      `;
+    })
+    .join('');
+
+  list.innerHTML = items || '<p class="info-teks">Tiada data waktu untuk dipaparkan.</p>';
 }
 
 // ============================================================
@@ -432,6 +529,10 @@ async function simpanTetapan(): Promise<void> {
         ...payload,
         notificationSettings,
       };
+      // Muat semula waktu solat pada halaman utama dengan zon baharu
+      loadHalamanUtama().catch((err) => {
+        console.error('[utama] gagal muat semula waktu solat:', err);
+      });
     } else {
       tunjukStatusTetapan(`❌ Gagal simpan: ${hasil.error ?? 'Ralat tidak diketahui'}`, 'ralat');
     }
@@ -514,8 +615,7 @@ async function initHalamanTetapan(): Promise<void> {
 
 async function main(): Promise<void> {
   initNavigation();
-  initHalamanUtama();
-  await Promise.all([loadAboutPage(), initHalamanTetapan()]);
+  await Promise.all([loadHalamanUtama(), loadAboutPage(), initHalamanTetapan()]);
 }
 
 main().catch((err) => {
