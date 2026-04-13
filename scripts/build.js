@@ -64,7 +64,7 @@ const rendererConfig = {
  */
 function copyMigrations() {
   const srcDir = path.join(__dirname, '../src/main/database/migrations');
-  const outDir = path.join(__dirname, '../dist/main/database/migrations');
+  const outDir = path.join(__dirname, '../dist/main/migrations');
 
   if (!fs.existsSync(srcDir)) return;
 
