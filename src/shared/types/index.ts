@@ -110,6 +110,11 @@ export interface PrayerTimeForDate {
   maghrib: string;
   isha: string;
 }
+
+/**
+ * Payload untuk menyimpan tetapan — semua medan adalah pilihan.
+ * Hanya medan yang disediakan akan dikemas kini.
+ */
 export interface SaveSettingsPayload {
   activeZoneCode?: string | null;
   azanSubuhFilePath?: string | null;

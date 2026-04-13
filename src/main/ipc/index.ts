@@ -91,7 +91,7 @@ export function registerIpcHandlers(): void {
    */
   ipcMain.handle(
     IPC_CHANNELS.GET_PRAYER_TIMES_FOR_DATE,
-    (_event, zoneCode: string, date: string): PrayerTimeForDate | null => {
+    async (_event, zoneCode: string, date: string): Promise<PrayerTimeForDate | null> => {
       const row = getPrayerTimesForDate(zoneCode, date);
       if (!row) return null;
       return {

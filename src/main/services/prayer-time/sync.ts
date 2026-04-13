@@ -86,12 +86,15 @@ export function getPrayerTimesForDate(
 // Pengurusan pertukaran tahun
 // ============================================================
 
+// Bulan (0-indexed) di mana pra-muat tahun berikutnya mula dilakukan (Oktober = 9)
+const YEAR_END_PRELOAD_MONTH = 9;
+
 /**
  * Tentukan sama ada kita hampir penghujung tahun (bulan Oktober ke Disember).
  * Jika ya, pra-muat data tahun berikutnya supaya app terus berfungsi pada 1 Januari.
  */
 function isNearYearEnd(date: Date): boolean {
-  return date.getMonth() >= 9; // Oktober = 9, November = 10, Disember = 11
+  return date.getMonth() >= YEAR_END_PRELOAD_MONTH;
 }
 
 /**
