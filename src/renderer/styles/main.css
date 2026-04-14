@@ -1180,6 +1180,103 @@ input, select, textarea { font-family: inherit; }
 .settings-footer-info .material-symbols-outlined { font-size: 16px; }
 
 /* ============================================================
+   Halaman: Pemberitahuan
+   ============================================================ */
+.pb-waktu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .pb-waktu-grid { grid-template-columns: 1fr; }
+}
+
+.pb-waktu-card {
+  background-color: var(--surface-container-lowest);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-ambient);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow 0.15s;
+}
+
+.pb-waktu-card:hover {
+  box-shadow: var(--shadow-key);
+}
+
+.pb-waktu-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pb-waktu-card-nama {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pb-waktu-card-ikon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background-color: var(--primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-primary-container);
+  flex-shrink: 0;
+}
+
+.pb-waktu-card-ikon .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.pb-waktu-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.pb-waktu-card-divider {
+  height: 1px;
+  background-color: var(--outline-variant);
+  opacity: 0.5;
+}
+
+.pb-waktu-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pb-waktu-card-row-label {
+  font-size: 0.875rem;
+  color: var(--on-surface-variant);
+  font-weight: 500;
+}
+
+.pb-waktu-card-audio-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pb-waktu-card-audio-nama {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: var(--on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
    Halaman: Audio
    ============================================================ */
 .audio-grid {

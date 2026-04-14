@@ -51,6 +51,10 @@
           <span class="material-symbols-outlined">settings</span>
           Tetapan
         </button>
+        <button class="nav-item" data-page="pemberitahuan">
+          <span class="material-symbols-outlined">notifications_active</span>
+          Pemberitahuan
+        </button>
         <button class="nav-item" data-page="audio">
           <span class="material-symbols-outlined">volume_up</span>
           Audio
@@ -412,6 +416,54 @@
                 Simpan Perubahan
               </button>
             </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           Halaman: Pemberitahuan
+           =================================================== -->
+      <section id="page-pemberitahuan" class="page">
+        <div class="page-content">
+
+          <!-- Header -->
+          <div class="page-header">
+            <h2 class="page-header-title">Pemberitahuan</h2>
+            <p class="page-header-subtitle">Urus pemberitahuan sebelum waktu solat — aktifkan, tetapkan minit awal, pilih fail audio dan kawal kelantangan.</p>
+          </div>
+
+          <!-- Kawalan Kelantangan Pemberitahuan -->
+          <div class="audio-volume-card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">tune</span>
+              <h3 style="font-size:1rem;font-weight:700;">Kelantangan Pemberitahuan</h3>
+            </div>
+            <p style="font-size:0.875rem;color:var(--on-surface-variant);margin-bottom:14px;">
+              Kawal kelantangan keseluruhan untuk semua pemberitahuan waktu solat.
+            </p>
+            <div class="volume-row">
+              <span class="material-symbols-outlined" style="font-size:20px;color:var(--primary);">volume_up</span>
+              <input type="range" id="pb-notifikasi-volume" class="volume-slider flex-1" min="0" max="100" step="1" value="100" />
+              <span id="pb-notifikasi-volume-nilai" class="volume-value">100%</span>
+            </div>
+          </div>
+
+          <!-- Grid kad waktu solat -->
+          <div class="pb-waktu-grid" id="pb-waktu-grid">
+            <!-- Diisi secara dinamik -->
+          </div>
+
+          <!-- Footer actions -->
+          <div class="settings-footer">
+            <div class="settings-footer-info">
+              <span class="material-symbols-outlined">cloud_done</span>
+              <span id="pb-last-saved">Tetapan belum disimpan.</span>
+            </div>
+            <button id="pb-btn-simpan" class="btn-primary" type="button">
+              <span class="material-symbols-outlined">save</span>
+              Simpan Perubahan
+            </button>
           </div>
 
         </div>

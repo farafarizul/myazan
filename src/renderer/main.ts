@@ -62,6 +62,10 @@ function initNavigation(): void {
       if (targetPage === 'zikir') {
         syncZikirPage();
       }
+      // Sync pemberitahuan page controls when navigating to pemberitahuan page
+      if (targetPage === 'pemberitahuan') {
+        syncPemberitahuanPage();
+      }
     });
   });
 }
@@ -898,6 +902,7 @@ async function muatTetapan(): Promise<void> {
     setSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', tetapanState.notificationVolume);
     setSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', tetapanState.idleVolume);
     setSlider('zikir-idle-volume', 'zikir-idle-volume-nilai', tetapanState.idleVolume);
+    setSlider('pb-notifikasi-volume', 'pb-notifikasi-volume-nilai', tetapanState.notificationVolume);
 
     // Sync Zikir page folder & toggle
     const zikirFolderNama = document.getElementById('zikir-folder-nama');
@@ -906,6 +911,7 @@ async function muatTetapan(): Promise<void> {
     if (zikirTogol) zikirTogol.checked = settings.idleEnabled;
 
     binaSenaraiNotifikasi(tetapanState.notificationSettings);
+    binaKadPemberitahuan(tetapanState.notificationSettings);
   } catch (err) {
     console.error('[tetapan] gagal muatkan tetapan:', err);
     tunjukStatusTetapan('Gagal memuatkan tetapan. Sila cuba semula.', 'ralat');
@@ -988,6 +994,8 @@ async function simpanTetapan(): Promise<void> {
       loadHalamanUtama().catch((err) => {
         console.error('[utama] gagal muat semula:', err);
       });
+      // Refresh halaman Pemberitahuan juga
+      binaKadPemberitahuan(notificationSettings);
     } else {
       tunjukStatusTetapan(`❌ Gagal simpan: ${hasil.error ?? 'Ralat tidak diketahui'}`, 'ralat');
     }
@@ -1019,6 +1027,189 @@ function syncAudioPage(): void {
     if (nilaiEl) nilaiEl.textContent = `${val}%`;
   };
   setSlider('audio-idle-volume', 'audio-idle-volume-nilai', tetapanState.idleVolume);
+}
+
+// ============================================================
+// Sync & init halaman Pemberitahuan
+// ============================================================
+
+const SUSUNAN_WAKTU_PB = ['imsak', 'fajr', 'syuruk', 'dhuha', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+/** Bina grid kad waktu solat di halaman Pemberitahuan. */
+function binaKadPemberitahuan(notificationSettings: NotificationSetting[]): void {
+  const grid = document.getElementById('pb-waktu-grid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  for (const eventName of SUSUNAN_WAKTU_PB) {
+    const ns = notificationSettings.find((n) => n.eventName === eventName);
+    if (!ns) continue;
+
+    const namaWaktu = NAMA_WAKTU[eventName] ?? eventName;
+    const ikon = IKON_WAKTU[eventName] ?? 'schedule';
+    const aktif = ns.enabled;
+    const minit = ns.minutesBefore ?? 0;
+    const failNama = namaFail(ns.audioFilePath);
+
+    const card = document.createElement('div');
+    card.className = 'pb-waktu-card';
+    card.dataset['event'] = eventName;
+    card.innerHTML = `
+      <div class="pb-waktu-card-header">
+        <div class="pb-waktu-card-nama">
+          <div class="pb-waktu-card-ikon">
+            <span class="material-symbols-outlined">${ikon}</span>
+          </div>
+          <span class="pb-waktu-card-title">${namaWaktu}</span>
+        </div>
+        <label class="toggle-wrap" title="Aktif / Tidak Aktif">
+          <input type="checkbox" class="pb-togol" data-event="${eventName}" ${aktif ? 'checked' : ''} />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="pb-waktu-card-divider"></div>
+      <div class="pb-waktu-card-row">
+        <span class="pb-waktu-card-row-label">Minit Sebelum Waktu</span>
+        <input type="number" class="input-number pb-minit-input" data-event="${eventName}"
+               value="${minit}" min="0" max="60" style="width:70px;text-align:center;" />
+      </div>
+      <div class="pb-waktu-card-divider"></div>
+      <div>
+        <div class="pb-waktu-card-row-label" style="margin-bottom:8px;">Fail Audio</div>
+        <div class="pb-waktu-card-audio-row">
+          <span class="material-symbols-outlined" style="font-size:18px;color:var(--on-surface-variant);">music_note</span>
+          <span class="pb-waktu-card-audio-nama" id="pb-fail-${eventName}"
+                title="${ns.audioFilePath ?? ''}">${failNama}</span>
+          <button class="btn-icon pb-btn-audio" data-event="${eventName}" type="button" title="Pilih Fail Audio">
+            <span class="material-symbols-outlined">folder_open</span>
+          </button>
+          <button class="btn-icon pb-btn-padam" data-event="${eventName}" type="button" title="Padam Fail Audio">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+
+  // Lekatkan pendengar fail audio
+  grid.querySelectorAll<HTMLButtonElement>('.pb-btn-audio').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ev = btn.dataset['event'] ?? '';
+      const laluan = await window.myAzan.selectAudioFile();
+      if (laluan === null) return;
+      const ns2 = tetapanState.notificationSettings.find((n) => n.eventName === ev);
+      if (ns2) ns2.audioFilePath = laluan;
+      const spanFail = document.getElementById(`pb-fail-${ev}`);
+      if (spanFail) { spanFail.textContent = namaFail(laluan); spanFail.title = laluan; }
+    });
+  });
+
+  grid.querySelectorAll<HTMLButtonElement>('.pb-btn-padam').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ev = btn.dataset['event'] ?? '';
+      const ns2 = tetapanState.notificationSettings.find((n) => n.eventName === ev);
+      if (ns2) ns2.audioFilePath = null;
+      const spanFail = document.getElementById(`pb-fail-${ev}`);
+      if (spanFail) { spanFail.textContent = 'Tiada fail dipilih'; spanFail.title = ''; }
+    });
+  });
+}
+
+/** Sync semula UI halaman Pemberitahuan dari tetapanState semasa navigasi. */
+function syncPemberitahuanPage(): void {
+  const setSlider = (id: string, nilaiId: string, val: number): void => {
+    const el = document.getElementById(id) as HTMLInputElement | null;
+    const nilaiEl = document.getElementById(nilaiId);
+    if (el) el.value = String(val);
+    if (nilaiEl) nilaiEl.textContent = `${val}%`;
+  };
+  setSlider('pb-notifikasi-volume', 'pb-notifikasi-volume-nilai', tetapanState.notificationVolume);
+  binaKadPemberitahuan(tetapanState.notificationSettings);
+}
+
+/** Inisialisasi halaman Pemberitahuan. */
+function initHalamanPemberitahuan(): void {
+  // Volume slider — sync ke tetapanState dan sliders lain
+  const pbSlider = document.getElementById('pb-notifikasi-volume') as HTMLInputElement | null;
+  const pbNilai = document.getElementById('pb-notifikasi-volume-nilai');
+  pbSlider?.addEventListener('input', () => {
+    const v = parseInt(pbSlider.value, 10);
+    if (pbNilai) pbNilai.textContent = `${v}%`;
+    tetapanState.notificationVolume = v;
+    // Mirror ke sliders di halaman Tetapan
+    const s1 = document.getElementById('notifikasi-volume') as HTMLInputElement | null;
+    const s1v = document.getElementById('notifikasi-volume-nilai');
+    const s2 = document.getElementById('audio-notifikasi-volume') as HTMLInputElement | null;
+    const s2v = document.getElementById('audio-notifikasi-volume-nilai');
+    if (s1) s1.value = String(v);
+    if (s1v) s1v.textContent = `${v}%`;
+    if (s2) s2.value = String(v);
+    if (s2v) s2v.textContent = `${v}%`;
+  });
+
+  // Butang simpan
+  document.getElementById('pb-btn-simpan')?.addEventListener('click', () => {
+    simpanDariPemberitahuan().catch((err) => { console.error('[pemberitahuan] ralat simpan:', err); });
+  });
+}
+
+/** Kumpul tetapan pemberitahuan dari halaman Pemberitahuan dan simpan. */
+async function simpanDariPemberitahuan(): Promise<void> {
+  const notificationSettings: NotificationSetting[] = [];
+
+  document.querySelectorAll<HTMLElement>('#pb-waktu-grid .pb-waktu-card[data-event]').forEach((kad) => {
+    const ev = kad.dataset['event'] ?? '';
+    const togolEl = kad.querySelector<HTMLInputElement>('.pb-togol');
+    const mInitEl = kad.querySelector<HTMLInputElement>('.pb-minit-input');
+    const nsState = tetapanState.notificationSettings.find((n) => n.eventName === ev);
+
+    notificationSettings.push({
+      eventName: ev,
+      enabled: togolEl?.checked ?? false,
+      minutesBefore: parseInt(mInitEl?.value ?? '0', 10) || 0,
+      audioFilePath: nsState?.audioFilePath ?? null,
+      volume: nsState?.volume ?? null,
+    });
+  });
+
+  // Kemas kini tetapanState supaya halaman Tetapan turut segerak
+  tetapanState.notificationSettings = notificationSettings;
+
+  const selectZon = document.getElementById('pilih-zon') as HTMLSelectElement | null;
+  const togolIdle = document.getElementById('idle-aktif') as HTMLInputElement | null;
+  const chkLaunch = document.getElementById('chk-launch-on-startup') as HTMLInputElement | null;
+
+  const payload: SaveSettingsPayload = {
+    activeZoneCode: (selectZon?.value || tetapanState.settings?.activeZoneCode) ?? null,
+    azanSubuhFilePath: tetapanState.azanSubuhFilePath,
+    azanOtherFilePath: tetapanState.azanOtherFilePath,
+    idleFolderPath: tetapanState.idleFolderPath,
+    idleEnabled: togolIdle?.checked ?? tetapanState.settings?.idleEnabled ?? false,
+    azanVolume: tetapanState.azanVolume,
+    notificationVolume: tetapanState.notificationVolume,
+    idleVolume: tetapanState.idleVolume,
+    notificationSettings,
+    launchOnStartup: chkLaunch?.checked ?? tetapanState.launchOnStartup,
+  };
+
+  try {
+    const hasil = await window.myAzan.saveSettings(payload);
+    const lastSavedEl = document.getElementById('pb-last-saved');
+    if (hasil.ok) {
+      const nowStr = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+      if (lastSavedEl) lastSavedEl.textContent = `Tetapan disimpan pada ${nowStr}`;
+      // Refresh senarai di halaman Tetapan juga
+      binaSenaraiNotifikasi(notificationSettings);
+    } else {
+      if (lastSavedEl) lastSavedEl.textContent = `❌ Gagal simpan: ${hasil.error ?? 'Ralat tidak diketahui'}`;
+    }
+  } catch (err) {
+    console.error('[pemberitahuan] ralat semasa simpan:', err);
+    const lastSavedEl = document.getElementById('pb-last-saved');
+    if (lastSavedEl) lastSavedEl.textContent = '❌ Ralat semasa menyimpan tetapan.';
+  }
 }
 
 // ============================================================
@@ -1322,6 +1513,7 @@ async function main(): Promise<void> {
   initWindowControls();
   initHalamanAudio();
   initHalamanZikir();
+  initHalamanPemberitahuan();
   await Promise.all([loadHalamanUtama(), loadAboutPage(), initHalamanTetapan()]);
 }
 
