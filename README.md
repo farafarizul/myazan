@@ -69,7 +69,7 @@ Aplikasi menyokong **58 zon** merangkumi **14 negeri** seluruh Malaysia:
 - Perlis (PLS01) — 1 zon
 - Pulau Pinang (PNG01–PNG02) — 2 zon
 - Sabah (SBH01–SBH07) — 7 zon
-- Sarawak (SRW01–SRW09) — 9 zon
+- Sarawak (SWK01–SWK09) — 9 zon
 - Selangor (SGR01–SGR04) — 4 zon
 - Terengganu (TRG01–TRG04) — 4 zon
 
@@ -325,20 +325,20 @@ Scheduler terus berjalan seperti biasa 🔄
 - Selepas zon ditukar, data waktu solat zon baru dimuat turun secara automatik (jika belum ada)
 - Data zon lama **tidak** dipadam, boleh digunakan semula jika zon ditukar balik
 
-### Tetapan Azan 🔊
+### Tetapan Azan 🔊 *(Halaman Tetapan)*
 | Waktu | Fail Audio |
 |-------|-----------|
 | Subuh | Boleh pilih fail MP3 berasingan |
 | Zohor, Asar, Maghrib, Isyak | Gunakan fail "Azan Selain Subuh" |
 
-### Tetapan Notifikasi 🔔
+### Tetapan Pemberitahuan 🔔 *(Halaman Pemberitahuan)*
 Untuk setiap waktu solat, pengguna boleh:
-- ✅ Aktif / nyahaktif notifikasi
-- ⏱️ Tetapkan berapa minit **sebelum** waktu untuk notifikasi berbunyi
-- 🎵 Pilih fail MP3 notifikasi yang berbeza
-- 🔉 Laraskan kelantangan khusus untuk notifikasi itu
+- ✅ Aktif / nyahaktif pemberitahuan
+- ⏱️ Tetapkan berapa minit **sebelum** waktu untuk pemberitahuan berbunyi
+- 🎵 Pilih fail MP3 pemberitahuan yang berbeza
+- 🔉 Laraskan kelantangan pemberitahuan
 
-Waktu yang disokong untuk notifikasi:
+Waktu yang disokong untuk pemberitahuan:
 
 | Waktu | Lalai |
 |-------|-------|
@@ -351,131 +351,98 @@ Waktu yang disokong untuk notifikasi:
 | Maghrib | Diaktifkan, 15 minit sebelum |
 | Isyak | Diaktifkan, 15 minit sebelum |
 
-### Tetapan Audio Idle 📖
+### Tetapan Zikir / Audio Idle 📖 *(Halaman Zikir)*
 - Pilih **folder** yang mengandungi fail-fail MP3
 - Fail dimainkan mengikut **susunan nama fail** (A → Z)
 - Selepas fail terakhir, ulang dari awal secara berterusan
 - Boleh aktifkan atau nyahaktifkan sepenuhnya
-- 3 mod sambung semula selepas gangguan azan/notifikasi
+- 3 mod sambung semula selepas gangguan azan/pemberitahuan
 
-### Kawalan Kelantangan 🎚️
+### Kawalan Kelantangan 🎚️ *(Halaman Audio)*
 - Kelantangan **Azan**: 0–100
 - Kelantangan **Notifikasi**: 0–100
 - Kelantangan **Idle**: 0–100
 
-### Permulaan Automatik 🚀
-- Togol **"Mulakan bersama Windows"** — hidupkan untuk myAzan bermula secara automatik apabila Windows dihidupkan
+### Permulaan Automatik 🚀 *(Halaman Tetapan)*
+- Togol **"Buka Pada Startup"** — hidupkan untuk myAzan bermula secara automatik apabila Windows dihidupkan
 - Sesuai untuk mini PC atau komputer yang sentiasa aktif
 
 ---
 
 ## 📱 Halaman Aplikasi
 
-Aplikasi myAzan mempunyai **4 halaman utama** yang boleh dinavigasi melalui bar sisi (sidebar) di sebelah kiri skrin:
+Aplikasi myAzan mempunyai **6 halaman utama** yang boleh dinavigasi melalui bar sisi (sidebar) di sebelah kiri skrin:
 
 ---
 
-### 🏠 Halaman Utama
+### 🏠 Papan Pemuka
 
-Halaman utama dipaparkan secara lalai apabila aplikasi dibuka. Ia menunjukkan dua maklumat penting secara sekilas:
+Halaman utama dipaparkan secara lalai apabila aplikasi dibuka. Ia memaparkan:
 
-#### 📅 Waktu Solat Hari Ini
+- **Kiraan masa mundur** — bar kemajuan menuju waktu solat seterusnya, bersama nama dan baki masa
+- **Jam digital & tarikh** — masa semasa dan tarikh hari ini
+- **Zon aktif** — zon JAKIM yang sedang digunakan ditunjukkan pada pil lokasi
+- **Garis Masa Waktu Solat** — carta visual menunjukkan kedudukan semua waktu solat dalam tempoh masa sehari
+- **Grid Waktu Solat Hari Ini** — 8 waktu solat (Imsak, Subuh, Syuruk, Dhuha, Zohor, Asar, Maghrib, Isyak) dalam susun atur bento, dengan waktu seterusnya ditonjolkan
+- **Kad Status Zikir/Idle** — menunjukkan sama ada audio idle sedang aktif dan nama fail semasa
+- **Kad Status Sistem Audio** — menunjukkan keadaan semasa audio engine (`Idle`, `Azan`, atau `Notifikasi`)
 
-- Memaparkan **8 waktu solat** untuk hari semasa: Imsak, Subuh, Syuruk, Dhuha, Zohor, Asar, Maghrib, Isyak
-- Setiap waktu dipaparkan bersama **nama dan masa** (format HH:MM)
-- **Waktu solat berikutnya** ditonjolkan secara visual supaya mudah dikenal pasti
-- Jika zon belum dipilih, mesej arahan akan muncul meminta pengguna pergi ke halaman Tetapan
-- Jika data tidak ada secara lokal, sistem akan **cuba muat turun secara automatik** dari API JAKIM
-
-#### 🔊 Status Audio
-
-- Menunjukkan status semasa audio engine: `Idle`, `Azan`, atau `Notifikasi`
-- Membantu pengguna mengetahui sama ada sistem sedang memainkan sesuatu audio pada masa itu
+Jika zon belum dipilih, papan pemuka akan memaparkan arahan untuk pergi ke halaman Tetapan. Jika data waktu solat tidak ada, sistem akan cuba muat turun secara automatik dari API JAKIM.
 
 ---
 
 ### ⚙️ Halaman Tetapan
 
-Halaman Tetapan adalah tempat pengguna mengkonfigurasi zon waktu solat dan pilihan permulaan sistem. Ia dibahagikan kepada **2 seksyen utama**:
+Halaman Tetapan membolehkan pengguna mengkonfigurasi zon waktu solat, fail audio azan, dan pilihan permulaan sistem:
 
----
+#### 📍 Zon & Lokasi
 
-#### 📍 Seksyen 1: Zon Waktu Solat
-
-Pengguna memilih kawasan mereka melalui **2 peringkat pemilihan dropdown**:
+Pengguna memilih kawasan melalui **2 peringkat dropdown**:
 
 | Kawalan | Fungsi |
 |---------|--------|
 | **Dropdown Negeri** | Pilih negeri dari senarai 14 negeri Malaysia |
 | **Dropdown Zon JAKIM** | Pilih zon spesifik dalam negeri tersebut (contoh: `WLY01 — Kuala Lumpur`) |
 
-**Aliran pemilihan zon:**
-1. Pengguna pilih negeri → dropdown zon dikemas kini secara automatik
-2. Pengguna pilih zon → zon aktif akan disimpan apabila butang **Simpan Tetapan** ditekan
-3. Selepas disimpan, sistem semak sama ada data waktu solat untuk zon baru sudah ada
-4. Jika belum ada → muat turun secara automatik dari JAKIM, kemudian halaman utama dikemas kini
-
-> 💡 Data zon lama tidak dipadam. Jika pengguna menukar balik ke zon lama yang pernah digunakan, data tersedia serta-merta tanpa muat turun semula.
-
----
-
-#### 🚀 Seksyen 2: Permulaan Sistem
-
-| Kawalan | Fungsi |
-|---------|--------|
-| **Togol "Mulakan bersama Windows"** | Apabila diaktifkan, myAzan akan dilancarkan secara automatik setiap kali Windows dihidupkan — sesuai untuk mini PC atau komputer yang sentiasa aktif |
-
-> 💡 Ciri ini menggunakan mekanisme **Login Items** Electron yang menulis ke registry Windows. Ia diaktifkan secara lalai.
-
----
-
-#### 💾 Butang Simpan Tetapan
-
-Di bahagian bawah halaman Tetapan terdapat butang **"💾 Simpan Tetapan"**:
-
-- Semua perubahan dalam 2 seksyen di atas **hanya disimpan apabila butang ini ditekan**
-- Selepas berjaya disimpan, mesej pengesahan hijau ✅ dipaparkan selama 5 saat
-- Jika ada ralat (contoh: laluan fail tidak sah), mesej merah ❌ dipaparkan
-- Halaman Utama akan **dikemas kini secara automatik** dengan zon dan data terbaru selepas simpan
-
----
-
-### 🎵 Halaman Audio & Notifikasi
-
-Halaman **Audio & Notifikasi** adalah halaman khusus untuk mengkonfigurasi semua tetapan bunyi. Ia mengandungi:
+Selepas zon disimpan, sistem semak sama ada data waktu solat untuk zon baru sudah ada. Jika belum → muat turun secara automatik dari JAKIM. Data zon lama tidak dipadam — boleh digunakan semula tanpa muat turun.
 
 #### 🔊 Fail Audio Azan
 
 | Tetapan | Keterangan |
 |---------|-----------|
 | **Azan Subuh** | Fail MP3 khas untuk azan waktu Subuh |
-| **Azan Selain Subuh** | Fail MP3 yang digunakan untuk Zohor, Asar, Maghrib, dan Isyak |
-| **🔈 Kelantangan Azan** | Gelangsar (slider) 0%–100% untuk laras kelantangan azan |
+| **Azan Selain Subuh** | Fail MP3 untuk Zohor, Asar, Maghrib, dan Isyak |
+| **🔈 Kelantangan Azan** | Gelangsar 0%–100% |
 
-**Cara pilih fail:**
-- Klik butang **"Pilih Fail"** → dialog pemilihan fail Windows dibuka
-- Nama fail yang dipilih akan dipaparkan di sebelah butang
-- Klik butang **"✕"** untuk memadam pilihan fail (azan tidak akan dimainkan jika tiada fail)
+Klik **"Pilih Fail"** untuk buka dialog pemilihan fail Windows. Klik **"✕"** untuk padam pilihan.
 
-> ⚠️ Jika fail tidak dipilih atau fail tidak lagi wujud di lokasi tersimpan, azan tidak akan dimainkan dan amaran direkodkan dalam log sistem.
+> ⚠️ Jika fail tidak dipilih atau tidak lagi wujud, azan tidak akan dimainkan.
+
+#### 🚀 Permulaan Sistem
+
+| Kawalan | Fungsi |
+|---------|--------|
+| **Togol "Buka Pada Startup"** | Apabila diaktifkan, myAzan dilancarkan secara automatik setiap kali Windows dihidupkan |
+
+Semua perubahan hanya disimpan apabila butang **"Simpan Perubahan"** ditekan. Butang **"Set Semula"** memulihkan semula nilai asal sebelum disimpan.
 
 ---
 
-#### 🔔 Notifikasi Sebelum Waktu Solat
+### 🔔 Halaman Pemberitahuan
 
-Seksyen ini membolehkan pengguna menetapkan bunyi peringatan **sebelum** masuk waktu solat. Terdapat **8 baris** — satu untuk setiap waktu solat:
+Halaman **Pemberitahuan** membolehkan pengguna mengurus bunyi peringatan **sebelum** masuk waktu solat. Terdapat **8 kad** — satu untuk setiap waktu solat:
 
 **Untuk setiap waktu, pengguna boleh:**
 
 | Kawalan | Fungsi |
 |---------|--------|
-| **Togol Aktif/Tidak** | Hidupkan atau matikan notifikasi untuk waktu tersebut |
-| **Input Minit Awal** | Bilangan minit sebelum waktu solat untuk notifikasi berbunyi (0–60 minit). Jika diisi `0`, notifikasi berbunyi tepat pada waktu solat |
-| **🎵 Butang Fail** | Pilih fail MP3 untuk notifikasi waktu tersebut |
-| **Butang ✕** | Padam pilihan fail untuk waktu tersebut |
-| **🔈 Kelantangan Notifikasi** | Gelangsar kelantangan global untuk semua notifikasi (0%–100%) |
+| **Togol Aktif/Tidak** | Hidupkan atau matikan pemberitahuan untuk waktu tersebut |
+| **Input Minit Awal** | Bilangan minit sebelum waktu solat (0–60 minit) |
+| **🎵 Butang Fail** | Pilih fail MP3 pemberitahuan untuk waktu tersebut |
+| **Butang ✕** | Padam pilihan fail |
+| **🔈 Kelantangan Pemberitahuan** | Gelantangan global untuk semua pemberitahuan (0%–100%) |
 
-**Contoh konfigurasi tipikal:**
+**Tetapan lalai:**
 
 | Waktu | Aktif | Minit Sebelum |
 |-------|-------|--------------|
@@ -488,26 +455,48 @@ Seksyen ini membolehkan pengguna menetapkan bunyi peringatan **sebelum** masuk w
 | Maghrib | ✅ | 15 minit |
 | Isyak | ✅ | 15 minit |
 
-> 🛡️ Setiap notifikasi hanya berbunyi **sekali sehari**. Jika notifikasi Zohor telah berbunyi, ia tidak akan berbunyi lagi pada hari yang sama walaupun aplikasi dimulakan semula.
+> 🛡️ Setiap pemberitahuan hanya berbunyi **sekali sehari**. Walaupun aplikasi dimulakan semula, pemberitahuan yang sudah berbunyi tidak akan berulang pada hari yang sama.
 
 ---
 
-#### 📖 Audio Latar (Idle) — al-Quran / Zikir
+### 🎵 Halaman Audio
+
+Halaman **Audio** menyediakan kawalan kelantangan berpusat untuk semua jenis audio dalam aplikasi:
+
+| Jenis Audio | Keterangan |
+|-------------|-----------|
+| **🕌 Azan** | Kelantangan untuk semua azan (0%–100%) |
+| **🔔 Notifikasi** | Kelantangan untuk pemberitahuan waktu solat (0%–100%) |
+| **🎵 Idle** | Kelantangan untuk audio zikir/al-Quran latar (0%–100%) |
+
+Klik **"Simpan Tetapan Audio"** untuk menyimpan semua perubahan kelantangan.
+
+---
+
+### 📖 Halaman Zikir
+
+Halaman **Zikir** membolehkan pengguna mengkonfigurasi audio idle — lantunan al-Quran atau zikir yang dimainkan secara berterusan semasa tiada audio lain aktif:
+
+#### 📂 Folder Al-Quran / Zikir
+
+- Klik **"Pilih Folder"** untuk memilih folder yang mengandungi fail-fail MP3
+- Fail akan dimainkan mengikut **susunan nama fail (A → Z)** secara berulang
+- Senarai fail dalam folder dipaparkan di bahagian bawah halaman untuk rujukan
+
+#### ▶️ Kawalan Playback
 
 | Kawalan | Fungsi |
 |---------|--------|
-| **Pilih Folder** | Dialog pilih folder Windows — pilih folder yang mengandungi fail-fail MP3 |
-| **Butang ✕** | Padam pilihan folder |
 | **Togol "Aktifkan Audio Idle"** | Hidupkan atau matikan fungsi audio idle |
-| **🔈 Kelantangan Idle** | Gelangsar kelantangan untuk audio idle (0%–100%) |
+| **🔈 Kelantangan Idle** | Gelantangan khusus untuk audio idle (0%–100%) |
 
 **Cara kerja audio idle:**
-1. Semua fail `.mp3` dalam folder dipilih dan disusun mengikut **nama fail (A→Z)**
-2. Fail pertama mula dimainkan apabila aplikasi dimulakan dan idle diaktifkan
-3. Apabila satu fail selesai, fail seterusnya dimainkan secara automatik
-4. Apabila fail terakhir selesai, senarai berulang semula dari fail pertama
+1. Semua fail `.mp3` dalam folder disusun mengikut nama fail (A→Z)
+2. Fail pertama dimainkan apabila aplikasi dimulakan dan idle diaktifkan
+3. Fail seterusnya dimainkan secara automatik selepas setiap fail selesai
+4. Selepas fail terakhir selesai, senarai berulang semula dari fail pertama
 
-**3 Mod Sambung Semula selepas Azan/Notifikasi:**
+**3 Mod Sambung Semula selepas Azan/Pemberitahuan:**
 
 | Mod | Tingkah Laku |
 |-----|-------------|
@@ -519,9 +508,7 @@ Seksyen ini membolehkan pengguna menetapkan bunyi peringatan **sebelum** masuk w
 
 ### 👩‍💻 Halaman Tentang
 
-Halaman Tentang memaparkan maklumat tentang aplikasi dan pembangunnya dalam format kad yang tersusun:
-
----
+Halaman Tentang memaparkan maklumat tentang aplikasi dan pembangunnya dalam reka bentuk "Digital Sanctuary" yang moden:
 
 #### 🧑‍💻 Kad Pembangun
 
@@ -529,37 +516,25 @@ Halaman Tentang memaparkan maklumat tentang aplikasi dan pembangunnya dalam form
 |----------|-------|
 | **Nama** | Fara Farizul |
 | **Jawatan** | Pembangun Utama |
-| **✉️ Emel** | farxpeace@gmail.com (pautan `mailto:`) |
+| **✉️ Emel** | farxpeace@gmail.com |
 | **📞 Telefon** | +60137974467 |
-
----
 
 #### 🖥️ Kad Maklumat Perisian
 
 | Maklumat | Nilai |
 |----------|-------|
 | **Aplikasi** | myAzan |
-| **Versi** | 0.1.0 |
+| **Platform** | Windows 10 / 11 |
 | **Status Lesen** | Proprietari |
 
----
+#### 🎯 Ciri Utama & Objektif Projek
 
-#### 🎯 Seksyen Objektif Projek
-
-Memaparkan huraian ringkas tentang tujuan pembangunan myAzan — iaitu untuk memudahkan umat Islam menunaikan solat tepat pada waktunya menggunakan data waktu solat JAKIM yang boleh berfungsi tanpa internet.
-
----
-
-#### ⚠️ Notis Lesen
-
-Memaparkan notis proprietary yang menjelaskan bahawa perisian ini adalah hakmilik Fara Farizul dan tidak boleh diedarkan atau diubah suai tanpa kebenaran.
-
----
+Halaman ini turut memaparkan grid ciri-ciri utama aplikasi dan objektif projek — termasuk ketepatan waktu solat, pengalaman minimalis tanpa gangguan, dan integrasi yang harmoni dalam persekitaran desktop harian.
 
 #### 📋 Footer Hak Cipta
 
-- `Hak Cipta Terpelihara © [Tahun Semasa] Fara Farizul`
-- `Direka dengan penuh ketelitian di Malaysia.`
+- `© 2025 Fara Farizul. Hak Cipta Terpelihara.`
+- `Dibuat dengan ♥ di Malaysia`
 
 ---
 
@@ -603,7 +578,7 @@ Berikut adalah nilai lalai yang digunakan oleh myAzan selepas pemasangan baru, s
 | Maghrib | ✅ Ya | 15 minit |
 | Isyak (Isha) | ✅ Ya | 15 minit |
 
-> 💡 Semua tetapan boleh diubah suai melalui halaman **Tetapan** dan **Audio & Notifikasi** dalam aplikasi.
+> 💡 Semua tetapan boleh diubah suai melalui halaman **Tetapan**, **Pemberitahuan**, **Audio**, dan **Zikir** dalam aplikasi.
 
 ---
 
