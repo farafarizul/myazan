@@ -275,11 +275,11 @@ input, select, textarea { font-family: inherit; }
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-.sidebar-brand-name {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #064e3b;
-  line-height: 1.2;
+.sidebar-brand-logo {
+  height: 28px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .sidebar-brand-tag {
