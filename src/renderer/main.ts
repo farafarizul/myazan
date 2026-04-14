@@ -681,6 +681,14 @@ function namaFolder(laluan: string | null): string {
   return bahagian[bahagian.length - 1] ?? laluan;
 }
 
+/** Tetapkan nilai dan label teks gelangsar volume. */
+function setSlider(id: string, nilaiId: string, val: number): void {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  const nilaiEl = document.getElementById(nilaiId);
+  if (el) el.value = String(val);
+  if (nilaiEl) nilaiEl.textContent = `${val}%`;
+}
+
 /** Ikat gelangsar volume kepada nilai teks dan kemas kini state. */
 function initGelansarVolume(
   sliderId: string,
@@ -889,12 +897,6 @@ async function muatTetapan(): Promise<void> {
     if (chkLaunch) chkLaunch.checked = tetapanState.launchOnStartup;
 
     // Volume sliders dalam settings page
-    const setSlider = (id: string, nilaiId: string, val: number): void => {
-      const el = document.getElementById(id) as HTMLInputElement | null;
-      const nilaiEl = document.getElementById(nilaiId);
-      if (el) el.value = String(val);
-      if (nilaiEl) nilaiEl.textContent = `${val}%`;
-    };
     setSlider('azan-volume', 'azan-volume-nilai', tetapanState.azanVolume);
     setSlider('notifikasi-volume', 'notifikasi-volume-nilai', tetapanState.notificationVolume);
     setSlider('idle-volume', 'idle-volume-nilai', tetapanState.idleVolume);
@@ -1020,12 +1022,6 @@ function syncAudioPage(): void {
   if (togolAudioIdle) togolAudioIdle.checked = tetapanState.settings?.idleEnabled ?? false;
 
   // Volume sliders dalam audio page
-  const setSlider = (id: string, nilaiId: string, val: number): void => {
-    const el = document.getElementById(id) as HTMLInputElement | null;
-    const nilaiEl = document.getElementById(nilaiId);
-    if (el) el.value = String(val);
-    if (nilaiEl) nilaiEl.textContent = `${val}%`;
-  };
   setSlider('audio-idle-volume', 'audio-idle-volume-nilai', tetapanState.idleVolume);
 }
 
@@ -1033,7 +1029,7 @@ function syncAudioPage(): void {
 // Sync & init halaman Pemberitahuan
 // ============================================================
 
-const SUSUNAN_WAKTU_PB = ['imsak', 'fajr', 'syuruk', 'dhuha', 'dhuhr', 'asr', 'maghrib', 'isha'];
+const SUSUNAN_WAKTU_PEMBERITAHUAN = ['imsak', 'fajr', 'syuruk', 'dhuha', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
 /** Bina grid kad waktu solat di halaman Pemberitahuan. */
 function binaKadPemberitahuan(notificationSettings: NotificationSetting[]): void {
@@ -1042,7 +1038,7 @@ function binaKadPemberitahuan(notificationSettings: NotificationSetting[]): void
 
   grid.innerHTML = '';
 
-  for (const eventName of SUSUNAN_WAKTU_PB) {
+  for (const eventName of SUSUNAN_WAKTU_PEMBERITAHUAN) {
     const ns = notificationSettings.find((n) => n.eventName === eventName);
     if (!ns) continue;
 
@@ -1119,12 +1115,6 @@ function binaKadPemberitahuan(notificationSettings: NotificationSetting[]): void
 
 /** Sync semula UI halaman Pemberitahuan dari tetapanState semasa navigasi. */
 function syncPemberitahuanPage(): void {
-  const setSlider = (id: string, nilaiId: string, val: number): void => {
-    const el = document.getElementById(id) as HTMLInputElement | null;
-    const nilaiEl = document.getElementById(nilaiId);
-    if (el) el.value = String(val);
-    if (nilaiEl) nilaiEl.textContent = `${val}%`;
-  };
   setSlider('pb-notifikasi-volume', 'pb-notifikasi-volume-nilai', tetapanState.notificationVolume);
   binaKadPemberitahuan(tetapanState.notificationSettings);
 }
