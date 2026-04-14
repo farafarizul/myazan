@@ -1,5 +1,18 @@
 # 🕌 myAzan
 
+![Version](https://img.shields.io/github/v/release/farafarizul/myazan)
+![Downloads](https://img.shields.io/github/downloads/farafarizul/myazan/total)
+![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
+![Offline First](https://img.shields.io/badge/Mode-Offline--First-success)
+![Built with AI](https://img.shields.io/badge/Built%20With-AI-purple)
+
+![Electron](https://img.shields.io/badge/Electron-Desktop-blue?logo=electron)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-green?logo=node.js)
+![SQLite](https://img.shields.io/badge/SQLite-Database-blue?logo=sqlite)
+![TypeScript](https://img.shields.io/badge/TypeScript-Language-blue?logo=typescript) ![myAzan](https://img.shields.io/badge/myAzan-Azan%20Automation-blue) ![Offline First](https://img.shields.io/badge/Mode-Offline--First-success)
+![JAKIM](https://img.shields.io/badge/Data-JAKIM-orange)
+![Malaysia](https://img.shields.io/badge/Region-Malaysia-red)
+
 Aplikasi desktop **Electron.js** untuk **Windows 10/11** yang memainkan azan secara automatik mengikut zon waktu solat JAKIM, menyokong notifikasi awal, serta memainkan bacaan al-Quran atau zikir ketika sistem berada dalam keadaan idle.
 
 > Direka untuk berjalan **24 jam tanpa gangguan** pada mini PC atau komputer desktop biasa.
