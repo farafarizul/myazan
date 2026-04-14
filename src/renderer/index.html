@@ -479,53 +479,34 @@
             <p class="page-header-subtitle">Konfigurasi suara azan dan sistem pemberitahuan waktu solat anda.</p>
           </div>
 
-          <div class="audio-grid">
-            <!-- Audio Idle -->
-            <div class="audio-file-card">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
-                <span class="material-symbols-outlined icon-fill" style="color:var(--secondary);">library_music</span>
-                <h3 style="font-size:1rem;font-weight:700;">Audio Latar (Idle)</h3>
+          <!-- Kawalan Kelantangan -->
+          <div class="audio-volume-card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+              <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">tune</span>
+              <h3 style="font-size:1rem;font-weight:700;">Kawalan Kelantangan</h3>
+            </div>
+            <div class="volume-item">
+              <span class="material-symbols-outlined" style="color:var(--primary);font-size:20px;">mosque</span>
+              <span class="volume-item-label">Azan</span>
+              <div class="volume-row flex-1">
+                <input type="range" id="pa-azan-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="pa-azan-volume-nilai" class="volume-value">100%</span>
               </div>
-
-              <p style="font-size:0.875rem;color:var(--on-surface-variant);margin-bottom:16px;">
-                Mainkan bacaan Al-Quran atau Zikir secara automatik di antara waktu solat.
-              </p>
-
-              <div style="margin-bottom:16px;">
-                <label class="form-label">Folder Audio</label>
-                <div class="file-picker-row" style="margin-bottom:8px;">
-                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--on-surface-variant);">folder</span>
-                  <span id="audio-idle-folder-nama" class="file-picker-name info-teks">Tiada folder dipilih</span>
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <button id="audio-btn-idle-folder" class="btn-secondary flex-1" type="button">
-                    <span class="material-symbols-outlined">folder_open</span>
-                    Pilih Folder
-                  </button>
-                  <button id="audio-btn-idle-folder-padam" class="btn-icon" type="button" title="Padam">
-                    <span class="material-symbols-outlined">close</span>
-                  </button>
-                </div>
+            </div>
+            <div class="volume-item">
+              <span class="material-symbols-outlined" style="color:var(--primary);font-size:20px;">notifications</span>
+              <span class="volume-item-label">Notifikasi</span>
+              <div class="volume-row flex-1">
+                <input type="range" id="pa-notifikasi-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="pa-notifikasi-volume-nilai" class="volume-value">100%</span>
               </div>
-
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;
-                          background:var(--surface-container-low);border-radius:var(--radius-lg);margin-bottom:12px;">
-                <div>
-                  <div style="font-size:0.875rem;font-weight:600;">Aktifkan Audio Idle</div>
-                  <div style="font-size:0.75rem;color:var(--on-surface-variant);">Main secara automatik semasa idle</div>
-                </div>
-                <label class="toggle-wrap">
-                  <input type="checkbox" id="audio-idle-aktif" />
-                  <span class="toggle-track"></span>
-                </label>
-              </div>
-
-              <div>
-                <label class="form-label">Kelantangan Idle</label>
-                <div class="volume-row">
-                  <input type="range" id="audio-idle-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
-                  <span id="audio-idle-volume-nilai" class="volume-value">100%</span>
-                </div>
+            </div>
+            <div class="volume-item">
+              <span class="material-symbols-outlined" style="color:var(--secondary);font-size:20px;">library_music</span>
+              <span class="volume-item-label">Idle</span>
+              <div class="volume-row flex-1">
+                <input type="range" id="pa-idle-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="pa-idle-volume-nilai" class="volume-value">100%</span>
               </div>
             </div>
           </div>

@@ -903,6 +903,9 @@ async function muatTetapan(): Promise<void> {
     setSlider('audio-azan-volume', 'audio-azan-volume-nilai', tetapanState.azanVolume);
     setSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', tetapanState.notificationVolume);
     setSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', tetapanState.idleVolume);
+    setSlider('pa-azan-volume', 'pa-azan-volume-nilai', tetapanState.azanVolume);
+    setSlider('pa-notifikasi-volume', 'pa-notifikasi-volume-nilai', tetapanState.notificationVolume);
+    setSlider('pa-idle-volume', 'pa-idle-volume-nilai', tetapanState.idleVolume);
     setSlider('zikir-idle-volume', 'zikir-idle-volume-nilai', tetapanState.idleVolume);
     setSlider('pb-notifikasi-volume', 'pb-notifikasi-volume-nilai', tetapanState.notificationVolume);
 
@@ -1013,16 +1016,10 @@ async function simpanTetapan(): Promise<void> {
 
 /** Sync semula UI halaman Audio dari tetapanState semasa navigasi ke halaman Audio. */
 function syncAudioPage(): void {
-  // Folder idle
-  const idleFolderNama = document.getElementById('audio-idle-folder-nama');
-  if (idleFolderNama) idleFolderNama.textContent = namaFolder(tetapanState.idleFolderPath);
-
-  // Toggle idle
-  const togolAudioIdle = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
-  if (togolAudioIdle) togolAudioIdle.checked = tetapanState.settings?.idleEnabled ?? false;
-
-  // Volume sliders dalam audio page
-  setSlider('audio-idle-volume', 'audio-idle-volume-nilai', tetapanState.idleVolume);
+  // Kawalan Kelantangan sliders dalam audio page
+  setSlider('pa-azan-volume', 'pa-azan-volume-nilai', tetapanState.azanVolume);
+  setSlider('pa-notifikasi-volume', 'pa-notifikasi-volume-nilai', tetapanState.notificationVolume);
+  setSlider('pa-idle-volume', 'pa-idle-volume-nilai', tetapanState.idleVolume);
 }
 
 // ============================================================
@@ -1314,42 +1311,13 @@ function bindVolumeSlider(
 // ============================================================
 
 function initHalamanAudio(): void {
-  // Folder idle (audio page)
-  document.getElementById('audio-btn-idle-folder')?.addEventListener('click', async () => {
-    const laluan = await window.myAzan.selectAudioFolder();
-    if (laluan === null) return;
-    tetapanState.idleFolderPath = laluan;
-    const span = document.getElementById('audio-idle-folder-nama');
-    if (span) span.textContent = namaFolder(laluan);
-    // Sync ke settings page juga
-    const settingsSpan = document.getElementById('idle-folder-nama');
-    if (settingsSpan) settingsSpan.textContent = namaFolder(laluan);
-  });
-
-  document.getElementById('audio-btn-idle-folder-padam')?.addEventListener('click', () => {
-    tetapanState.idleFolderPath = null;
-    const span = document.getElementById('audio-idle-folder-nama');
-    if (span) span.textContent = 'Tiada folder dipilih';
-    const settingsSpan = document.getElementById('idle-folder-nama');
-    if (settingsSpan) settingsSpan.textContent = 'Tiada folder dipilih';
-  });
-
-  // Toggle idle (audio page) — sync ke state
-  const togolAudioIdle = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
-  togolAudioIdle?.addEventListener('change', () => {
-    const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
-    if (togolSettings) togolSettings.checked = togolAudioIdle.checked;
-  });
-
-  // Volume slider idle dalam audio page
-  bindVolumeSlider('audio-idle-volume', 'audio-idle-volume-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
+  // Kawalan Kelantangan sliders dalam audio page
+  bindVolumeSlider('pa-azan-volume', 'pa-azan-volume-nilai', 'azanVolume', 'azan-volume', 'azan-volume-nilai');
+  bindVolumeSlider('pa-notifikasi-volume', 'pa-notifikasi-volume-nilai', 'notificationVolume', 'notifikasi-volume', 'notifikasi-volume-nilai');
+  bindVolumeSlider('pa-idle-volume', 'pa-idle-volume-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
 
   // Butang simpan audio page
   document.getElementById('btn-simpan-audio')?.addEventListener('click', () => {
-    // Sync togol idle dari audio page ke tetapan sebelum simpan
-    const togolAudio = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
-    const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
-    if (togolAudio && togolSettings) togolSettings.checked = togolAudio.checked;
     simpanTetapan().catch((err) => { console.error('[audio] ralat simpan:', err); });
   });
 }
@@ -1464,12 +1432,10 @@ function initHalamanZikir(): void {
     muatSenaraiZikirFail(null).catch(() => undefined);
   });
 
-  // Toggle idle — sync ke pages lain
+  // Toggle idle — sync ke settings page
   const togolZikir = document.getElementById('zikir-idle-aktif') as HTMLInputElement | null;
   togolZikir?.addEventListener('change', () => {
-    const togolAudio = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
     const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
-    if (togolAudio) togolAudio.checked = togolZikir.checked;
     if (togolSettings) togolSettings.checked = togolZikir.checked;
   });
 
@@ -1478,14 +1444,14 @@ function initHalamanZikir(): void {
   const zikirSlider = document.getElementById('zikir-idle-volume') as HTMLInputElement | null;
   zikirSlider?.addEventListener('input', () => {
     const v = parseInt(zikirSlider.value, 10);
-    const audioSlider = document.getElementById('audio-idle-volume') as HTMLInputElement | null;
-    const audioNilai = document.getElementById('audio-idle-volume-nilai');
     const audioSlider2 = document.getElementById('audio-idle-volume2') as HTMLInputElement | null;
     const audioNilai2 = document.getElementById('audio-idle-volume2-nilai');
-    if (audioSlider) audioSlider.value = String(v);
-    if (audioNilai) audioNilai.textContent = `${v}%`;
+    const paSlider = document.getElementById('pa-idle-volume') as HTMLInputElement | null;
+    const paNilai = document.getElementById('pa-idle-volume-nilai');
     if (audioSlider2) audioSlider2.value = String(v);
     if (audioNilai2) audioNilai2.textContent = `${v}%`;
+    if (paSlider) paSlider.value = String(v);
+    if (paNilai) paNilai.textContent = `${v}%`;
   });
 
   // Simpan tetapan
