@@ -85,17 +85,17 @@ INSERT OR IGNORE INTO zones (code, state_name, zone_name, sort_order, created_at
 ('SBH07', 'Sabah', 'Kinabalu Park',                                                      106, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
 
 -- ============================================================
--- SARAWAK (SRW) — 9 zon
+-- SARAWAK (SWK) — 9 zon
 -- ============================================================
-('SRW01', 'Sarawak', 'Kuching, Bau, Lundu, Sematan',                                    110, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW02', 'Sarawak', 'Sri Aman, Lubok Antu, Betong',                                    111, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW03', 'Sarawak', 'Saratok, Asajaya, Kota Samarahan, Simunjan, Serian, Sebuyau, Meludam', 112, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW04', 'Sarawak', 'Sibu, Dalat, Mukah, Balingian, Tatau, Belawai',                   113, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW05', 'Sarawak', 'Kapit, Song, Kanowit, Belaga, Pakan',                             114, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW06', 'Sarawak', 'Sarikei, Meradong, Daro, Julau, Matu, Pusa',                      115, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW07', 'Sarawak', 'Limbang, Lawas, Sundar, Trusan',                                  116, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW08', 'Sarawak', 'Miri, Niah, Bekenu, Sibuti, Marudi',                              117, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-('SRW09', 'Sarawak', 'Bintulu, Tatau, Belaga',                                          118, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK01', 'Sarawak', 'Kuching, Bau, Lundu, Sematan',                                    110, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK02', 'Sarawak', 'Sri Aman, Lubok Antu, Betong',                                    111, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK03', 'Sarawak', 'Saratok, Asajaya, Kota Samarahan, Simunjan, Serian, Sebuyau, Meludam', 112, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK04', 'Sarawak', 'Sibu, Dalat, Mukah, Balingian, Tatau, Belawai',                   113, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK05', 'Sarawak', 'Kapit, Song, Kanowit, Belaga, Pakan',                             114, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK06', 'Sarawak', 'Sarikei, Meradong, Daro, Julau, Matu, Pusa',                      115, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK07', 'Sarawak', 'Limbang, Lawas, Sundar, Trusan',                                  116, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK08', 'Sarawak', 'Miri, Niah, Bekenu, Sibuti, Marudi',                              117, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+('SWK09', 'Sarawak', 'Bintulu, Tatau, Belaga',                                          118, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
 
 -- ============================================================
 -- SELANGOR (SGR) — 4 zon
