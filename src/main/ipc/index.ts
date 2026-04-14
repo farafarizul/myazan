@@ -166,7 +166,7 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
       return entries
         .filter((e) => e.isFile() && /\.(mp3|wav|ogg|m4a)$/i.test(e.name))
         .map((e) => e.name)
-        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+        .sort((a, b) => a.localeCompare(b, 'ms-MY', { numeric: true, sensitivity: 'base' }));
     } catch {
       return [];
     }

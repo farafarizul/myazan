@@ -1203,9 +1203,12 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
 
   if (!folderPath) {
     senaraiEl.style.display = 'none';
-    if (kosongEl) { kosongEl.style.display = ''; kosongEl.textContent = 'Pilih folder untuk melihat senarai fail.'; }
-    if (kiraanEl) kiraanEl.textContent = '0 fail';
     senaraiEl.innerHTML = '';
+    if (kosongEl) {
+      kosongEl.style.display = '';
+      kosongEl.textContent = 'Pilih folder untuk melihat senarai fail.';
+    }
+    if (kiraanEl) kiraanEl.textContent = '0 fail';
     return;
   }
 
@@ -1216,7 +1219,10 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
 
     if (fails.length === 0) {
       senaraiEl.style.display = 'none';
-      if (kosongEl) { kosongEl.style.display = ''; kosongEl.textContent = 'Tiada fail audio (.mp3, .wav, .ogg, .m4a) dalam folder ini.'; }
+      if (kosongEl) {
+        kosongEl.style.display = '';
+        kosongEl.textContent = 'Tiada fail audio (.mp3, .wav, .ogg, .m4a) dalam folder ini.';
+      }
       if (kiraanEl) kiraanEl.textContent = '0 fail';
       return;
     }
@@ -1237,7 +1243,10 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
     });
   } catch (err) {
     console.error('[zikir] gagal muatkan senarai fail:', err);
-    if (kosongEl) { kosongEl.style.display = ''; kosongEl.textContent = 'Gagal membaca folder. Sila cuba semula.'; }
+    if (kosongEl) {
+      kosongEl.style.display = '';
+      kosongEl.textContent = 'Gagal membaca folder. Sila cuba semula.';
+    }
     if (kiraanEl) kiraanEl.textContent = '—';
     senaraiEl.style.display = 'none';
   }
@@ -1316,10 +1325,6 @@ function initHalamanZikir(): void {
 
   // Simpan tetapan
   document.getElementById('zikir-btn-simpan')?.addEventListener('click', () => {
-    const togolAudio = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
-    const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
-    if (togolZikir && togolAudio) togolAudio.checked = togolZikir.checked;
-    if (togolZikir && togolSettings) togolSettings.checked = togolZikir.checked;
     simpanTetapan().catch((err) => { console.error('[zikir] ralat simpan:', err); });
   });
 }
