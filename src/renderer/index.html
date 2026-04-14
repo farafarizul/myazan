@@ -55,6 +55,10 @@
           <span class="material-symbols-outlined">volume_up</span>
           Audio
         </button>
+        <button class="nav-item" data-page="zikir">
+          <span class="material-symbols-outlined">self_improvement</span>
+          Zikir
+        </button>
         <button class="nav-item" data-page="tentang">
           <span class="material-symbols-outlined">info</span>
           Tentang
@@ -498,6 +502,98 @@
               <span class="material-symbols-outlined">save</span>
               Simpan Tetapan Audio
             </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           Halaman: Zikir
+           =================================================== -->
+      <section id="page-zikir" class="page">
+        <div class="page-content">
+
+          <!-- Header -->
+          <div class="page-header">
+            <h2 class="page-header-title">Zikir &amp; Audio Idle</h2>
+            <p class="page-header-subtitle">Tetapan bacaan Al-Quran atau Zikir yang dimainkan secara automatik di antara waktu solat.</p>
+          </div>
+
+          <!-- Folder Picker Card -->
+          <div class="audio-volume-card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <span class="material-symbols-outlined icon-fill" style="color:var(--secondary);">folder_special</span>
+              <h3 style="font-size:1rem;font-weight:700;">Folder Al-Quran / Zikir</h3>
+            </div>
+            <p style="font-size:0.875rem;color:var(--on-surface-variant);margin-bottom:14px;">
+              Pilih folder yang mengandungi fail MP3 Al-Quran atau Zikir. Fail akan dimainkan mengikut urutan nama fail secara berulang.
+            </p>
+            <div class="file-picker-row" style="margin-bottom:10px;">
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--on-surface-variant);">folder</span>
+              <span id="zikir-folder-nama" class="file-picker-name info-teks">Tiada folder dipilih</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button id="zikir-btn-folder" class="btn-secondary flex-1" type="button">
+                <span class="material-symbols-outlined">folder_open</span>
+                Pilih Folder
+              </button>
+              <button id="zikir-btn-folder-padam" class="btn-icon" type="button" title="Padam">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Toggle + Volume Card -->
+          <div class="audio-volume-card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">tune</span>
+              <h3 style="font-size:1rem;font-weight:700;">Kawalan Playback</h3>
+            </div>
+
+            <!-- Aktifkan Audio Idle -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;
+                        background:var(--surface-container-low);border-radius:var(--radius-lg);margin-bottom:14px;">
+              <div>
+                <div style="font-size:0.875rem;font-weight:600;">Aktifkan Audio Idle</div>
+                <div style="font-size:0.75rem;color:var(--on-surface-variant);">Main secara automatik semasa tiada audio lain aktif</div>
+              </div>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="zikir-idle-aktif" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <!-- Kelantangan -->
+            <div>
+              <label class="form-label">Kelantangan Idle</label>
+              <div class="volume-row">
+                <input type="range" id="zikir-idle-volume" class="volume-slider" min="0" max="100" step="1" value="100" />
+                <span id="zikir-idle-volume-nilai" class="volume-value">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+            <button id="zikir-btn-simpan" class="btn-primary" type="button">
+              <span class="material-symbols-outlined">save</span>
+              Simpan Tetapan Zikir
+            </button>
+          </div>
+
+          <!-- Senarai Fail MP3 -->
+          <div class="audio-volume-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="material-symbols-outlined icon-fill" style="color:var(--tertiary);">queue_music</span>
+                <h3 style="font-size:1rem;font-weight:700;">Senarai Fail dalam Folder</h3>
+              </div>
+              <span id="zikir-fail-kiraan" class="tentang-info-badge" style="font-size:0.75rem;">0 fail</span>
+            </div>
+            <p id="zikir-fail-kosong" style="font-size:0.875rem;color:var(--on-surface-variant);padding:16px 0;text-align:center;">
+              Pilih folder untuk melihat senarai fail.
+            </p>
+            <ol id="zikir-fail-senarai" style="list-style:none;margin:0;padding:0;display:none;max-height:320px;overflow-y:auto;"></ol>
           </div>
 
         </div>
