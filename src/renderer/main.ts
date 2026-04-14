@@ -14,6 +14,7 @@ declare global {
       getPrayerTimesForDate: (zoneCode: string, date: string) => Promise<import('../shared/types').PrayerTimeForDate | null>;
       windowMinimize: () => Promise<void>;
       windowClose: () => Promise<void>;
+      listIdleFiles: (folderPath: string) => Promise<string[]>;
     };
   }
 }
@@ -56,6 +57,10 @@ function initNavigation(): void {
       // Sync audio page controls when navigating to audio page
       if (targetPage === 'audio') {
         syncAudioPage();
+      }
+      // Sync zikir page controls when navigating to zikir page
+      if (targetPage === 'zikir') {
+        syncZikirPage();
       }
     });
   });
@@ -908,6 +913,13 @@ async function muatTetapan(): Promise<void> {
     setSlider('audio-azan-volume', 'audio-azan-volume-nilai', tetapanState.azanVolume);
     setSlider('audio-notifikasi-volume', 'audio-notifikasi-volume-nilai', tetapanState.notificationVolume);
     setSlider('audio-idle-volume2', 'audio-idle-volume2-nilai', tetapanState.idleVolume);
+    setSlider('zikir-idle-volume', 'zikir-idle-volume-nilai', tetapanState.idleVolume);
+
+    // Sync Zikir page folder & toggle
+    const zikirFolderNama = document.getElementById('zikir-folder-nama');
+    if (zikirFolderNama) zikirFolderNama.textContent = namaFolder(settings.idleFolderPath);
+    const zikirTogol = document.getElementById('zikir-idle-aktif') as HTMLInputElement | null;
+    if (zikirTogol) zikirTogol.checked = settings.idleEnabled;
 
     binaSenaraiNotifikasi(tetapanState.notificationSettings);
   } catch (err) {
@@ -1178,6 +1190,146 @@ function initHalamanAudio(): void {
 }
 
 // ============================================================
+// Halaman Zikir — senarai fail & kawalan idle
+// ============================================================
+
+/** Muatkan dan paparkan senarai fail MP3 daripada folder idle ke dalam halaman Zikir. */
+async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
+  const senaraiEl = document.getElementById('zikir-fail-senarai') as HTMLOListElement | null;
+  const kosongEl = document.getElementById('zikir-fail-kosong');
+  const kiraanEl = document.getElementById('zikir-fail-kiraan');
+
+  if (!senaraiEl) return;
+
+  if (!folderPath) {
+    senaraiEl.style.display = 'none';
+    senaraiEl.innerHTML = '';
+    if (kosongEl) {
+      kosongEl.style.display = '';
+      kosongEl.textContent = 'Pilih folder untuk melihat senarai fail.';
+    }
+    if (kiraanEl) kiraanEl.textContent = '0 fail';
+    return;
+  }
+
+  try {
+    const fails = await window.myAzan.listIdleFiles(folderPath);
+
+    senaraiEl.innerHTML = '';
+
+    if (fails.length === 0) {
+      senaraiEl.style.display = 'none';
+      if (kosongEl) {
+        kosongEl.style.display = '';
+        kosongEl.textContent = 'Tiada fail audio (.mp3, .wav, .ogg, .m4a) dalam folder ini.';
+      }
+      if (kiraanEl) kiraanEl.textContent = '0 fail';
+      return;
+    }
+
+    if (kosongEl) kosongEl.style.display = 'none';
+    senaraiEl.style.display = '';
+    if (kiraanEl) kiraanEl.textContent = `${fails.length} fail`;
+
+    fails.forEach((nama, idx) => {
+      const li = document.createElement('li');
+      li.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--outline-variant);font-size:0.875rem;';
+      li.innerHTML = `
+        <span style="min-width:24px;text-align:right;color:var(--on-surface-variant);font-size:0.75rem;">${idx + 1}.</span>
+        <span class="material-symbols-outlined" style="font-size:16px;color:var(--secondary);flex-shrink:0;">audio_file</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${nama}">${nama}</span>
+      `;
+      senaraiEl.appendChild(li);
+    });
+  } catch (err) {
+    console.error('[zikir] gagal muatkan senarai fail:', err);
+    if (kosongEl) {
+      kosongEl.style.display = '';
+      kosongEl.textContent = 'Gagal membaca folder. Sila cuba semula.';
+    }
+    if (kiraanEl) kiraanEl.textContent = '—';
+    senaraiEl.style.display = 'none';
+  }
+}
+
+/** Sync semula UI halaman Zikir dari tetapanState. */
+function syncZikirPage(): void {
+  const folderNama = document.getElementById('zikir-folder-nama');
+  if (folderNama) folderNama.textContent = namaFolder(tetapanState.idleFolderPath);
+
+  const togol = document.getElementById('zikir-idle-aktif') as HTMLInputElement | null;
+  if (togol) togol.checked = tetapanState.settings?.idleEnabled ?? false;
+
+  const slider = document.getElementById('zikir-idle-volume') as HTMLInputElement | null;
+  const nilaiEl = document.getElementById('zikir-idle-volume-nilai');
+  const vol = tetapanState.idleVolume;
+  if (slider) slider.value = String(vol);
+  if (nilaiEl) nilaiEl.textContent = `${vol}%`;
+
+  muatSenaraiZikirFail(tetapanState.idleFolderPath).catch((err) => {
+    console.error('[zikir] gagal sync senarai fail:', err);
+  });
+}
+
+/** Inisialisasi event listeners halaman Zikir. */
+function initHalamanZikir(): void {
+  // Pilih folder
+  document.getElementById('zikir-btn-folder')?.addEventListener('click', async () => {
+    const laluan = await window.myAzan.selectAudioFolder();
+    if (laluan === null) return;
+    tetapanState.idleFolderPath = laluan;
+    const span = document.getElementById('zikir-folder-nama');
+    if (span) span.textContent = namaFolder(laluan);
+    // Sync ke pages lain
+    const audioSpan = document.getElementById('audio-idle-folder-nama');
+    if (audioSpan) audioSpan.textContent = namaFolder(laluan);
+    const settingsSpan = document.getElementById('idle-folder-nama');
+    if (settingsSpan) settingsSpan.textContent = namaFolder(laluan);
+    await muatSenaraiZikirFail(laluan);
+  });
+
+  // Padam folder
+  document.getElementById('zikir-btn-folder-padam')?.addEventListener('click', () => {
+    tetapanState.idleFolderPath = null;
+    const els = ['zikir-folder-nama', 'audio-idle-folder-nama', 'idle-folder-nama'];
+    els.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = 'Tiada folder dipilih';
+    });
+    muatSenaraiZikirFail(null).catch(() => undefined);
+  });
+
+  // Toggle idle — sync ke pages lain
+  const togolZikir = document.getElementById('zikir-idle-aktif') as HTMLInputElement | null;
+  togolZikir?.addEventListener('change', () => {
+    const togolAudio = document.getElementById('audio-idle-aktif') as HTMLInputElement | null;
+    const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
+    if (togolAudio) togolAudio.checked = togolZikir.checked;
+    if (togolSettings) togolSettings.checked = togolZikir.checked;
+  });
+
+  // Volume slider — sync ke pages lain
+  bindVolumeSlider('zikir-idle-volume', 'zikir-idle-volume-nilai', 'idleVolume', 'idle-volume', 'idle-volume-nilai');
+  const zikirSlider = document.getElementById('zikir-idle-volume') as HTMLInputElement | null;
+  zikirSlider?.addEventListener('input', () => {
+    const v = parseInt(zikirSlider.value, 10);
+    const audioSlider = document.getElementById('audio-idle-volume') as HTMLInputElement | null;
+    const audioNilai = document.getElementById('audio-idle-volume-nilai');
+    const audioSlider2 = document.getElementById('audio-idle-volume2') as HTMLInputElement | null;
+    const audioNilai2 = document.getElementById('audio-idle-volume2-nilai');
+    if (audioSlider) audioSlider.value = String(v);
+    if (audioNilai) audioNilai.textContent = `${v}%`;
+    if (audioSlider2) audioSlider2.value = String(v);
+    if (audioNilai2) audioNilai2.textContent = `${v}%`;
+  });
+
+  // Simpan tetapan
+  document.getElementById('zikir-btn-simpan')?.addEventListener('click', () => {
+    simpanTetapan().catch((err) => { console.error('[zikir] ralat simpan:', err); });
+  });
+}
+
+// ============================================================
 // Main
 // ============================================================
 
@@ -1185,6 +1337,7 @@ async function main(): Promise<void> {
   initNavigation();
   initWindowControls();
   initHalamanAudio();
+  initHalamanZikir();
   await Promise.all([loadHalamanUtama(), loadAboutPage(), initHalamanTetapan()]);
 }
 

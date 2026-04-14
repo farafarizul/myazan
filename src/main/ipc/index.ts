@@ -1,4 +1,5 @@
 import { ipcMain, dialog, BrowserWindow } from 'electron';
+import * as fs from 'fs';
 import { IPC_CHANNELS } from '../../shared/constants';
 import {
   AppInfo,
@@ -152,6 +153,23 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
    */
   ipcMain.handle(IPC_CHANNELS.GET_PLAYBACK_STATUS, () => {
     return getPlaybackStatus();
+  });
+
+  /**
+   * Senaraikan fail MP3 dalam folder idle, diisih mengikut nama fail.
+   * Pulangkan senarai nama fail (bukan laluan penuh) atau senarai kosong jika folder tidak sah.
+   */
+  ipcMain.handle(IPC_CHANNELS.LIST_IDLE_FILES, (_event, folderPath: string): string[] => {
+    if (!folderPath) return [];
+    try {
+      const entries = fs.readdirSync(folderPath, { withFileTypes: true });
+      return entries
+        .filter((e) => e.isFile() && /\.(mp3|wav|ogg|m4a)$/i.test(e.name))
+        .map((e) => e.name)
+        .sort((a, b) => a.localeCompare(b, 'ms-MY', { numeric: true, sensitivity: 'base' }));
+    } catch {
+      return [];
+    }
   });
 
   /**

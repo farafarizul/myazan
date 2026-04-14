@@ -87,6 +87,12 @@ contextBridge.exposeInMainWorld('myAzan', {
     ipcRenderer.invoke(IPC_CHANNELS.GET_PLAYBACK_STATUS),
 
   /**
+   * Senaraikan fail MP3/audio dalam folder idle, diisih mengikut nama fail.
+   */
+  listIdleFiles: (folderPath: string): Promise<string[]> =>
+    ipcRenderer.invoke(IPC_CHANNELS.LIST_IDLE_FILES, folderPath),
+
+  /**
    * Minimumkan tetingkap aplikasi.
    */
   windowMinimize: (): Promise<void> =>

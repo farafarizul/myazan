@@ -21,6 +21,7 @@ export const IPC_CHANNELS = {
   GET_PRAYER_TIMES_FOR_DATE: 'get-prayer-times-for-date',
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_CLOSE: 'window-close',
+  LIST_IDLE_FILES: 'list-idle-files',
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
