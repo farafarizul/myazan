@@ -1,4 +1,4 @@
-import type { AppInfo, AppSettings, Zone, NotificationSetting, SaveSettingsPayload } from '../shared/types';
+import type { AppInfo, AppSettings, Zone, NotificationSetting, SaveSettingsPayload, PlaybackStatus } from '../shared/types';
 
 declare global {
   interface Window {
@@ -15,6 +15,7 @@ declare global {
       windowMinimize: () => Promise<void>;
       windowClose: () => Promise<void>;
       listIdleFiles: (folderPath: string) => Promise<string[]>;
+      getPlaybackStatus: () => Promise<PlaybackStatus>;
     };
   }
 }
@@ -65,6 +66,10 @@ function initNavigation(): void {
       // Sync pemberitahuan page controls when navigating to pemberitahuan page
       if (targetPage === 'pemberitahuan') {
         syncPemberitahuanPage();
+      }
+      // Hentikan polling jika navigasi ke halaman lain
+      if (targetPage !== 'zikir') {
+        hentikanZikirPolling();
       }
     });
   });
@@ -1326,6 +1331,36 @@ function initHalamanAudio(): void {
 // Halaman Zikir — senarai fail & kawalan idle
 // ============================================================
 
+/** Polling interval untuk kemaskini indicator sedang dimainkan di halaman Zikir. */
+let zikirPollingInterval: ReturnType<typeof setInterval> | null = null;
+
+/** Kemaskini indicator fail yang sedang dimainkan tanpa membina semula senarai. */
+async function kemaskiniZikirPlayingIndicator(): Promise<void> {
+  const senaraiEl = document.getElementById('zikir-fail-senarai') as HTMLOListElement | null;
+  if (!senaraiEl || senaraiEl.style.display === 'none') return;
+
+  let idleTrack: string | null = null;
+  try {
+    const status = await window.myAzan.getPlaybackStatus();
+    idleTrack = status.idleTrack;
+  } catch {
+    return;
+  }
+
+  const items = senaraiEl.querySelectorAll<HTMLLIElement>('li[data-fail-nama]');
+  items.forEach((li) => {
+    const isPlaying = !!idleTrack && li.dataset.failNama === idleTrack;
+    li.classList.toggle('zikir-fail-sedang-main', isPlaying);
+    const icon = li.querySelector<HTMLElement>('.zikir-fail-icon');
+    if (icon) {
+      icon.textContent = isPlaying ? 'volume_up' : 'audio_file';
+      icon.style.color = isPlaying ? 'var(--primary)' : 'var(--secondary)';
+    }
+    const badge = li.querySelector<HTMLElement>('.zikir-fail-sedang-main-badge');
+    if (badge) badge.style.display = isPlaying ? '' : 'none';
+  });
+}
+
 /** Muatkan dan paparkan senarai fail MP3 daripada folder idle ke dalam halaman Zikir. */
 async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
   const senaraiEl = document.getElementById('zikir-fail-senarai') as HTMLOListElement | null;
@@ -1346,7 +1381,11 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
   }
 
   try {
-    const fails = await window.myAzan.listIdleFiles(folderPath);
+    const [fails, status] = await Promise.all([
+      window.myAzan.listIdleFiles(folderPath),
+      window.myAzan.getPlaybackStatus().catch((): PlaybackStatus => ({ activePriority: 'none', idleTrack: null })),
+    ]);
+    const idleTrack = status.idleTrack;
 
     senaraiEl.innerHTML = '';
 
@@ -1365,12 +1404,16 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
     if (kiraanEl) kiraanEl.textContent = `${fails.length} fail`;
 
     fails.forEach((nama, idx) => {
+      const isPlaying = !!idleTrack && nama === idleTrack;
       const li = document.createElement('li');
+      li.dataset.failNama = nama;
       li.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--outline-variant);font-size:0.875rem;';
+      if (isPlaying) li.classList.add('zikir-fail-sedang-main');
       li.innerHTML = `
         <span style="min-width:24px;text-align:right;color:var(--on-surface-variant);font-size:0.75rem;">${idx + 1}.</span>
-        <span class="material-symbols-outlined" style="font-size:16px;color:var(--secondary);flex-shrink:0;">audio_file</span>
+        <span class="material-symbols-outlined zikir-fail-icon" style="font-size:16px;color:${isPlaying ? 'var(--primary)' : 'var(--secondary)'};flex-shrink:0;">${isPlaying ? 'volume_up' : 'audio_file'}</span>
         <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${nama}">${nama}</span>
+        <span class="zikir-fail-sedang-main-badge" style="display:${isPlaying ? '' : 'none'};">Sedang main</span>
       `;
       senaraiEl.appendChild(li);
     });
@@ -1382,6 +1425,22 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
     }
     if (kiraanEl) kiraanEl.textContent = '—';
     senaraiEl.style.display = 'none';
+  }
+}
+
+/** Mulakan polling indicator untuk halaman Zikir. */
+function mulakanZikirPolling(): void {
+  hentikanZikirPolling();
+  zikirPollingInterval = setInterval(() => {
+    kemaskiniZikirPlayingIndicator().catch(() => undefined);
+  }, 3000);
+}
+
+/** Hentikan polling indicator halaman Zikir. */
+function hentikanZikirPolling(): void {
+  if (zikirPollingInterval !== null) {
+    clearInterval(zikirPollingInterval);
+    zikirPollingInterval = null;
   }
 }
 
@@ -1402,6 +1461,7 @@ function syncZikirPage(): void {
   muatSenaraiZikirFail(tetapanState.idleFolderPath).catch((err) => {
     console.error('[zikir] gagal sync senarai fail:', err);
   });
+  mulakanZikirPolling();
 }
 
 /** Inisialisasi event listeners halaman Zikir. */

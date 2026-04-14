@@ -1982,3 +1982,22 @@ a.about-contact-value:hover { color: var(--primary); text-decoration: underline;
   color: var(--on-surface-variant);
   opacity: 0.55;
 }
+
+
+/* Zikir — indicator fail sedang dimainkan */
+li.zikir-fail-sedang-main {
+  background-color: rgba(0, 53, 38, 0.07);
+  border-radius: 6px;
+}
+
+.zikir-fail-sedang-main-badge {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  background-color: var(--primary-fixed);
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
