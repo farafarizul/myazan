@@ -46,20 +46,19 @@
       "target": [
         {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         },
         {
-          "target": "dir",
-          "arch": [
-            "x64"
-          ]
+          "target": "nsis",
+          "arch": ["x64"]
         }
       ]
     },
     "portable": {
-      "artifactName": "myAzan-${version}-portable.exe"
+      "artifactName": "myAzan-${version}-portable.${ext}"
+    },
+    "nsis": {
+      "artifactName": "myAzan-${version}-installer.${ext}"
     },
     "mac": {
       "icon": "src/assets/icons/icon.icns"
