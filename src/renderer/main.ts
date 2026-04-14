@@ -109,6 +109,16 @@ function masaKeMinit(masa: string): number {
   return (jam ?? 0) * 60 + (minit ?? 0);
 }
 
+/** Tukar masa format 24-jam (HH:MM) kepada format 12-jam (h:MM AM/PM). */
+function format12Jam(masa: string): string {
+  const [jamStr, minitStr] = masa.split(':');
+  const jam = parseInt(jamStr ?? '0', 10);
+  const minit = minitStr ?? '00';
+  const period = jam < 12 ? 'AM' : 'PM';
+  const jam12 = jam % 12 === 0 ? 12 : jam % 12;
+  return `${jam12}:${minit} ${period}`;
+}
+
 /** Format tarikh ke string Bahasa Malaysia. */
 function formatTarikhMasihi(d: Date): string {
   return d.toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -215,10 +225,8 @@ function kemaskiniCountdown(waktu: Array<[string, string | null]>, sekarangMinit
  * Jika tiada data tempatan, cuba sync terlebih dahulu.
  */
 async function loadHalamanUtama(): Promise<void> {
-  const scheduleEl = document.getElementById('prayer-schedule-rows');
   const bentoEl = document.getElementById('db-prayer-bento');
 
-  if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Memuat jadual...</p>';
   if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
 
   startClock();
@@ -227,7 +235,7 @@ async function loadHalamanUtama(): Promise<void> {
   try {
     settings = await window.myAzan.getSettings();
   } catch {
-    if (scheduleEl) scheduleEl.innerHTML = '<p class="info-teks">Gagal mendapatkan tetapan.</p>';
+    if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Gagal mendapatkan tetapan.</p>';
     return;
   }
 
@@ -244,7 +252,6 @@ async function loadHalamanUtama(): Promise<void> {
 
   if (!zoneCode) {
     const msg = '<p class="info-teks">Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.</p>';
-    if (scheduleEl) scheduleEl.innerHTML = msg;
     if (bentoEl) bentoEl.innerHTML = msg;
     return;
   }
@@ -258,14 +265,12 @@ async function loadHalamanUtama(): Promise<void> {
       const syncResult = await window.myAzan.syncPrayerTimes({ zoneCode });
       if (!syncResult.ok) {
         const errMsg = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}.</p>`;
-        if (scheduleEl) scheduleEl.innerHTML = errMsg;
         if (bentoEl) bentoEl.innerHTML = errMsg;
         return;
       }
       data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
     } catch {
       const errMsg = '<p class="info-teks">Gagal memuat turun data waktu solat.</p>';
-      if (scheduleEl) scheduleEl.innerHTML = errMsg;
       if (bentoEl) bentoEl.innerHTML = errMsg;
       return;
     }
@@ -273,7 +278,6 @@ async function loadHalamanUtama(): Promise<void> {
 
   if (!data) {
     const errMsg = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
-    if (scheduleEl) scheduleEl.innerHTML = errMsg;
     if (bentoEl) bentoEl.innerHTML = errMsg;
     return;
   }
@@ -311,29 +315,6 @@ async function loadHalamanUtama(): Promise<void> {
 
   // SVG Timeline chart
   renderTimelineSvg(waktuBerurutan, sekarangMinit, indexBerikutnya);
-
-  // Full prayer schedule table
-  if (scheduleEl) {
-    const rowsHtml = waktuBerurutan
-      .map(([event, masa], i) => {
-        if (!masa) return '';
-        const nama = NAMA_WAKTU[event] ?? event;
-        const isActive = i === indexBerikutnya;
-        const notifEnabled = settings.notificationSettings?.find((n) => n.eventName === event)?.enabled ?? false;
-        const notifIcon = notifEnabled
-          ? `<span class="material-symbols-outlined icon-fill text-primary">notifications_active</span>`
-          : `<span class="material-symbols-outlined" style="color:var(--outline-variant)">notifications_off</span>`;
-
-        return `
-          <div class="prayer-row${isActive ? ' prayer-active' : ''}">
-            <span class="prayer-name">${nama}</span>
-            <span class="prayer-time">${masa.substring(0, 5)}</span>
-            <div class="prayer-notif">${notifIcon}</div>
-          </div>`;
-      })
-      .join('');
-    scheduleEl.innerHTML = rowsHtml || '<p class="info-teks">Tiada data.</p>';
-  }
 
   // Hidden compat: waktu-solat-list
   const listEl = document.getElementById('waktu-solat-list');
@@ -382,7 +363,10 @@ function renderPrayerBentoCards(
       else if (isPast) cardClass += ' db-prayer-past';
 
       const notifEnabled = settings.notificationSettings?.find((n) => n.eventName === event)?.enabled ?? false;
-      const notifDotClass = `db-prayer-notif-dot${notifEnabled ? ' db-notif-on' : ''}`;
+      const notifIconName = notifEnabled ? 'notifications_active' : 'notifications_off';
+      const notifIconStyle = notifEnabled
+        ? 'color:var(--primary);font-variation-settings:"FILL" 1,"wght" 400,"GRAD" 0,"opsz" 24;'
+        : 'color:var(--outline-variant);';
 
       const ikonFill = isNext
         ? 'font-variation-settings:\"FILL\" 1,\"wght\" 400,\"GRAD\" 0,\"opsz\" 24;'
@@ -390,12 +374,12 @@ function renderPrayerBentoCards(
 
       return `
         <div class="${cardClass}">
-          <span class="${notifDotClass}" title="${notifEnabled ? 'Notifikasi Aktif' : 'Notifikasi Tidak Aktif'}"></span>
+          <span class="material-symbols-outlined db-prayer-notif-icon" style="${notifIconStyle}" title="${notifEnabled ? 'Notifikasi Aktif' : 'Notifikasi Tidak Aktif'}">${notifIconName}</span>
           <div class="db-prayer-card-icon">
             <span class="material-symbols-outlined" style="${ikonFill}">${ikon}</span>
           </div>
           <div class="db-prayer-card-name">${nama}</div>
-          <div class="db-prayer-card-time">${masa.substring(0, 5)}</div>
+          <div class="db-prayer-card-time">${format12Jam(masa.substring(0, 5))}</div>
         </div>`;
     })
     .join('');
