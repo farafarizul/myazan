@@ -7,8 +7,6 @@
 ![Built with AI](https://img.shields.io/badge/Built%20With-AI-purple)
 
 ![Electron](https://img.shields.io/badge/Electron-Desktop-blue?logo=electron)
-![Node.js](https://img.shields.io/badge/Node.js-Backend-green?logo=node.js)
-![SQLite](https://img.shields.io/badge/SQLite-Database-blue?logo=sqlite)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Language-blue?logo=typescript) ![myAzan](https://img.shields.io/badge/myAzan-Azan%20Automation-blue) ![Offline First](https://img.shields.io/badge/Mode-Offline--First-success)
 ![JAKIM](https://img.shields.io/badge/Data-JAKIM-orange)
 ![Malaysia](https://img.shields.io/badge/Region-Malaysia-red)
@@ -34,8 +32,10 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 ## 📸 Paparan Aplikasi
 
 ![Halaman Utama](./screenshots/main-page.png)
-![Tetapan](./screenshots/settings-jakim_zones.png)
-![Tetapan](./screenshots/settings-notification.png)
+![Tetapan](./screenshots/settings.png)
+![Tetapan](./screenshots/notifications.png)
+![Tetapan](./screenshots/audio.png)
+![Tetapan](./screenshots/zikir.png)
 
 ## ✨ Ciri Utama
 
