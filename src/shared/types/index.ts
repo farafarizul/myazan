@@ -82,6 +82,24 @@ export interface AppSettings {
   notificationSettings: NotificationSetting[];
   /** Sama ada aplikasi dibuka secara automatik semasa Windows bermula. */
   launchOnStartup: boolean;
+  /** Nama masjid untuk Paparan TV Masjid. */
+  tvMosqueName: string;
+  /** Alamat atau lokasi ringkas masjid untuk Paparan TV. */
+  tvMosqueAddress: string;
+  /** Laman web masjid untuk Paparan TV. */
+  tvMosqueWebsite: string;
+  /** Laluan imej logo masjid. */
+  tvLogoFilePath: string | null;
+  /** Laluan imej asal logo sebelum crop. */
+  tvLogoSourceFilePath: string | null;
+  /** Laluan imej latar Paparan TV. */
+  tvBackgroundFilePath: string | null;
+  /** Laluan imej QR derma. */
+  tvQrFilePath: string | null;
+  /** Laluan imej asal QR sebelum crop. */
+  tvQrSourceFilePath: string | null;
+  /** Teks penghargaan/derma pada panel QR. */
+  tvDonationText: string;
 }
 
 /**
@@ -145,4 +163,13 @@ export interface SaveSettingsPayload {
   notificationSettings?: NotificationSetting[];
   /** Sama ada aplikasi dibuka secara automatik semasa Windows bermula. */
   launchOnStartup?: boolean;
+  tvMosqueName?: string;
+  tvMosqueAddress?: string;
+  tvMosqueWebsite?: string;
+  tvLogoFilePath?: string | null;
+  tvLogoSourceFilePath?: string | null;
+  tvBackgroundFilePath?: string | null;
+  tvQrFilePath?: string | null;
+  tvQrSourceFilePath?: string | null;
+  tvDonationText?: string;
 }

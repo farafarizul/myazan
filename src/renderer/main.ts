@@ -7,11 +7,16 @@ declare global {
       getZones: () => Promise<Zone[]>;
       getSettings: () => Promise<AppSettings>;
       saveSettings: (payload: SaveSettingsPayload) => Promise<{ ok: boolean; error?: string }>;
+      saveCroppedLogo: (dataUrl: string) => Promise<{ ok: boolean; filePath?: string; error?: string }>;
+      saveCroppedQr: (dataUrl: string) => Promise<{ ok: boolean; filePath?: string; error?: string }>;
       setActiveZone: (zoneCode: string) => Promise<{ ok: boolean }>;
       selectAudioFile: () => Promise<string | null>;
+      selectImageFile: () => Promise<string | null>;
       selectAudioFolder: () => Promise<string | null>;
       syncPrayerTimes: (payload: { zoneCode: string; year?: number }) => Promise<{ ok: boolean; error?: string }>;
       getPrayerTimesForDate: (zoneCode: string, date: string) => Promise<import('../shared/types').PrayerTimeForDate | null>;
+      openTvDisplay: () => Promise<{ ok: boolean; error?: string }>;
+      closeTvDisplay: () => Promise<{ ok: boolean; error?: string }>;
       windowMinimize: () => Promise<void>;
       windowClose: () => Promise<void>;
       listIdleFiles: (folderPath: string) => Promise<string[]>;
@@ -66,6 +71,9 @@ function initNavigation(): void {
       // Sync pemberitahuan page controls when navigating to pemberitahuan page
       if (targetPage === 'pemberitahuan') {
         syncPemberitahuanPage();
+      }
+      if (targetPage === 'paparan-tv') {
+        syncPaparanTvPage();
       }
       // Hentikan polling jika navigasi ke halaman lain
       if (targetPage !== 'zikir') {
@@ -643,6 +651,11 @@ interface TetapanState {
   idleVolume: number;
   notificationSettings: NotificationSetting[];
   launchOnStartup: boolean;
+  tvLogoFilePath: string | null;
+  tvLogoSourceFilePath: string | null;
+  tvBackgroundFilePath: string | null;
+  tvQrFilePath: string | null;
+  tvQrSourceFilePath: string | null;
 }
 
 const tetapanState: TetapanState = {
@@ -656,7 +669,25 @@ const tetapanState: TetapanState = {
   idleVolume: 100,
   notificationSettings: [],
   launchOnStartup: true,
+  tvLogoFilePath: null,
+  tvLogoSourceFilePath: null,
+  tvBackgroundFilePath: null,
+  tvQrFilePath: null,
+  tvQrSourceFilePath: null,
 };
+
+type TvCropTarget = 'logo' | 'qr';
+
+let tvToastTimer: ReturnType<typeof setTimeout> | null = null;
+let cropImage: HTMLImageElement | null = null;
+let cropSourcePath: string | null = null;
+let cropTarget: TvCropTarget = 'logo';
+let cropZoom = 1;
+let cropOffsetX = 0;
+let cropOffsetY = 0;
+let cropDragging = false;
+let cropLastX = 0;
+let cropLastY = 0;
 
 // ============================================================
 // Pembantu UI
@@ -684,6 +715,41 @@ function namaFolder(laluan: string | null): string {
   if (!laluan) return 'Tiada folder dipilih';
   const bahagian = laluan.replace(/\\/g, '/').split('/');
   return bahagian[bahagian.length - 1] ?? laluan;
+}
+
+function setInputValue(id: string, value: string): void {
+  const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null;
+  if (el) el.value = value;
+}
+
+function getInputValue(id: string): string {
+  const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null;
+  return el?.value.trim() ?? '';
+}
+
+function setFileLabel(id: string, value: string | null): void {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = namaFail(value);
+  el.title = value ?? '';
+}
+
+function toFileUrl(laluan: string): string {
+  const normalized = laluan.replace(/\\/g, '/');
+  const prefixed = normalized.startsWith('/') ? `file://${normalized}` : `file:///${normalized}`;
+  return encodeURI(prefixed);
+}
+
+function tunjukToastPaparanTv(mesej = 'Tetapan Paparan TV berjaya disimpan.'): void {
+  const toast = document.getElementById('tv-save-toast');
+  if (!toast) return;
+  const messageEl = toast.querySelector('span:last-child');
+  if (messageEl) messageEl.textContent = mesej;
+  toast.hidden = false;
+  if (tvToastTimer) clearTimeout(tvToastTimer);
+  tvToastTimer = setTimeout(() => {
+    toast.hidden = true;
+  }, 3200);
 }
 
 /** Tetapkan nilai dan label teks gelangsar volume. */
@@ -877,6 +943,11 @@ async function muatTetapan(): Promise<void> {
     tetapanState.idleVolume = settings.idleVolume ?? 100;
     tetapanState.notificationSettings = settings.notificationSettings.map((n) => ({ ...n }));
     tetapanState.launchOnStartup = settings.launchOnStartup ?? true;
+    tetapanState.tvLogoFilePath = settings.tvLogoFilePath;
+    tetapanState.tvLogoSourceFilePath = settings.tvLogoSourceFilePath;
+    tetapanState.tvBackgroundFilePath = settings.tvBackgroundFilePath;
+    tetapanState.tvQrFilePath = settings.tvQrFilePath;
+    tetapanState.tvQrSourceFilePath = settings.tvQrSourceFilePath;
 
     isiDropdownNegeri(zones, settings.activeZoneCode);
 
@@ -900,6 +971,8 @@ async function muatTetapan(): Promise<void> {
     // Checkbox launch on startup
     const chkLaunch = document.getElementById('chk-launch-on-startup') as HTMLInputElement | null;
     if (chkLaunch) chkLaunch.checked = tetapanState.launchOnStartup;
+
+    syncPaparanTvPage();
 
     // Volume sliders dalam settings page
     setSlider('azan-volume', 'azan-volume-nilai', tetapanState.azanVolume);
@@ -970,6 +1043,15 @@ async function simpanTetapan(): Promise<void> {
     idleVolume: tetapanState.idleVolume,
     notificationSettings,
     launchOnStartup: tetapanState.launchOnStartup,
+    tvMosqueName: getInputValue('tv-mosque-name'),
+    tvMosqueAddress: getInputValue('tv-mosque-address'),
+    tvMosqueWebsite: getInputValue('tv-mosque-website'),
+    tvDonationText: getInputValue('tv-donation-text'),
+    tvLogoFilePath: tetapanState.tvLogoFilePath,
+    tvLogoSourceFilePath: tetapanState.tvLogoSourceFilePath,
+    tvBackgroundFilePath: tetapanState.tvBackgroundFilePath,
+    tvQrFilePath: tetapanState.tvQrFilePath,
+    tvQrSourceFilePath: tetapanState.tvQrSourceFilePath,
   };
 
   try {
@@ -995,6 +1077,15 @@ async function simpanTetapan(): Promise<void> {
           idleVolume: 100,
           notificationSettings: [],
           launchOnStartup: true,
+          tvMosqueName: 'Masjid',
+          tvMosqueAddress: 'Sila tetapkan alamat masjid.',
+          tvMosqueWebsite: '',
+          tvLogoFilePath: null,
+          tvLogoSourceFilePath: null,
+          tvBackgroundFilePath: null,
+          tvQrFilePath: null,
+          tvQrSourceFilePath: null,
+          tvDonationText: 'Jazakumullahu Khairan atas sumbangan anda.',
         }),
         ...payload,
         notificationSettings,
@@ -1207,6 +1298,336 @@ async function simpanDariPemberitahuan(): Promise<void> {
 // ============================================================
 // Inisialisasi halaman Tetapan
 // ============================================================
+
+function syncPaparanTvPage(): void {
+  const settings = tetapanState.settings;
+  if (!settings) return;
+
+  setInputValue('tv-mosque-name', settings.tvMosqueName);
+  setInputValue('tv-mosque-address', settings.tvMosqueAddress);
+  setInputValue('tv-mosque-website', settings.tvMosqueWebsite);
+  setInputValue('tv-donation-text', settings.tvDonationText);
+  setFileLabel('tv-logo-name', tetapanState.tvLogoFilePath);
+  setFileLabel('tv-bg-name', tetapanState.tvBackgroundFilePath);
+  setFileLabel('tv-qr-name', tetapanState.tvQrFilePath);
+}
+
+function getCropCanvas(): HTMLCanvasElement | null {
+  return document.getElementById('tv-logo-crop-canvas') as HTMLCanvasElement | null;
+}
+
+function getCropDrawState(canvas: HTMLCanvasElement): {
+  drawWidth: number;
+  drawHeight: number;
+  drawX: number;
+  drawY: number;
+} | null {
+  if (!cropImage) return null;
+  const baseScale = Math.max(canvas.width / cropImage.naturalWidth, canvas.height / cropImage.naturalHeight);
+  const drawScale = baseScale * cropZoom;
+  const drawWidth = cropImage.naturalWidth * drawScale;
+  const drawHeight = cropImage.naturalHeight * drawScale;
+  const drawX = canvas.width / 2 - drawWidth / 2 + cropOffsetX;
+  const drawY = canvas.height / 2 - drawHeight / 2 + cropOffsetY;
+  return { drawWidth, drawHeight, drawX, drawY };
+}
+
+function drawLogoCropPreview(): void {
+  const canvas = getCropCanvas();
+  if (!canvas || !cropImage) return;
+  const ctx = canvas.getContext('2d');
+  const state = getCropDrawState(canvas);
+  if (!ctx || !state) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(cropImage, state.drawX, state.drawY, state.drawWidth, state.drawHeight);
+
+  ctx.strokeStyle = 'rgba(0, 78, 57, 0.95)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(1.5, 1.5, canvas.width - 3, canvas.height - 3);
+
+  ctx.strokeStyle = 'rgba(0, 78, 57, 0.22)';
+  ctx.lineWidth = 1;
+  for (let i = 1; i < 3; i++) {
+    const pos = (canvas.width / 3) * i;
+    ctx.beginPath();
+    ctx.moveTo(pos, 0);
+    ctx.lineTo(pos, canvas.height);
+    ctx.moveTo(0, pos);
+    ctx.lineTo(canvas.width, pos);
+    ctx.stroke();
+  }
+}
+
+function tutupModalCropLogo(): void {
+  const modal = document.getElementById('tv-logo-crop-modal');
+  if (modal) modal.hidden = true;
+}
+
+function applyCropModalCopy(target: TvCropTarget): void {
+  setTextById(
+    'tv-crop-title',
+    target === 'logo' ? 'Crop Logo Masjid' : 'Crop QR Derma',
+  );
+  setTextById(
+    'tv-crop-desc',
+    target === 'logo'
+      ? 'Pilih bahagian logo yang sesuai untuk kotak square 1:1 di Paparan TV.'
+      : 'Pilih bahagian QR derma supaya kod imbasan berada penuh dalam kotak 1:1.',
+  );
+  setTextById(
+    'tv-crop-help',
+    target === 'logo'
+      ? 'Drag gambar untuk susun kedudukan. Output akan disimpan sebagai PNG 1024 x 1024.'
+      : 'Pastikan seluruh QR code masuk dalam frame. Output akan disimpan sebagai PNG 1024 x 1024.',
+  );
+  setTextById('tv-crop-save-label', target === 'logo' ? 'Simpan Logo' : 'Simpan QR');
+}
+
+function setTextById(id: string, text: string): void {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+async function bukaModalCropImej(laluan: string, target: TvCropTarget): Promise<void> {
+  const modal = document.getElementById('tv-logo-crop-modal');
+  const zoom = document.getElementById('tv-logo-crop-zoom') as HTMLInputElement | null;
+  if (!modal || !zoom) return;
+
+  cropSourcePath = laluan;
+  cropTarget = target;
+  cropZoom = 1;
+  cropOffsetX = 0;
+  cropOffsetY = 0;
+  zoom.value = '1';
+  applyCropModalCopy(target);
+
+  await new Promise<void>((resolve, reject) => {
+    const img = new Image();
+    img.onload = (): void => {
+      cropImage = img;
+      modal.hidden = false;
+      drawLogoCropPreview();
+      resolve();
+    };
+    img.onerror = (): void => reject(new Error('Gagal memuat imej logo untuk crop.'));
+    img.src = toFileUrl(laluan);
+  });
+}
+
+async function simpanCropImej(): Promise<void> {
+  const canvas = getCropCanvas();
+  const state = canvas ? getCropDrawState(canvas) : null;
+  if (!canvas || !state || !cropImage || !cropSourcePath) return;
+
+  const output = document.createElement('canvas');
+  output.width = 1024;
+  output.height = 1024;
+  const ctx = output.getContext('2d');
+  if (!ctx) return;
+
+  const factor = output.width / canvas.width;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, output.width, output.height);
+  ctx.drawImage(
+    cropImage,
+    state.drawX * factor,
+    state.drawY * factor,
+    state.drawWidth * factor,
+    state.drawHeight * factor,
+  );
+
+  const dataUrl = output.toDataURL('image/png');
+  const result = cropTarget === 'logo'
+    ? await window.myAzan.saveCroppedLogo(dataUrl)
+    : await window.myAzan.saveCroppedQr(dataUrl);
+  if (!result.ok || !result.filePath) {
+    tunjukToastPaparanTv(`Gagal simpan crop ${cropTarget === 'logo' ? 'logo' : 'QR'}: ${result.error ?? 'Ralat tidak diketahui'}`);
+    return;
+  }
+
+  if (cropTarget === 'logo') {
+    tetapanState.tvLogoFilePath = result.filePath;
+    tetapanState.tvLogoSourceFilePath = cropSourcePath;
+    setFileLabel('tv-logo-name', result.filePath);
+  } else {
+    tetapanState.tvQrFilePath = result.filePath;
+    tetapanState.tvQrSourceFilePath = cropSourcePath;
+    setFileLabel('tv-qr-name', result.filePath);
+  }
+  tutupModalCropLogo();
+
+  const saveResult = cropTarget === 'logo'
+    ? await window.myAzan.saveSettings({
+        tvLogoFilePath: tetapanState.tvLogoFilePath,
+        tvLogoSourceFilePath: tetapanState.tvLogoSourceFilePath,
+      })
+    : await window.myAzan.saveSettings({
+        tvQrFilePath: tetapanState.tvQrFilePath,
+        tvQrSourceFilePath: tetapanState.tvQrSourceFilePath,
+      });
+  if (saveResult.ok) {
+    tetapanState.settings = tetapanState.settings
+      ? {
+          ...tetapanState.settings,
+          ...(cropTarget === 'logo'
+            ? {
+                tvLogoFilePath: tetapanState.tvLogoFilePath,
+                tvLogoSourceFilePath: tetapanState.tvLogoSourceFilePath,
+              }
+            : {
+                tvQrFilePath: tetapanState.tvQrFilePath,
+                tvQrSourceFilePath: tetapanState.tvQrSourceFilePath,
+              }),
+        }
+      : tetapanState.settings;
+    tunjukToastPaparanTv(cropTarget === 'logo' ? 'Logo berjaya dicrop dan disimpan.' : 'QR berjaya dicrop dan disimpan.');
+  } else {
+    tunjukToastPaparanTv(`Imej dicrop, tetapi gagal simpan tetapan: ${saveResult.error ?? 'Ralat tidak diketahui'}`);
+  }
+}
+
+async function pilihImejPaparanTv(
+  stateKey: 'tvLogoFilePath' | 'tvBackgroundFilePath' | 'tvQrFilePath',
+  labelId: string,
+): Promise<void> {
+  const laluan = await window.myAzan.selectImageFile();
+  if (laluan === null) return;
+  if (stateKey === 'tvLogoFilePath') {
+    tetapanState.tvLogoSourceFilePath = laluan;
+    setFileLabel(labelId, laluan);
+    await bukaModalCropImej(laluan, 'logo');
+    return;
+  }
+  if (stateKey === 'tvQrFilePath') {
+    tetapanState.tvQrSourceFilePath = laluan;
+    setFileLabel(labelId, laluan);
+    await bukaModalCropImej(laluan, 'qr');
+    return;
+  }
+  tetapanState[stateKey] = laluan;
+  setFileLabel(labelId, laluan);
+}
+
+function padamImejPaparanTv(
+  stateKey: 'tvLogoFilePath' | 'tvBackgroundFilePath' | 'tvQrFilePath',
+  labelId: string,
+): void {
+  tetapanState[stateKey] = null;
+  if (stateKey === 'tvLogoFilePath') {
+    tetapanState.tvLogoSourceFilePath = null;
+  }
+  if (stateKey === 'tvQrFilePath') {
+    tetapanState.tvQrSourceFilePath = null;
+  }
+  setFileLabel(labelId, null);
+}
+
+function initHalamanPaparanTv(): void {
+  document.getElementById('tv-logo-pick')?.addEventListener('click', () => {
+    pilihImejPaparanTv('tvLogoFilePath', 'tv-logo-name').catch((err) => {
+      console.error('[paparan-tv] gagal pilih logo:', err);
+    });
+  });
+  document.getElementById('tv-bg-pick')?.addEventListener('click', () => {
+    pilihImejPaparanTv('tvBackgroundFilePath', 'tv-bg-name').catch((err) => {
+      console.error('[paparan-tv] gagal pilih latar:', err);
+    });
+  });
+  document.getElementById('tv-qr-pick')?.addEventListener('click', () => {
+    pilihImejPaparanTv('tvQrFilePath', 'tv-qr-name').catch((err) => {
+      console.error('[paparan-tv] gagal pilih QR:', err);
+    });
+  });
+
+  document.getElementById('tv-logo-clear')?.addEventListener('click', () => {
+    padamImejPaparanTv('tvLogoFilePath', 'tv-logo-name');
+  });
+  document.getElementById('tv-logo-crop')?.addEventListener('click', () => {
+    const source = tetapanState.tvLogoSourceFilePath ?? tetapanState.tvLogoFilePath;
+    if (!source) {
+      tunjukToastPaparanTv('Sila pilih logo dahulu sebelum crop.');
+      return;
+    }
+    bukaModalCropImej(source, 'logo').catch((err) => {
+      console.error('[paparan-tv] gagal buka crop logo:', err);
+      tunjukToastPaparanTv('Gagal membuka modal crop logo.');
+    });
+  });
+  document.getElementById('tv-qr-crop')?.addEventListener('click', () => {
+    const source = tetapanState.tvQrSourceFilePath ?? tetapanState.tvQrFilePath;
+    if (!source) {
+      tunjukToastPaparanTv('Sila pilih QR dahulu sebelum crop.');
+      return;
+    }
+    bukaModalCropImej(source, 'qr').catch((err) => {
+      console.error('[paparan-tv] gagal buka crop QR:', err);
+      tunjukToastPaparanTv('Gagal membuka modal crop QR.');
+    });
+  });
+  document.getElementById('tv-bg-clear')?.addEventListener('click', () => {
+    padamImejPaparanTv('tvBackgroundFilePath', 'tv-bg-name');
+  });
+  document.getElementById('tv-qr-clear')?.addEventListener('click', () => {
+    padamImejPaparanTv('tvQrFilePath', 'tv-qr-name');
+  });
+
+  document.getElementById('tv-save-settings')?.addEventListener('click', () => {
+    simpanTetapan().then(() => {
+      tunjukToastPaparanTv();
+    }).catch((err) => {
+      console.error('[paparan-tv] ralat simpan:', err);
+    });
+  });
+
+  document.getElementById('tv-open-display')?.addEventListener('click', async () => {
+    await simpanTetapan();
+    const hasil = await window.myAzan.openTvDisplay();
+    if (!hasil.ok) {
+      tunjukStatusTetapan(`Gagal buka Paparan TV: ${hasil.error ?? 'Ralat tidak diketahui'}`, 'ralat');
+    }
+  });
+
+  const cropCanvas = getCropCanvas();
+  const cropZoomInput = document.getElementById('tv-logo-crop-zoom') as HTMLInputElement | null;
+  cropZoomInput?.addEventListener('input', () => {
+    cropZoom = parseFloat(cropZoomInput.value) || 1;
+    drawLogoCropPreview();
+  });
+
+  cropCanvas?.addEventListener('pointerdown', (event) => {
+    cropDragging = true;
+    cropLastX = event.clientX;
+    cropLastY = event.clientY;
+    cropCanvas.setPointerCapture(event.pointerId);
+  });
+  cropCanvas?.addEventListener('pointermove', (event) => {
+    if (!cropDragging) return;
+    cropOffsetX += event.clientX - cropLastX;
+    cropOffsetY += event.clientY - cropLastY;
+    cropLastX = event.clientX;
+    cropLastY = event.clientY;
+    drawLogoCropPreview();
+  });
+  cropCanvas?.addEventListener('pointerup', (event) => {
+    cropDragging = false;
+    cropCanvas.releasePointerCapture(event.pointerId);
+  });
+  cropCanvas?.addEventListener('pointercancel', () => {
+    cropDragging = false;
+  });
+
+  document.getElementById('tv-logo-crop-close')?.addEventListener('click', tutupModalCropLogo);
+  document.getElementById('tv-logo-crop-cancel')?.addEventListener('click', tutupModalCropLogo);
+  document.getElementById('tv-logo-crop-save')?.addEventListener('click', () => {
+    simpanCropImej().catch((err) => {
+      console.error('[paparan-tv] gagal simpan crop imej:', err);
+      tunjukToastPaparanTv('Gagal simpan crop imej.');
+    });
+  });
+}
 
 async function initHalamanTetapan(): Promise<void> {
   // Dropdown negeri → kemas kini dropdown zon
@@ -1530,6 +1951,7 @@ async function main(): Promise<void> {
   initHalamanAudio();
   initHalamanZikir();
   initHalamanPemberitahuan();
+  initHalamanPaparanTv();
   await Promise.all([loadHalamanUtama(), loadAboutPage(), initHalamanTetapan()]);
 }
 

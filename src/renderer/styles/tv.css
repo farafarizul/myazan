@@ -1,0 +1,541 @@
+.tv-body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #003526;
+  color: #ffffff;
+}
+
+.tv-screen {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding: 2.2vh 1.6vw 2vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1.3vh;
+  background:
+    radial-gradient(circle at 25% 15%, rgba(251, 191, 36, 0.08), transparent 28%),
+    linear-gradient(135deg, #00281f 0%, #003f31 46%, #00261f 100%);
+  user-select: none;
+}
+
+.tv-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 34px 34px;
+  pointer-events: none;
+}
+
+.tv-header,
+.tv-content,
+.tv-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.tv-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1.6vw;
+  min-height: 11vh;
+}
+
+.tv-brand {
+  display: contents;
+}
+
+.tv-logo-wrap {
+  width: clamp(92px, 7.4vw, 132px);
+  aspect-ratio: 1;
+  border-radius: 22px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.tv-logo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+
+.tv-logo-wrap .material-symbols-outlined {
+  color: #00563f;
+  font-size: clamp(40px, 4vw, 72px);
+}
+
+.tv-logo-wrap [hidden],
+.tv-qr-card [hidden] {
+  display: none !important;
+}
+
+.tv-brand-copy {
+  min-width: 0;
+  padding: 0.6vh 0;
+  overflow: hidden;
+}
+
+.tv-brand-copy h1 {
+  max-width: 100%;
+  font-size: clamp(26px, 2.1vw, 44px);
+  line-height: 1.12;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: #ffffff;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-brand-copy p {
+  margin-top: 1vh;
+  font-size: clamp(14px, 1.18vw, 23px);
+  line-height: 1.25;
+  font-weight: 700;
+  color: #f5c451;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-date-card,
+.tv-clock-card {
+  padding-left: 1.4vw;
+  border-left: 1px solid rgba(245, 196, 81, 0.75);
+  white-space: nowrap;
+}
+
+.tv-date-card {
+  font-size: clamp(16px, 1.35vw, 25px);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tv-clock-card {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(13px, 1.1vw, 20px);
+  font-weight: 600;
+}
+
+.tv-clock-card #tv-clock {
+  font-size: clamp(34px, 3vw, 58px);
+  line-height: 1;
+  font-weight: 800;
+  color: #ffc94f;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.6vh;
+}
+
+.tv-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.78fr) minmax(300px, 0.68fr);
+  gap: 0.75vw;
+  min-height: 0;
+}
+
+.tv-countdown-panel,
+.tv-prayer-panel,
+.tv-donation-panel,
+.tv-footer {
+  border: 1px solid rgba(245, 196, 81, 0.68);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 51, 40, 0.82);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+.tv-countdown-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.tv-bg-image,
+.tv-countdown-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.tv-bg-image {
+  background:
+    linear-gradient(135deg, rgba(0, 51, 40, 0.88), rgba(0, 25, 22, 0.7)),
+    url('../images/logo.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.45;
+}
+
+.tv-countdown-overlay {
+  background: linear-gradient(180deg, rgba(0, 28, 24, 0.48), rgba(0, 28, 24, 0.9));
+}
+
+.tv-countdown-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 4vh 3vw 13vh;
+}
+
+.tv-next-label {
+  font-size: clamp(20px, 1.7vw, 34px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tv-next-prayer {
+  margin-top: 0.4vh;
+  font-size: clamp(28px, 2.35vw, 48px);
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.tv-countdown-box {
+  width: min(560px, 78%);
+  margin: 3vh auto 0;
+  padding: 3vh 3vw 2.5vh;
+  border: 1px solid rgba(245, 196, 81, 0.85);
+  border-radius: 18px;
+  background: rgba(0, 20, 18, 0.62);
+}
+
+.tv-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  column-gap: clamp(18px, 2.1vw, 36px);
+}
+
+.tv-countdown-unit {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+}
+
+.tv-countdown-unit:not(:last-child)::after {
+  content: ':';
+  position: absolute;
+  top: 0;
+  right: calc(clamp(18px, 2.1vw, 36px) / -2 - 0.18em);
+  color: #ffc94f;
+  font-size: clamp(46px, 4.8vw, 88px);
+  line-height: 1;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tv-countdown-value {
+  display: block;
+  color: #ffc94f;
+  font-size: clamp(46px, 4.8vw, 88px);
+  line-height: 1;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tv-countdown-label {
+  display: block;
+  margin-top: 1.4vh;
+  color: #ffc94f;
+  font-size: clamp(16px, 1.2vw, 24px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tv-quote {
+  position: absolute;
+  left: 2vw;
+  right: 2vw;
+  bottom: 3vh;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.3vw;
+  padding: 1.8vh 1.4vw;
+  border-radius: 8px;
+  background: rgba(0, 36, 32, 0.62);
+}
+
+.tv-quote .material-symbols-outlined {
+  color: #ffc94f;
+  font-size: clamp(32px, 3vw, 58px);
+}
+
+.tv-quote p {
+  font-size: clamp(15px, 1.1vw, 22px);
+  line-height: 1.45;
+  color: #ffffff;
+}
+
+.tv-panel-title {
+  min-height: 7.2vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7vw;
+  background: rgba(0, 72, 55, 0.82);
+  border-bottom: 1px solid rgba(245, 196, 81, 0.45);
+  font-size: clamp(18px, 1.45vw, 30px);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tv-panel-title .material-symbols-outlined {
+  font-size: clamp(24px, 2vw, 40px);
+}
+
+.tv-prayer-list {
+  height: calc(100% - 7.2vh);
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  background: #ffffff;
+  color: #101010;
+}
+
+.tv-prayer-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1vw;
+  padding: 0 1.5vw;
+  border-bottom: 1px solid #d8d8d8;
+  font-size: clamp(17px, 1.45vw, 28px);
+}
+
+.tv-prayer-row:last-child {
+  border-bottom: none;
+}
+
+.tv-prayer-row .material-symbols-outlined {
+  color: #006048;
+  font-size: clamp(30px, 2.5vw, 48px);
+}
+
+.tv-prayer-name {
+  font-weight: 600;
+}
+
+.tv-prayer-time {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tv-prayer-row.tv-next {
+  background: linear-gradient(135deg, #00513c, #003d2f);
+  color: #ffffff;
+}
+
+.tv-prayer-row.tv-next .material-symbols-outlined {
+  color: #ffffff;
+}
+
+.tv-donation-panel {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-width: 0;
+}
+
+.tv-donation-copy {
+  text-align: center;
+  padding: 2.6vh 1vw 1.8vh;
+  font-size: clamp(16px, 1.28vw, 24px);
+  font-weight: 700;
+}
+
+.tv-donation-copy strong {
+  display: block;
+  font-size: clamp(26px, 2vw, 40px);
+  line-height: 1.15;
+}
+
+.tv-qr-card {
+  align-self: center;
+  justify-self: center;
+  width: min(72%, 300px);
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.tv-qr-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#tv-qr-placeholder {
+  color: #006048;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  font-size: clamp(13px, 1vw, 18px);
+  font-weight: 700;
+}
+
+#tv-qr-placeholder .material-symbols-outlined {
+  font-size: clamp(60px, 5vw, 96px);
+}
+
+#tv-donation-text {
+  padding: 1.8vh 1.6vw 3vh;
+  font-size: clamp(16px, 1.28vw, 24px);
+  line-height: 1.35;
+  font-weight: 700;
+  text-align: center;
+}
+
+.tv-footer {
+  min-height: 7vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2vw;
+  padding: 0 1.4vw;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(14px, 1.1vw, 22px);
+  font-weight: 600;
+}
+
+.tv-footer > div {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  min-width: 0;
+}
+
+.tv-footer > div:first-child span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-footer .material-symbols-outlined {
+  font-size: clamp(24px, 2vw, 38px);
+}
+
+.tv-hidden-exit {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  cursor: default;
+}
+
+.tv-hidden-exit::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 0;
+  height: 0;
+  border-radius: 999px;
+  background: rgba(255, 201, 79, 0.8);
+  transition: width 2s linear, height 2s linear;
+}
+
+.tv-hidden-exit.tv-holding {
+  opacity: 0.18;
+}
+
+.tv-hidden-exit.tv-holding::after {
+  width: 20px;
+  height: 20px;
+}
+
+.tv-exit-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.tv-exit-dialog[hidden] {
+  display: none;
+}
+
+.tv-exit-card {
+  width: min(460px, 90vw);
+  padding: 28px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+}
+
+.tv-exit-card h2 {
+  font-size: 1.35rem;
+  margin-bottom: 8px;
+}
+
+.tv-exit-card p {
+  color: #4b5563;
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+
+.tv-exit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.tv-exit-actions button {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+#tv-exit-cancel {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+#tv-exit-confirm {
+  background: #004e39;
+  color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .tv-screen {
+    padding: 1.4vh 1vw;
+  }
+
+  .tv-content {
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr) minmax(260px, 0.7fr);
+  }
+
+  .tv-header {
+    gap: 1vw;
+  }
+}

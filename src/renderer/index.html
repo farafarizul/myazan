@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self';"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' file: data:;"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>myAzan</title>
@@ -54,6 +54,10 @@
         <button class="nav-item" data-page="pemberitahuan">
           <span class="material-symbols-outlined">notifications_active</span>
           Pemberitahuan
+        </button>
+        <button class="nav-item" data-page="paparan-tv">
+          <span class="material-symbols-outlined">tv</span>
+          Paparan TV
         </button>
         <button class="nav-item" data-page="audio">
           <span class="material-symbols-outlined">volume_up</span>
@@ -320,6 +324,139 @@
                 <span class="material-symbols-outlined">save</span>
                 Simpan Perubahan
               </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           Halaman: Paparan TV Masjid
+           =================================================== -->
+      <section id="page-paparan-tv" class="page">
+        <div class="page-content">
+
+          <div class="page-header">
+            <h2 class="page-header-title">Paparan TV Masjid</h2>
+            <p class="page-header-subtitle">Sediakan identiti masjid, QR derma, dan buka paparan fullscreen untuk TV.</p>
+          </div>
+
+          <div class="tv-admin-grid">
+            <div class="audio-volume-card tv-admin-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;">
+                <span class="material-symbols-outlined icon-fill" style="color:var(--primary);">mosque</span>
+                <h3 style="font-size:1rem;font-weight:700;">Maklumat Masjid</h3>
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="tv-mosque-name">Nama Masjid</label>
+                <input id="tv-mosque-name" class="input-field" type="text" placeholder="Masjid" />
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="tv-mosque-address">Alamat / Lokasi</label>
+                <textarea id="tv-mosque-address" class="input-field tv-textarea" placeholder="Alamat masjid"></textarea>
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="tv-mosque-website">Website</label>
+                <input id="tv-mosque-website" class="input-field" type="text" placeholder="www.masjid.com.my" />
+              </div>
+              <div class="mykariah-promo-card" aria-label="Promosi myKariah">
+                <img src="images/mykariah-promo.png" alt="Dapatkan website percuma di myKariah" />
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="tv-donation-text">Teks Derma</label>
+                <textarea id="tv-donation-text" class="input-field tv-textarea" placeholder="Jazakumullahu Khairan atas sumbangan anda."></textarea>
+              </div>
+            </div>
+
+            <div class="audio-volume-card tv-admin-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;">
+                <span class="material-symbols-outlined icon-fill" style="color:var(--secondary);">image</span>
+                <h3 style="font-size:1rem;font-weight:700;">Aset Paparan</h3>
+              </div>
+              <div class="tv-file-row">
+                <div>
+                  <div class="tv-file-label">Logo Masjid</div>
+                  <div class="file-picker-name" id="tv-logo-name">Tiada fail dipilih</div>
+                </div>
+                <div class="tv-file-actions">
+                  <button id="tv-logo-pick" class="btn-secondary" type="button"><span class="material-symbols-outlined">upload</span>Pilih</button>
+                  <button id="tv-logo-crop" class="btn-secondary" type="button"><span class="material-symbols-outlined">crop</span>Crop</button>
+                  <button id="tv-logo-clear" class="btn-icon" type="button" title="Padam"><span class="material-symbols-outlined">close</span></button>
+                </div>
+              </div>
+              <div class="tv-file-row">
+                <div>
+                  <div class="tv-file-label">Gambar Latar</div>
+                  <div class="file-picker-name" id="tv-bg-name">Tiada fail dipilih</div>
+                </div>
+                <div class="tv-file-actions">
+                  <button id="tv-bg-pick" class="btn-secondary" type="button"><span class="material-symbols-outlined">upload</span>Pilih</button>
+                  <button id="tv-bg-clear" class="btn-icon" type="button" title="Padam"><span class="material-symbols-outlined">close</span></button>
+                </div>
+              </div>
+              <div class="tv-file-row">
+                <div>
+                  <div class="tv-file-label">QR Derma</div>
+                  <div class="file-picker-name" id="tv-qr-name">Tiada fail dipilih</div>
+                </div>
+                <div class="tv-file-actions">
+                  <button id="tv-qr-pick" class="btn-secondary" type="button"><span class="material-symbols-outlined">upload</span>Pilih</button>
+                  <button id="tv-qr-crop" class="btn-secondary" type="button"><span class="material-symbols-outlined">crop</span>Crop</button>
+                  <button id="tv-qr-clear" class="btn-icon" type="button" title="Padam"><span class="material-symbols-outlined">close</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tv-launch-panel">
+            <div>
+              <div class="tv-launch-title">Paparan fullscreen untuk TV masjid</div>
+              <div class="tv-launch-copy">Simpan tetapan sebelum buka kiosk jika ada perubahan pada logo, QR, atau maklumat masjid.</div>
+            </div>
+            <div class="tv-launch-actions">
+              <button id="tv-save-settings" class="btn-ghost" type="button">
+                <span class="material-symbols-outlined">save</span>
+                Simpan Tetapan
+              </button>
+              <button id="tv-open-display" class="btn-primary" type="button">
+                <span class="material-symbols-outlined">open_in_full</span>
+                Buka Paparan TV
+              </button>
+            </div>
+          </div>
+          <div id="tv-save-toast" class="tv-save-toast" role="status" aria-live="polite" hidden>
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>Tetapan Paparan TV berjaya disimpan.</span>
+          </div>
+
+          <div id="tv-logo-crop-modal" class="tv-logo-crop-modal" hidden>
+            <div class="tv-logo-crop-card">
+              <div class="tv-logo-crop-header">
+                <div>
+                  <h3 id="tv-crop-title">Crop Logo Masjid</h3>
+                  <p id="tv-crop-desc">Pilih bahagian logo yang sesuai untuk kotak square 1:1 di Paparan TV.</p>
+                </div>
+                <button id="tv-logo-crop-close" class="btn-icon" type="button" title="Tutup">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <div class="tv-logo-crop-body">
+                <div class="tv-logo-crop-canvas-wrap">
+                  <canvas id="tv-logo-crop-canvas" width="420" height="420"></canvas>
+                </div>
+                <div class="tv-logo-crop-controls">
+                  <label class="form-label" for="tv-logo-crop-zoom">Zoom</label>
+                  <input id="tv-logo-crop-zoom" class="volume-slider" type="range" min="1" max="4" step="0.01" value="1" />
+                  <p id="tv-crop-help">Drag gambar untuk susun kedudukan. Output akan disimpan sebagai PNG 1024 x 1024.</p>
+                </div>
+              </div>
+              <div class="tv-logo-crop-actions">
+                <button id="tv-logo-crop-cancel" class="btn-ghost" type="button">Batal</button>
+                <button id="tv-logo-crop-save" class="btn-primary" type="button">
+                  <span class="material-symbols-outlined">save</span>
+                  <span id="tv-crop-save-label">Simpan Logo</span>
+                </button>
+              </div>
             </div>
           </div>
 

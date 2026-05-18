@@ -58,6 +58,18 @@ const rendererConfig = {
   tsconfig: path.join(__dirname, '../tsconfig.renderer.json'),
 };
 
+/** @type {import('esbuild').BuildOptions} */
+const tvRendererConfig = {
+  entryPoints: [path.join(__dirname, '../src/renderer/tv.ts')],
+  bundle: true,
+  platform: 'browser',
+  target: 'chrome132',
+  format: 'iife',
+  outfile: path.join(__dirname, '../dist/renderer/tv.js'),
+  sourcemap: true,
+  tsconfig: path.join(__dirname, '../tsconfig.renderer.json'),
+};
+
 /**
  * Copy SQL migration files to dist/main/database/migrations/
  * Esbuild bundles TypeScript but cannot embed SQL files, so we copy them manually.
@@ -121,7 +133,7 @@ function copyRendererAssets() {
     fs.mkdirSync(outDir, { recursive: true });
   }
 
-  const staticFiles = ['index.html', 'audio.html', 'styles/main.css'];
+  const staticFiles = ['index.html', 'audio.html', 'tv.html', 'styles/main.css', 'styles/tv.css'];
   for (const file of staticFiles) {
     const srcFile = path.join(srcDir, file);
     const outFile = path.join(outDir, file);
@@ -148,12 +160,14 @@ async function build() {
     const preloadCtx = await esbuild.context(preloadConfig);
     const audioWindowPreloadCtx = await esbuild.context(audioWindowPreloadConfig);
     const rendererCtx = await esbuild.context(rendererConfig);
+    const tvRendererCtx = await esbuild.context(tvRendererConfig);
 
     await Promise.all([
       mainCtx.watch(),
       preloadCtx.watch(),
       audioWindowPreloadCtx.watch(),
       rendererCtx.watch(),
+      tvRendererCtx.watch(),
     ]);
 
     copyMigrations();
@@ -166,6 +180,7 @@ async function build() {
       esbuild.build(preloadConfig),
       esbuild.build(audioWindowPreloadConfig),
       esbuild.build(rendererConfig),
+      esbuild.build(tvRendererConfig),
     ]);
 
     copyMigrations();

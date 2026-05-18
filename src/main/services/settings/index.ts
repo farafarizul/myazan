@@ -36,6 +36,22 @@ function isValidFolderPath(folderPath: string | null | undefined): boolean {
   }
 }
 
+/** Pulangkan true jika laluan menunjuk ke fail imej yang wujud. */
+function isValidImagePath(filePath: string | null | undefined): boolean {
+  if (!filePath) return true;
+  try {
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) return false;
+    return /\.(png|jpe?g|webp|gif|svg)$/i.test(filePath);
+  } catch {
+    return false;
+  }
+}
+
+function getTextSetting(key: string, fallback: string): string {
+  const value = getSetting(key);
+  return value && value.trim().length > 0 ? value : fallback;
+}
+
 // ============================================================
 // Baca tetapan
 // ============================================================
@@ -66,6 +82,18 @@ export function getSettings(): AppSettings {
     idleVolume: audio?.idle_volume ?? 100,
     notificationSettings,
     launchOnStartup: getSetting('launch_on_startup') !== 'false',
+    tvMosqueName: getTextSetting('tv_mosque_name', 'Masjid'),
+    tvMosqueAddress: getTextSetting('tv_mosque_address', 'Sila tetapkan alamat masjid.'),
+    tvMosqueWebsite: getTextSetting('tv_mosque_website', ''),
+    tvLogoFilePath: getSetting('tv_logo_file_path'),
+    tvLogoSourceFilePath: getSetting('tv_logo_source_file_path'),
+    tvBackgroundFilePath: getSetting('tv_background_file_path'),
+    tvQrFilePath: getSetting('tv_qr_file_path'),
+    tvQrSourceFilePath: getSetting('tv_qr_source_file_path'),
+    tvDonationText: getTextSetting(
+      'tv_donation_text',
+      'Jazakumullahu Khairan atas sumbangan anda.',
+    ),
   };
 }
 
@@ -105,6 +133,31 @@ export function saveSettings(payload: SaveSettingsPayload): void {
   if ('idleFolderPath' in payload && !isValidFolderPath(payload.idleFolderPath)) {
     throw new SettingsValidationError(
       `Folder audio idle tidak ditemui: ${payload.idleFolderPath}`,
+    );
+  }
+  if ('tvLogoFilePath' in payload && !isValidImagePath(payload.tvLogoFilePath)) {
+    throw new SettingsValidationError(
+      `Fail logo Paparan TV tidak sah: ${payload.tvLogoFilePath}`,
+    );
+  }
+  if ('tvLogoSourceFilePath' in payload && !isValidImagePath(payload.tvLogoSourceFilePath)) {
+    throw new SettingsValidationError(
+      `Fail asal logo Paparan TV tidak sah: ${payload.tvLogoSourceFilePath}`,
+    );
+  }
+  if ('tvBackgroundFilePath' in payload && !isValidImagePath(payload.tvBackgroundFilePath)) {
+    throw new SettingsValidationError(
+      `Fail latar Paparan TV tidak sah: ${payload.tvBackgroundFilePath}`,
+    );
+  }
+  if ('tvQrFilePath' in payload && !isValidImagePath(payload.tvQrFilePath)) {
+    throw new SettingsValidationError(
+      `Fail QR Paparan TV tidak sah: ${payload.tvQrFilePath}`,
+    );
+  }
+  if ('tvQrSourceFilePath' in payload && !isValidImagePath(payload.tvQrSourceFilePath)) {
+    throw new SettingsValidationError(
+      `Fail asal QR Paparan TV tidak sah: ${payload.tvQrSourceFilePath}`,
     );
   }
 
@@ -157,6 +210,33 @@ export function saveSettings(payload: SaveSettingsPayload): void {
     const enabled = payload.launchOnStartup;
     setSetting('launch_on_startup', enabled ? 'true' : 'false', 'boolean');
     app.setLoginItemSettings({ openAtLogin: enabled });
+  }
+
+  const textSettings: Array<[keyof SaveSettingsPayload, string]> = [
+    ['tvMosqueName', 'tv_mosque_name'],
+    ['tvMosqueAddress', 'tv_mosque_address'],
+    ['tvMosqueWebsite', 'tv_mosque_website'],
+    ['tvDonationText', 'tv_donation_text'],
+  ];
+  for (const [payloadKey, settingKey] of textSettings) {
+    if (payloadKey in payload) {
+      const value = payload[payloadKey];
+      setSetting(settingKey, typeof value === 'string' ? value.trim() : '', 'string');
+    }
+  }
+
+  const imageSettings: Array<[keyof SaveSettingsPayload, string]> = [
+    ['tvLogoFilePath', 'tv_logo_file_path'],
+    ['tvLogoSourceFilePath', 'tv_logo_source_file_path'],
+    ['tvBackgroundFilePath', 'tv_background_file_path'],
+    ['tvQrFilePath', 'tv_qr_file_path'],
+    ['tvQrSourceFilePath', 'tv_qr_source_file_path'],
+  ];
+  for (const [payloadKey, settingKey] of imageSettings) {
+    if (payloadKey in payload) {
+      const value = payload[payloadKey];
+      setSetting(settingKey, typeof value === 'string' && value.length > 0 ? value : null, 'string');
+    }
   }
 }
 

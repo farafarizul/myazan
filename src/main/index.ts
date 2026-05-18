@@ -7,6 +7,7 @@ import { stopScheduler } from './services/scheduler';
 import { stopAudioEngine } from './services/audio';
 
 let mainWindow: BrowserWindow | null = null;
+let tvWindow: BrowserWindow | null = null;
 // Isytiharkan di peringkat global supaya tidak dipadam oleh garbage collector
 let tray: Tray | null = null;
 // Flag untuk membezakan antara operasi 'close' (sembunyikan) dan 'quit' (tutup sepenuhnya)
@@ -63,6 +64,55 @@ function createMainWindow(): void {
   });
 }
 
+function createTvWindow(): void {
+  if (tvWindow && !tvWindow.isDestroyed()) {
+    tvWindow.show();
+    tvWindow.focus();
+    return;
+  }
+
+  tvWindow = new BrowserWindow({
+    width: 1280,
+    height: 720,
+    minWidth: 1024,
+    minHeight: 576,
+    title: 'Paparan TV Masjid',
+    icon: getAppIcon(),
+    frame: false,
+    fullscreen: true,
+    autoHideMenuBar: true,
+    backgroundColor: '#003526',
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,
+    },
+    show: false,
+  });
+
+  tvWindow.loadFile(path.join(__dirname, '../renderer/tv.html'));
+
+  tvWindow.once('ready-to-show', () => {
+    tvWindow?.setFullScreen(true);
+    tvWindow?.show();
+    tvWindow?.focus();
+  });
+
+  tvWindow.on('closed', () => {
+    tvWindow = null;
+  });
+}
+
+function closeTvWindow(): void {
+  if (tvWindow && !tvWindow.isDestroyed()) {
+    tvWindow.close();
+  }
+  tvWindow = null;
+  mainWindow?.show();
+  mainWindow?.focus();
+}
+
 function createTray(): void {
   const iconPath = getAppIcon();
   const icon = nativeImage.createFromPath(iconPath);
@@ -72,14 +122,14 @@ function createTray(): void {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Tunjuk Aplikasi',
-      click: () => {
+      click: (): void => {
         mainWindow?.show();
         mainWindow?.focus();
       },
     },
     {
       label: 'Keluar',
-      click: () => {
+      click: (): void => {
         isQuitting = true;
         app.quit();
       },
@@ -99,7 +149,7 @@ function createTray(): void {
 Menu.setApplicationMenu(null);
 
 app.whenReady().then(async () => {
-  registerIpcHandlers(() => mainWindow);
+  registerIpcHandlers(() => mainWindow, createTvWindow, closeTvWindow);
   await bootstrap();
   createMainWindow();
   createTray();
@@ -123,6 +173,7 @@ app.on('before-quit', () => {
   // Pastikan isQuitting = true walaupun quit dicetuskan dari luar (cth: sistem operasi
   // atau app.quit() daripada konteks lain) supaya handler 'close' tidak menghalang keluar
   isQuitting = true;
+  closeTvWindow();
   stopAudioEngine();
   stopScheduler();
   closeDatabase();

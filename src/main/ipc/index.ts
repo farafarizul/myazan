@@ -1,5 +1,6 @@
-import { ipcMain, dialog, BrowserWindow } from 'electron';
+import { app, ipcMain, dialog, BrowserWindow } from 'electron';
 import * as fs from 'fs';
+import * as path from 'path';
 import { IPC_CHANNELS } from '../../shared/constants';
 import {
   AppInfo,
@@ -23,7 +24,11 @@ import { getPlaybackStatus, applySettingsChange } from '../services/audio';
  * Hanya channel yang disenaraikan di IPC_CHANNELS dibenarkan.
  * @param getMainWindow - Fungsi yang mengembalikan tetingkap utama aplikasi.
  */
-export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): void {
+export function registerIpcHandlers(
+  getMainWindow: () => BrowserWindow | null,
+  openTvDisplay: () => void,
+  closeTvDisplay: () => void,
+): void {
   ipcMain.handle(IPC_CHANNELS.GET_APP_INFO, (): AppInfo => {
     return {
       name: APP_NAME,
@@ -63,6 +68,56 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
           return { ok: false, error: err.message };
         }
         throw err;
+      }
+    },
+  );
+
+  /**
+   * Simpan PNG hasil crop logo Paparan TV ke folder data aplikasi.
+   */
+  ipcMain.handle(
+    IPC_CHANNELS.SAVE_CROPPED_LOGO,
+    (_event, dataUrl: string): { ok: boolean; filePath?: string; error?: string } => {
+      try {
+        const match = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl);
+        if (!match?.[1]) {
+          return { ok: false, error: 'Format imej crop tidak sah.' };
+        }
+
+        const dir = path.join(app.getPath('userData'), 'tv-assets');
+        fs.mkdirSync(dir, { recursive: true });
+        const filePath = path.join(dir, 'logo.png');
+        fs.writeFileSync(filePath, Buffer.from(match[1], 'base64'));
+
+        return { ok: true, filePath };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { ok: false, error: message };
+      }
+    },
+  );
+
+  /**
+   * Simpan PNG hasil crop QR Paparan TV ke folder data aplikasi.
+   */
+  ipcMain.handle(
+    IPC_CHANNELS.SAVE_CROPPED_QR,
+    (_event, dataUrl: string): { ok: boolean; filePath?: string; error?: string } => {
+      try {
+        const match = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl);
+        if (!match?.[1]) {
+          return { ok: false, error: 'Format imej crop tidak sah.' };
+        }
+
+        const dir = path.join(app.getPath('userData'), 'tv-assets');
+        fs.mkdirSync(dir, { recursive: true });
+        const filePath = path.join(dir, 'qr.png');
+        fs.writeFileSync(filePath, Buffer.from(match[1], 'base64'));
+
+        return { ok: true, filePath };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { ok: false, error: message };
       }
     },
   );
@@ -136,6 +191,19 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
   });
 
   /**
+   * Buka dialog pilih fail imej untuk Paparan TV Masjid.
+   */
+  ipcMain.handle(IPC_CHANNELS.SELECT_IMAGE_FILE, async (): Promise<string | null> => {
+    const result = await dialog.showOpenDialog({
+      title: 'Pilih Fail Imej',
+      filters: [{ name: 'Fail Imej', extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'] }],
+      properties: ['openFile'],
+    });
+    if (result.canceled || result.filePaths.length === 0) return null;
+    return result.filePaths[0] ?? null;
+  });
+
+  /**
    * Buka dialog pilih folder audio untuk audio idle (al-Quran / zikir).
    * Pulangkan laluan folder yang dipilih atau null jika pengguna membatal.
    */
@@ -169,6 +237,34 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
         .sort((a, b) => a.localeCompare(b, 'ms-MY', { numeric: true, sensitivity: 'base' }));
     } catch {
       return [];
+    }
+  });
+
+  /**
+   * Buka window fullscreen Paparan TV Masjid.
+   */
+  ipcMain.handle(IPC_CHANNELS.OPEN_TV_DISPLAY, () => {
+    try {
+      openTvDisplay();
+      return { ok: true };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { ok: false, error: message };
+    }
+  });
+
+  /**
+   * Tutup window Paparan TV Masjid dan fokus semula app utama.
+   */
+  ipcMain.handle(IPC_CHANNELS.CLOSE_TV_DISPLAY, () => {
+    try {
+      closeTvDisplay();
+      getMainWindow()?.show();
+      getMainWindow()?.focus();
+      return { ok: true };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { ok: false, error: message };
     }
   });
 

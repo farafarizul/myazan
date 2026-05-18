@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' file: data:;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paparan TV Masjid</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/tv.css" />
+  </head>
+  <body class="tv-body">
+    <main class="tv-screen" id="tv-screen">
+      <section class="tv-header">
+        <div class="tv-brand">
+          <div class="tv-logo-wrap" id="tv-logo-wrap">
+            <img id="tv-logo-img" alt="Logo masjid" hidden />
+            <span class="material-symbols-outlined" id="tv-logo-placeholder">mosque</span>
+          </div>
+          <div class="tv-brand-copy">
+            <h1 id="tv-mosque-name">Masjid</h1>
+            <p id="tv-mosque-address">Sila tetapkan alamat masjid.</p>
+          </div>
+        </div>
+
+        <div class="tv-date-card">
+          <div id="tv-hijri-date">-</div>
+          <div id="tv-masihi-date">-</div>
+        </div>
+
+        <div class="tv-clock-card">
+          <div id="tv-clock">00:00:00</div>
+          <div>Waktu Malaysia (MYT)</div>
+        </div>
+      </section>
+
+      <section class="tv-content">
+        <article class="tv-countdown-panel">
+          <div class="tv-bg-image" id="tv-bg-image"></div>
+          <div class="tv-countdown-overlay"></div>
+          <div class="tv-countdown-content">
+            <div class="tv-next-label">Waktu berbaki ke</div>
+            <div class="tv-next-prayer" id="tv-next-prayer">-</div>
+            <div class="tv-countdown-box">
+              <div class="tv-countdown-grid" aria-label="Countdown waktu solat">
+                <div class="tv-countdown-unit">
+                  <span class="tv-countdown-value" id="tv-countdown-hours">00</span>
+                  <span class="tv-countdown-label">Jam</span>
+                </div>
+                <div class="tv-countdown-unit">
+                  <span class="tv-countdown-value" id="tv-countdown-minutes">00</span>
+                  <span class="tv-countdown-label">Minit</span>
+                </div>
+                <div class="tv-countdown-unit">
+                  <span class="tv-countdown-value" id="tv-countdown-seconds">00</span>
+                  <span class="tv-countdown-label">Saat</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tv-quote">
+            <span class="material-symbols-outlined">format_quote</span>
+            <p>Sesungguhnya solat itu adalah fardu yang ditentukan waktunya atas orang-orang yang beriman.</p>
+          </div>
+        </article>
+
+        <article class="tv-prayer-panel">
+          <div class="tv-panel-title">
+            <span class="material-symbols-outlined">schedule</span>
+            <span>Waktu Solat</span>
+          </div>
+          <div class="tv-prayer-list" id="tv-prayer-list"></div>
+        </article>
+
+        <article class="tv-donation-panel">
+          <div class="tv-panel-title">
+            <span>Infaq &amp; Sumbangan</span>
+          </div>
+          <div class="tv-donation-copy">
+            <span>Imbas &amp; Bayar dengan</span>
+            <strong>QR Pay</strong>
+          </div>
+          <div class="tv-qr-card" id="tv-qr-card">
+            <img id="tv-qr-img" alt="QR derma" hidden />
+            <div id="tv-qr-placeholder">
+              <span class="material-symbols-outlined">qr_code_2</span>
+              <span>QR derma belum dipilih</span>
+            </div>
+          </div>
+          <p id="tv-donation-text">Jazakumullahu Khairan atas sumbangan anda.</p>
+        </article>
+      </section>
+
+      <footer class="tv-footer">
+        <div>
+          <span class="material-symbols-outlined">location_on</span>
+          <span id="tv-footer-location">Sila tetapkan alamat masjid.</span>
+        </div>
+        <div>
+          <span class="material-symbols-outlined">language</span>
+          <span id="tv-footer-website">-</span>
+        </div>
+      </footer>
+
+      <button id="tv-hidden-exit" class="tv-hidden-exit" type="button" aria-label="Keluar kiosk"></button>
+
+      <div class="tv-exit-dialog" id="tv-exit-dialog" hidden>
+        <div class="tv-exit-card">
+          <h2>Keluar dari Paparan TV?</h2>
+          <p>Paparan fullscreen akan ditutup dan aplikasi utama myAzan akan dipaparkan semula.</p>
+          <div class="tv-exit-actions">
+            <button id="tv-exit-cancel" type="button">Batal</button>
+            <button id="tv-exit-confirm" type="button">Kembali ke Aplikasi</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="tv.js"></script>
+  </body>
+</html>

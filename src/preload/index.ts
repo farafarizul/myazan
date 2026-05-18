@@ -44,6 +44,22 @@ contextBridge.exposeInMainWorld('myAzan', {
     ipcRenderer.invoke(IPC_CHANNELS.SAVE_SETTINGS, payload),
 
   /**
+   * Simpan imej logo yang telah dicrop sebagai PNG di folder data aplikasi.
+   */
+  saveCroppedLogo: (
+    dataUrl: string,
+  ): Promise<{ ok: boolean; filePath?: string; error?: string }> =>
+    ipcRenderer.invoke(IPC_CHANNELS.SAVE_CROPPED_LOGO, dataUrl),
+
+  /**
+   * Simpan imej QR yang telah dicrop sebagai PNG di folder data aplikasi.
+   */
+  saveCroppedQr: (
+    dataUrl: string,
+  ): Promise<{ ok: boolean; filePath?: string; error?: string }> =>
+    ipcRenderer.invoke(IPC_CHANNELS.SAVE_CROPPED_QR, dataUrl),
+
+  /**
    * Tetapkan zon aktif berdasarkan kod zon JAKIM.
    */
   setActiveZone: (zoneCode: string): Promise<{ ok: boolean }> =>
@@ -74,6 +90,12 @@ contextBridge.exposeInMainWorld('myAzan', {
     ipcRenderer.invoke(IPC_CHANNELS.SELECT_AUDIO_FILE),
 
   /**
+   * Buka dialog sistem untuk pilih fail imej bagi logo, latar, atau QR.
+   */
+  selectImageFile: (): Promise<string | null> =>
+    ipcRenderer.invoke(IPC_CHANNELS.SELECT_IMAGE_FILE),
+
+  /**
    * Buka dialog sistem untuk pilih folder audio idle (al-Quran / zikir).
    * Pulangkan laluan folder atau null jika pengguna membatal.
    */
@@ -91,6 +113,18 @@ contextBridge.exposeInMainWorld('myAzan', {
    */
   listIdleFiles: (folderPath: string): Promise<string[]> =>
     ipcRenderer.invoke(IPC_CHANNELS.LIST_IDLE_FILES, folderPath),
+
+  /**
+   * Buka Paparan TV Masjid sebagai window fullscreen/kiosk.
+   */
+  openTvDisplay: (): Promise<{ ok: boolean; error?: string }> =>
+    ipcRenderer.invoke(IPC_CHANNELS.OPEN_TV_DISPLAY),
+
+  /**
+   * Tutup Paparan TV Masjid dan kembali fokus kepada aplikasi utama.
+   */
+  closeTvDisplay: (): Promise<{ ok: boolean; error?: string }> =>
+    ipcRenderer.invoke(IPC_CHANNELS.CLOSE_TV_DISPLAY),
 
   /**
    * Minimumkan tetingkap aplikasi.
