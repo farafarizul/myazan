@@ -1,4 +1,5 @@
 import type { AppSettings, PrayerTimeForDate } from '../shared/types';
+import { formatTarikhHijri } from '../shared/hijri';
 
 const NAMA_WAKTU: Record<string, string> = {
   fajr: 'Subuh',
@@ -239,7 +240,7 @@ async function loadTvData(): Promise<void> {
   todayPrayerState = await loadPrayerForDate(settings.activeZoneCode, currentDateKey);
   tomorrowPrayerState = await loadPrayerForDate(settings.activeZoneCode, tomorrowKey);
 
-  setText('tv-hijri-date', todayPrayerState?.hijri ?? '-');
+  setText('tv-hijri-date', formatTarikhHijri(todayPrayerState?.hijri));
   updateClockAndCountdown();
 }
 
