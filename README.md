@@ -30,6 +30,7 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 ---
 
 ## 📸 Paparan Aplikasi
+![Paparan TV](./ui_ux_screen/paparan_tv/v2.png)
 ![Showcase](./screenshots/showcase.png)
 ![Halaman Utama](./screenshots/main-page.png)
 ![Tetapan](./screenshots/settings.png)
