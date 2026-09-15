@@ -1,4 +1,5 @@
-import type { AppInfo, AppSettings, Zone, NotificationSetting, SaveSettingsPayload, PlaybackStatus } from '../shared/types';
+import type { AppInfo, AppSettings, Zone, NotificationSetting, SaveSettingsPayload, PlaybackStatus, IdlePlaybackCommand, IdlePlaybackResult } from '../shared/types';
+import { isValidIdleTime } from '../shared/idle-schedule';
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ declare global {
       windowClose: () => Promise<void>;
       listIdleFiles: (folderPath: string) => Promise<string[]>;
       getPlaybackStatus: () => Promise<PlaybackStatus>;
+      controlIdle: (command: IdlePlaybackCommand) => Promise<IdlePlaybackResult>;
     };
   }
 }
@@ -74,10 +76,6 @@ function initNavigation(): void {
       }
       if (targetPage === 'paparan-tv') {
         syncPaparanTvPage();
-      }
-      // Hentikan polling jika navigasi ke halaman lain
-      if (targetPage !== 'zikir') {
-        hentikanZikirPolling();
       }
     });
   });
@@ -265,7 +263,7 @@ async function loadHalamanUtama(): Promise<void> {
   }
 
   // Kemas kini status idle audio
-  kemaskiniStatusIdle(settings);
+  kemaskiniZikirPlayingIndicator().catch(() => undefined);
 
   if (!zoneCode) {
     const msg = '<p class="info-teks">Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.</p>';
@@ -506,23 +504,18 @@ function renderTimelineSvg(
 // Kemas kini Status Idle Audio
 // ============================================================
 
-function kemaskiniStatusIdle(settings: AppSettings): void {
+function kemaskiniStatusIdle(status: PlaybackStatus): void {
   const iconWrap = document.getElementById('db-idle-icon-wrap');
   const statusText = document.getElementById('db-idle-status-text');
   const trackEl = document.getElementById('db-idle-track');
   const card = document.getElementById('db-idle-mini-card');
 
-  const aktif = settings.idleEnabled && !!settings.idleFolderPath;
+  const aktif = status.idleState === 'playing';
 
-  if (statusText) statusText.textContent = aktif ? 'Aktif' : 'Tidak Aktif';
+  if (statusText) statusText.textContent = IDLE_STATUS_LABELS[status.idleState];
 
   if (trackEl) {
-    if (settings.idleFolderPath) {
-      const bahagian = settings.idleFolderPath.replace(/\\/g, '/').split('/');
-      trackEl.textContent = bahagian[bahagian.length - 1] ?? settings.idleFolderPath;
-    } else {
-      trackEl.textContent = 'Tiada folder dipilih';
-    }
+    trackEl.textContent = status.idleTrack ?? namaFolder(status.idleFolderPath);
   }
 
   if (iconWrap) {
@@ -992,6 +985,7 @@ async function muatTetapan(): Promise<void> {
     if (zikirFolderNama) zikirFolderNama.textContent = namaFolder(settings.idleFolderPath);
     const zikirTogol = document.getElementById('zikir-idle-aktif') as HTMLInputElement | null;
     if (zikirTogol) zikirTogol.checked = settings.idleEnabled;
+    syncJadualZikir(settings);
 
     binaSenaraiNotifikasi(tetapanState.notificationSettings);
     binaKadPemberitahuan(tetapanState.notificationSettings);
@@ -1037,7 +1031,7 @@ async function simpanTetapan(): Promise<void> {
     azanSubuhFilePath: tetapanState.azanSubuhFilePath,
     azanOtherFilePath: tetapanState.azanOtherFilePath,
     idleFolderPath: tetapanState.idleFolderPath,
-    idleEnabled: togolIdle?.checked ?? false,
+    idleEnabled: togolIdle?.checked ?? tetapanState.settings?.idleEnabled ?? false,
     azanVolume: tetapanState.azanVolume,
     notificationVolume: tetapanState.notificationVolume,
     idleVolume: tetapanState.idleVolume,
@@ -1755,18 +1749,141 @@ function initHalamanAudio(): void {
 /** Polling interval untuk kemaskini indicator sedang dimainkan di halaman Zikir. */
 let zikirPollingInterval: ReturnType<typeof setInterval> | null = null;
 
+const IDLE_STATUS_LABELS: Record<PlaybackStatus['idleState'], string> = {
+  disabled: 'Tidak Aktif', empty: 'Playlist Kosong', playing: 'Sedang Main',
+  paused: 'Dijeda', scheduled: 'Waktu Senyap', interrupted: 'Memberi Laluan kepada Audio Solat',
+  error: 'Audio Tidak Dapat Dimainkan', ready: 'Sedia untuk Dimainkan',
+};
+let zikirBusy = false;
+let zikirLastStatus: PlaybackStatus | null = null;
+
+function paparkanStatusZikir(message: string, error = false): void {
+  const el = document.getElementById('zikir-status');
+  if (!el) return;
+  el.hidden = false;
+  el.className = `alert alert-${error ? 'error' : 'success'}`;
+  el.textContent = message;
+}
+
+function kemaskiniKawalanZikir(status: PlaybackStatus): void {
+  zikirLastStatus = status;
+  kemaskiniStatusIdle(status);
+  const label = document.getElementById('zikir-player-status');
+  const statusLabel = IDLE_STATUS_LABELS[status.idleState];
+  if (label && label.textContent !== statusLabel) label.textContent = statusLabel;
+  const track = document.getElementById('zikir-player-track');
+  const trackLabel = status.idleTrack ?? 'Tiada trek dipilih';
+  if (track && track.textContent !== trackLabel) track.textContent = trackLabel;
+  const enabled = (document.getElementById('zikir-idle-aktif') as HTMLInputElement | null)?.checked;
+  const unsaved = tetapanState.idleFolderPath !== status.idleFolderPath
+    || enabled !== tetapanState.settings?.idleEnabled;
+  const blocked = zikirBusy || unsaved || ['disabled', 'scheduled', 'interrupted'].includes(status.idleState);
+  for (const command of ['play', 'pause', 'next', 'previous'] as const) {
+    const button = document.getElementById(`zikir-btn-${command}`) as HTMLButtonElement | null;
+    if (!button) continue;
+    button.disabled = blocked || (command === 'play' ? status.idleState === 'playing'
+      : command === 'pause' ? status.idleState !== 'playing'
+      : status.idleTrackCount === 0);
+  }
+  const hint = document.getElementById('zikir-player-hint');
+  if (hint) hint.textContent = unsaved ? 'Folder atau pengaktifan audio telah berubah. Simpan Tetapan Zikir dahulu.'
+    : status.idleState === 'scheduled' ? `Audio senyap sehingga ${tetapanState.settings?.idleWakeTime ?? 'waktu mula'}. Ubah atau matikan jadual dan simpan untuk bermain sekarang.`
+    : status.idleState === 'disabled' ? 'Aktifkan Audio Idle, pilih folder dan simpan tetapan untuk mula.'
+    : status.idleState === 'error' ? status.idleError ?? 'Semak fail audio dan tekan Play untuk cuba semula.'
+    : status.idleState === 'empty' ? 'Masukkan fail MP3 dalam folder pilihan, kemudian tekan Play untuk muat semula.'
+    : status.idleState === 'interrupted' ? 'Audio idle akan bersambung selepas azan atau notifikasi, jika tiada Pause atau jadual senyap.'
+    : 'Pause mengekalkan posisi trek sehingga Play atau waktu mula harian berikutnya. Previous dan Next berulang dalam playlist.';
+}
+
+function kemaskiniRingkasanJadual(): void {
+  const enabled = (document.getElementById('zikir-jadual-aktif') as HTMLInputElement).checked;
+  for (const id of ['zikir-waktu-senyap', 'zikir-waktu-mula']) {
+    (document.getElementById(id) as HTMLInputElement).disabled = !enabled;
+  }
+  const summary = document.getElementById('zikir-jadual-ringkasan');
+  if (summary) summary.textContent = enabled
+    ? `Setiap hari: senyap ${getInputValue('zikir-waktu-senyap')}, sambung ${getInputValue('zikir-waktu-mula')}. Tekan Simpan Tetapan Zikir untuk menggunakan jadual ini.`
+    : 'Jadual dimatikan. Tekan Simpan Tetapan Zikir untuk menggunakan perubahan.';
+}
+
+function syncJadualZikir(settings: AppSettings): void {
+  (document.getElementById('zikir-jadual-aktif') as HTMLInputElement).checked = settings.idleScheduleEnabled;
+  setInputValue('zikir-waktu-senyap', settings.idleSleepTime);
+  setInputValue('zikir-waktu-mula', settings.idleWakeTime);
+  kemaskiniRingkasanJadual();
+}
+
+async function simpanTetapanZikir(): Promise<void> {
+  if (zikirBusy) return;
+  const sleepTime = getInputValue('zikir-waktu-senyap');
+  const wakeTime = getInputValue('zikir-waktu-mula');
+  if (!isValidIdleTime(sleepTime) || !isValidIdleTime(wakeTime) || sleepTime === wakeTime) {
+    paparkanStatusZikir('Pilih dua waktu yang sah dan berbeza untuk senyap dan mula semula.', true);
+    return;
+  }
+  const button = document.getElementById('zikir-btn-simpan') as HTMLButtonElement;
+  zikirBusy = true;
+  button.disabled = true;
+  if (zikirLastStatus) kemaskiniKawalanZikir(zikirLastStatus);
+  try {
+    const result = await window.myAzan.saveSettings({
+      idleEnabled: (document.getElementById('zikir-idle-aktif') as HTMLInputElement).checked,
+      idleFolderPath: tetapanState.idleFolderPath,
+      idleVolume: tetapanState.idleVolume,
+      idleScheduleEnabled: (document.getElementById('zikir-jadual-aktif') as HTMLInputElement).checked,
+      idleSleepTime: sleepTime,
+      idleWakeTime: wakeTime,
+    });
+    if (!result.ok) {
+      paparkanStatusZikir(result.error ?? 'Gagal menyimpan tetapan audio.', true);
+      return;
+    }
+    tetapanState.settings = await window.myAzan.getSettings();
+    await muatSenaraiZikirFail(tetapanState.idleFolderPath);
+    paparkanStatusZikir('Tetapan Zikir berjaya disimpan.');
+  } catch {
+    paparkanStatusZikir('Gagal menyimpan tetapan audio. Sila cuba semula.', true);
+  } finally {
+    zikirBusy = false;
+    button.disabled = false;
+    await kemaskiniZikirPlayingIndicator();
+  }
+}
+
+async function kawalZikir(command: IdlePlaybackCommand): Promise<void> {
+  if (zikirBusy) return;
+  zikirBusy = true;
+  if (zikirLastStatus) kemaskiniKawalanZikir(zikirLastStatus);
+  try {
+    const result = await window.myAzan.controlIdle(command);
+    if (!result.ok) paparkanStatusZikir(result.error ?? 'Gagal mengawal audio.', true);
+    else {
+      const message = document.getElementById('zikir-status');
+      if (message) message.hidden = true;
+    }
+    zikirLastStatus = result.status;
+    if (command === 'play') await muatSenaraiZikirFail(tetapanState.idleFolderPath);
+  } catch {
+    paparkanStatusZikir('Gagal mengawal audio. Sila cuba semula.', true);
+  } finally {
+    zikirBusy = false;
+    await kemaskiniZikirPlayingIndicator();
+  }
+}
+
 /** Kemaskini indicator fail yang sedang dimainkan tanpa membina semula senarai. */
 async function kemaskiniZikirPlayingIndicator(): Promise<void> {
   const senaraiEl = document.getElementById('zikir-fail-senarai') as HTMLOListElement | null;
-  if (!senaraiEl || senaraiEl.style.display === 'none') return;
-
   let idleTrack: string | null = null;
   try {
     const status = await window.myAzan.getPlaybackStatus();
-    idleTrack = status.idleTrack;
+    kemaskiniKawalanZikir(status);
+    idleTrack = status.idleState === 'playing' && tetapanState.idleFolderPath === status.idleFolderPath ? status.idleTrack : null;
   } catch {
     return;
   }
+
+  if (!senaraiEl || senaraiEl.style.display === 'none') return;
 
   const items = senaraiEl.querySelectorAll<HTMLLIElement>('li[data-fail-nama]');
   items.forEach((li) => {
@@ -1804,9 +1921,10 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
   try {
     const [fails, status] = await Promise.all([
       window.myAzan.listIdleFiles(folderPath),
-      window.myAzan.getPlaybackStatus().catch((): PlaybackStatus => ({ activePriority: 'none', idleTrack: null })),
+      window.myAzan.getPlaybackStatus(),
     ]);
-    const idleTrack = status.idleTrack;
+    kemaskiniKawalanZikir(status);
+    const idleTrack = status.idleState === 'playing' && folderPath === status.idleFolderPath ? status.idleTrack : null;
 
     senaraiEl.innerHTML = '';
 
@@ -1814,7 +1932,7 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
       senaraiEl.style.display = 'none';
       if (kosongEl) {
         kosongEl.style.display = '';
-        kosongEl.textContent = 'Tiada fail audio (.mp3, .wav, .ogg, .m4a) dalam folder ini.';
+        kosongEl.textContent = 'Tiada fail MP3 dalam folder ini.';
       }
       if (kiraanEl) kiraanEl.textContent = '0 fail';
       return;
@@ -1833,9 +1951,11 @@ async function muatSenaraiZikirFail(folderPath: string | null): Promise<void> {
       li.innerHTML = `
         <span style="min-width:24px;text-align:right;color:var(--on-surface-variant);font-size:0.75rem;">${idx + 1}.</span>
         <span class="material-symbols-outlined zikir-fail-icon" style="font-size:16px;color:${isPlaying ? 'var(--primary)' : 'var(--secondary)'};flex-shrink:0;">${isPlaying ? 'volume_up' : 'audio_file'}</span>
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${nama}">${nama}</span>
+        <span class="zikir-fail-nama" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
         <span class="zikir-fail-sedang-main-badge" style="display:${isPlaying ? '' : 'none'};">Sedang main</span>
       `;
+      const filename = li.querySelector<HTMLElement>('.zikir-fail-nama');
+      if (filename) { filename.textContent = nama; filename.title = nama; }
       senaraiEl.appendChild(li);
     });
   } catch (err) {
@@ -1854,7 +1974,7 @@ function mulakanZikirPolling(): void {
   hentikanZikirPolling();
   zikirPollingInterval = setInterval(() => {
     kemaskiniZikirPlayingIndicator().catch(() => undefined);
-  }, 3000);
+  }, 1000);
 }
 
 /** Hentikan polling indicator halaman Zikir. */
@@ -1887,6 +2007,12 @@ function syncZikirPage(): void {
 
 /** Inisialisasi event listeners halaman Zikir. */
 function initHalamanZikir(): void {
+  for (const command of ['play', 'pause', 'next', 'previous'] as const) {
+    document.getElementById(`zikir-btn-${command}`)?.addEventListener('click', () => { void kawalZikir(command); });
+  }
+  for (const id of ['zikir-jadual-aktif', 'zikir-waktu-senyap', 'zikir-waktu-mula']) {
+    document.getElementById(id)?.addEventListener('change', kemaskiniRingkasanJadual);
+  }
   // Pilih folder
   document.getElementById('zikir-btn-folder')?.addEventListener('click', async () => {
     const laluan = await window.myAzan.selectAudioFolder();
@@ -1911,6 +2037,7 @@ function initHalamanZikir(): void {
       if (el) el.textContent = 'Tiada folder dipilih';
     });
     muatSenaraiZikirFail(null).catch(() => undefined);
+    if (zikirLastStatus) kemaskiniKawalanZikir(zikirLastStatus);
   });
 
   // Toggle idle — sync ke settings page
@@ -1918,6 +2045,7 @@ function initHalamanZikir(): void {
   togolZikir?.addEventListener('change', () => {
     const togolSettings = document.getElementById('idle-aktif') as HTMLInputElement | null;
     if (togolSettings) togolSettings.checked = togolZikir.checked;
+    if (zikirLastStatus) kemaskiniKawalanZikir(zikirLastStatus);
   });
 
   // Volume slider — sync ke pages lain
@@ -1937,7 +2065,7 @@ function initHalamanZikir(): void {
 
   // Simpan tetapan
   document.getElementById('zikir-btn-simpan')?.addEventListener('click', () => {
-    simpanTetapan().catch((err) => { console.error('[zikir] ralat simpan:', err); });
+    void simpanTetapanZikir();
   });
 }
 
@@ -1953,6 +2081,9 @@ async function main(): Promise<void> {
   initHalamanPemberitahuan();
   initHalamanPaparanTv();
   await Promise.all([loadHalamanUtama(), loadAboutPage(), initHalamanTetapan()]);
+  await kemaskiniZikirPlayingIndicator();
+  mulakanZikirPolling();
+  window.addEventListener('beforeunload', hentikanZikirPolling);
 }
 
 main().catch((err) => {

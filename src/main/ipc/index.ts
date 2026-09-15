@@ -17,7 +17,9 @@ import {
   getPrayerTimesForDate,
   PrayerTimeSyncError,
 } from '../services/prayer-time';
-import { getPlaybackStatus, applySettingsChange } from '../services/audio';
+import { getPlaybackStatus, applySettingsChange, controlIdle } from '../services/audio';
+import { readIdlePlaylist } from '../services/audio/playlist';
+import type { IdlePlaybackCommand } from '../../shared/types';
 
 /**
  * Daftarkan semua IPC handler untuk komunikasi renderer ↔ main.
@@ -223,21 +225,14 @@ export function registerIpcHandlers(
     return getPlaybackStatus();
   });
 
+  ipcMain.handle(IPC_CHANNELS.CONTROL_IDLE, (_event, command: IdlePlaybackCommand) => controlIdle(command));
+
   /**
    * Senaraikan fail MP3 dalam folder idle, diisih mengikut nama fail.
    * Pulangkan senarai nama fail (bukan laluan penuh) atau senarai kosong jika folder tidak sah.
    */
   ipcMain.handle(IPC_CHANNELS.LIST_IDLE_FILES, (_event, folderPath: string): string[] => {
-    if (!folderPath) return [];
-    try {
-      const entries = fs.readdirSync(folderPath, { withFileTypes: true });
-      return entries
-        .filter((e) => e.isFile() && /\.(mp3|wav|ogg|m4a)$/i.test(e.name))
-        .map((e) => e.name)
-        .sort((a, b) => a.localeCompare(b, 'ms-MY', { numeric: true, sensitivity: 'base' }));
-    } catch {
-      return [];
-    }
+    return readIdlePlaylist(folderPath).map((filePath) => path.basename(filePath));
   });
 
   /**

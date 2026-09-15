@@ -87,12 +87,18 @@ Semua paparan pengguna, mesej ralat, label, butang, dan teks sistem hendaklah da
   - Isyak
 - Setiap notifikasi waktu boleh diaktifkan atau dinyahaktifkan secara berasingan.
 
-### 5. Audio Idle al-Quran / Zikir
-- Pengguna boleh memilih satu folder yang mengandungi fail MP3 al-Quran atau zikir.
+### 5. Audio Idle al-Quran / Zikir / Lagu
+- Pengguna boleh memilih satu folder yang mengandungi fail MP3 al-Quran, zikir atau lagu.
 - Audio dimainkan secara berterusan mengikut susunan nama fail.
 - Setelah semua fail selesai dimainkan, sistem mengulangi playback dari fail pertama.
 - Audio idle boleh diaktifkan atau dinyahaktifkan.
 - Audio idle mesti berhenti sementara apabila notifikasi atau azan hendak dimainkan.
+- Sediakan Play, Pause, Next dan Previous; trek berulang di hujung playlist. Next/Previous ketika dijeda hanya menukar pilihan trek.
+- Sediakan jadual senyap harian boleh laras, lalai dimatikan dengan waktu 22:00 hingga 05:30. Waktu mula dan tamat mesti berbeza, menggunakan waktu tempatan PC dan menyokong rentas tengah malam.
+- Jadual hanya mengawal audio idle. Azan/notifikasi tetap berbunyi; idle tidak boleh disambung selepas audio solat jika masih dijeda manual atau dalam waktu senyap.
+- Pause manual kekal sehingga Play atau waktu mula harian berikutnya. Jadual menyambung posisi trek dalam sesi app yang sama; tetapan kekal selepas restart, posisi tidak.
+- App yang dibuka semasa waktu senyap kekal senyap. Semak semula jadual selepas PC bangun; fungsi ini tidak menghidupkan PC.
+- Lihat [peraturan audio idle](idle-player.md) untuk aliran UI, kegagalan audio dan pengesahan.
 
 ### 6. Halaman Tetapan
 Halaman tetapan perlu membenarkan pengguna mengurus:

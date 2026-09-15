@@ -11,6 +11,9 @@ export interface AudioSettingsRow {
   azan_volume: number;
   notification_volume: number;
   idle_volume: number;
+  idle_schedule_enabled: number;
+  idle_sleep_time: string;
+  idle_wake_time: string;
   updated_at: string;
 }
 
@@ -34,11 +37,13 @@ export function saveAudioSettings(
       `INSERT INTO audio_settings
          (id, azan_subuh_file_path, azan_other_file_path, idle_folder_path,
           idle_enabled, idle_resume_mode, idle_sort_mode,
-          azan_volume, notification_volume, idle_volume, updated_at)
+          azan_volume, notification_volume, idle_volume,
+          idle_schedule_enabled, idle_sleep_time, idle_wake_time, updated_at)
        VALUES
          (1, @azan_subuh_file_path, @azan_other_file_path, @idle_folder_path,
           @idle_enabled, @idle_resume_mode, @idle_sort_mode,
-          @azan_volume, @notification_volume, @idle_volume, @updated_at)`,
+          @azan_volume, @notification_volume, @idle_volume,
+          @idle_schedule_enabled, @idle_sleep_time, @idle_wake_time, @updated_at)`,
     ).run({
       azan_subuh_file_path: null,
       azan_other_file_path: null,
@@ -49,6 +54,9 @@ export function saveAudioSettings(
       azan_volume: 100,
       notification_volume: 100,
       idle_volume: 100,
+      idle_schedule_enabled: 0,
+      idle_sleep_time: '22:00',
+      idle_wake_time: '05:30',
       ...payload,
       updated_at: now,
     });
@@ -65,6 +73,9 @@ export function saveAudioSettings(
          azan_volume           = @azan_volume,
          notification_volume   = @notification_volume,
          idle_volume           = @idle_volume,
+         idle_schedule_enabled = @idle_schedule_enabled,
+         idle_sleep_time       = @idle_sleep_time,
+         idle_wake_time        = @idle_wake_time,
          updated_at            = @updated_at
        WHERE id = 1`,
     ).run(merged);

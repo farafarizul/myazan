@@ -11,6 +11,7 @@ import {
   setSetting,
 } from '../../database';
 import type { AppSettings, SaveSettingsPayload, NotificationSetting } from '../../../shared/types';
+import { isValidIdleTime } from '../../../shared/idle-schedule';
 
 // ============================================================
 // Pembantu pengesahan laluan
@@ -77,6 +78,9 @@ export function getSettings(): AppSettings {
     azanOtherFilePath: audio?.azan_other_file_path ?? null,
     idleFolderPath: audio?.idle_folder_path ?? null,
     idleEnabled: (audio?.idle_enabled ?? 0) === 1,
+    idleScheduleEnabled: audio?.idle_schedule_enabled === 1,
+    idleSleepTime: audio?.idle_sleep_time ?? '22:00',
+    idleWakeTime: audio?.idle_wake_time ?? '05:30',
     azanVolume: audio?.azan_volume ?? 100,
     notificationVolume: audio?.notification_volume ?? 100,
     idleVolume: audio?.idle_volume ?? 100,
@@ -119,6 +123,21 @@ function clampVolume(value: number | undefined): number {
  * Melempar SettingsValidationError jika laluan fail/folder tidak sah.
  */
 export function saveSettings(payload: SaveSettingsPayload): void {
+  // Sahkan jadual sebelum sebarang penulisan, termasuk payload separa melalui IPC.
+  if ('idleScheduleEnabled' in payload || 'idleSleepTime' in payload || 'idleWakeTime' in payload) {
+    const current = getAudioSettings();
+    const sleepTime = 'idleSleepTime' in payload ? payload.idleSleepTime : current?.idle_sleep_time ?? '22:00';
+    const wakeTime = 'idleWakeTime' in payload ? payload.idleWakeTime : current?.idle_wake_time ?? '05:30';
+    if ('idleScheduleEnabled' in payload && typeof payload.idleScheduleEnabled !== 'boolean') {
+      throw new SettingsValidationError('Tetapan jadual senyap tidak sah.');
+    }
+    if (!isValidIdleTime(sleepTime) || !isValidIdleTime(wakeTime)) {
+      throw new SettingsValidationError('Pilih waktu senyap dan mula semula yang sah (HH:mm).');
+    }
+    if (sleepTime === wakeTime) {
+      throw new SettingsValidationError('Waktu senyap dan mula semula mesti berbeza.');
+    }
+  }
   // Pengesahan laluan fail
   if ('azanSubuhFilePath' in payload && !isValidFilePath(payload.azanSubuhFilePath)) {
     throw new SettingsValidationError(
@@ -182,6 +201,12 @@ export function saveSettings(payload: SaveSettingsPayload): void {
     audioUpdate['idle_folder_path'] = payload.idleFolderPath ?? null;
   if ('idleEnabled' in payload)
     audioUpdate['idle_enabled'] = payload.idleEnabled ? 1 : 0;
+  if ('idleScheduleEnabled' in payload)
+    audioUpdate['idle_schedule_enabled'] = payload.idleScheduleEnabled ? 1 : 0;
+  if ('idleSleepTime' in payload)
+    audioUpdate['idle_sleep_time'] = payload.idleSleepTime;
+  if ('idleWakeTime' in payload)
+    audioUpdate['idle_wake_time'] = payload.idleWakeTime;
   if ('azanVolume' in payload)
     audioUpdate['azan_volume'] = clampVolume(payload.azanVolume);
   if ('notificationVolume' in payload)

@@ -24,7 +24,7 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 - Azan automatik mengikut zon pilihan pengguna
 - Notifikasi audio sebelum masuk waktu solat tertentu
 - Mod **offline-first** — terus berfungsi tanpa internet selepas data dimuat turun
-- Lantunan audio idle (al-Quran / zikir) semasa tiada aktiviti audio lain
+- Audio idle (al-Quran / zikir / lagu MP3) dengan Play, Pause, Next, Previous dan jadual senyap harian
 - Antara muka pengguna sepenuhnya dalam **Bahasa Melayu**
 
 ---
@@ -476,28 +476,46 @@ Klik **"Simpan Tetapan Audio"** untuk menyimpan semua perubahan kelantangan.
 
 ### 📖 Halaman Zikir
 
-Halaman **Zikir** membolehkan pengguna mengkonfigurasi audio idle — lantunan al-Quran atau zikir yang dimainkan secara berterusan semasa tiada audio lain aktif:
+Halaman **Zikir** membolehkan pengguna mengkonfigurasi audio idle — al-Quran, zikir atau lagu MP3 yang dimainkan semasa tiada audio solat aktif dan di luar waktu senyap:
 
-#### 📂 Folder Al-Quran / Zikir
+#### 📂 Folder Playlist
 
 - Klik **"Pilih Folder"** untuk memilih folder yang mengandungi fail-fail MP3
-- Fail akan dimainkan mengikut **susunan nama fail (A → Z)** secara berulang
+- Fail akan dimainkan mengikut **susunan nama fail (A → Z, nombor 2 sebelum 10)** secara berulang; hanya MP3 dalam folder tersebut, tanpa subfolder
 - Senarai fail dalam folder dipaparkan di bahagian bawah halaman untuk rujukan
+- Klik **Simpan Tetapan Zikir** selepas menukar folder, pengaktifan audio, kelantangan atau jadual. Simpan juga selepas menambah fail ke folder yang sama untuk menyegarkan playlist tanpa memulakan semula trek semasa.
 
 #### ▶️ Kawalan Playback
 
 | Kawalan | Fungsi |
 |---------|--------|
 | **Togol "Aktifkan Audio Idle"** | Hidupkan atau matikan fungsi audio idle |
-| **🔈 Kelantangan Idle** | Gelantangan khusus untuk audio idle (0%–100%) |
+| **Play** | Main atau sambung dari posisi terakhir; cuba semula jika folder kosong atau audio gagal |
+| **Pause** | Jeda sehingga Play atau waktu mula harian berikutnya; tidak dibatalkan oleh azan atau simpan tetapan lain |
+| **Next / Previous** | Pilih trek seterusnya / sebelumnya, berulang di hujung playlist; jika dijeda, pilihan kekal dijeda sehingga Play |
+| **🔈 Kelantangan Idle** | Kelantangan khusus untuk audio idle (0%–100%), tanpa mengulang trek apabila disimpan |
 
 **Cara kerja audio idle:**
 1. Semua fail `.mp3` dalam folder disusun mengikut nama fail (A→Z)
-2. Fail pertama dimainkan apabila aplikasi dimulakan dan idle diaktifkan
+2. Fail pertama dimainkan apabila aplikasi dimulakan, idle diaktifkan dan di luar waktu senyap
 3. Fail seterusnya dimainkan secara automatik selepas setiap fail selesai
 4. Selepas fail terakhir selesai, senarai berulang semula dari fail pertama
 
+#### 🌙 Jadual Senyap Harian
+
+- Aktifkan **Jadual Senyap Harian**, pilih **Senyap pada** dan **Mula semula pada**, kemudian simpan.
+- Contoh: **22:00 → 05:30**. Audio idle dijeda pada 10 malam dan bersambung pada 5:30 pagi setiap hari. Kedua-dua waktu boleh diubah; waktu yang sama ditolak.
+- Jadual dimatikan secara lalai. Ia menggunakan **waktu tempatan PC**, menyokong tempoh merentas tengah malam, dan hanya mengawal idle player. **Azan serta notifikasi solat tetap berbunyi.**
+- Play/Next/Previous tidak memintas waktu senyap atau azan/notifikasi. Untuk bermain dalam waktu senyap, ubah atau matikan jadual dan simpan.
+- Jadual terus berjalan apabila app diminimumkan atau disembunyikan ke tray. App perlu berjalan dan PC perlu hidup; fungsi ini tidak menidurkan atau menghidupkan PC. Selepas PC bangun, jadual disemak semula.
+- Trek dan posisi dijeda disimpan dalam sesi app. Selepas app ditutup sepenuhnya, sesi baharu bermula dari trek pertama pada waktu yang dibenarkan. Jadual dan folder kekal disimpan.
+- Papan pemuka dan halaman Zikir memaparkan status sebenar seperti **Dijeda**, **Waktu Senyap**, **Playlist Kosong** atau **Sedang Main**.
+
+Panduan dan peraturan lengkap: [Audio Idle & Jadual Senyap](docs/idle-player.md).
+
 **3 Mod Sambung Semula selepas Azan/Pemberitahuan:**
+
+Mod ini digunakan untuk gangguan audio solat biasa. Pause manual dan jadual senyap sentiasa mengekalkan posisi; audio hanya disambung apabila kedua-duanya membenarkan playback.
 
 | Mod | Tingkah Laku |
 |-----|-------------|
@@ -565,6 +583,9 @@ Berikut adalah nilai lalai yang digunakan oleh myAzan selepas pemasangan baru, s
 | `azan_volume` | `100` | Kelantangan azan — 100% |
 | `notification_volume` | `100` | Kelantangan notifikasi — 100% |
 | `idle_volume` | `50` | Kelantangan audio idle — 50% |
+| `idle_schedule_enabled` | `0` | Jadual senyap harian dimatikan |
+| `idle_sleep_time` | `22:00` | Waktu mula senyap, format HH:mm |
+| `idle_wake_time` | `05:30` | Waktu sambung semula, format HH:mm |
 
 ### Tetapan Notifikasi (`notification_settings`)
 
@@ -631,6 +652,8 @@ Sebelum menjalankan `npm install`, pastikan perkara berikut telah dipasang:
    - Muat turun dari [visualstudio.microsoft.com/visual-cpp-build-tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ### Langkah Pemasangan
+
+Pengesahan pembangunan: `npm test` (Node.js 22.13+ untuk SQLite ujian), `npm run typecheck`, `npm run lint`, dan `npm run test:electron`. Ujian Electron menggunakan database sementara serta audio yang dimute; ia tidak membuka database pengguna atau menukar tetapan startup Windows. Screenshot ujian disimpan di `dist-build/qa/`.
 
 ```bash
 # 1. Clone repositori

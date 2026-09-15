@@ -258,11 +258,16 @@ Cadangan medan:
 ### 5. audio_settings
 Menyimpan tetapan audio lain.
 
+Implementasi kawalan Play/Pause/Next/Previous dan jadual senyap harian diterangkan dalam [Audio Idle & Jadual Senyap](idle-player.md). Coordinator mengekalkan keadaan Pause manual, waktu senyap, keutamaan audio solat dan trek yang telah dimuatkan secara berasingan supaya simpan tetapan atau tamat azan tidak memulakan audio yang sepatutnya senyap.
+
 Cadangan medan:
 - `azan_subuh_file`
 - `azan_other_file`
 - `idle_folder_path`
 - `idle_enabled`
+- `idle_schedule_enabled`
+- `idle_sleep_time` (HH:mm waktu tempatan PC)
+- `idle_wake_time` (HH:mm waktu tempatan PC)
 
 ### 6. trigger_log
 Menyimpan event yang telah dicetuskan untuk mengelakkan pengulangan.

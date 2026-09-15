@@ -2246,3 +2246,29 @@ li.zikir-fail-sedang-main {
     justify-content: flex-end;
   }
 }
+.idle-now-playing {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-container-low);
+}
+.idle-now-playing strong { overflow-wrap: anywhere; font-size: 0.95rem; }
+.idle-status-label { color: var(--on-surface-variant); font-size: 0.75rem; }
+.idle-transport { display: flex; flex-wrap: wrap; gap: 8px; }
+.idle-transport button { flex: 1 1 110px; justify-content: center; }
+.idle-transport button:disabled { opacity: 0.45; cursor: not-allowed; }
+.idle-transport button:focus-visible,
+.idle-schedule-card input:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.idle-help { color: var(--on-surface-variant); font-size: 0.8rem; line-height: 1.6; margin: 10px 0 14px; }
+.idle-schedule-card { margin-bottom: 20px; }
+.idle-schedule-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.idle-schedule-heading h3 { font-size: 1rem; font-weight: 700; }
+.idle-schedule-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.idle-schedule-times input { width: 100%; min-width: 0; }
+.idle-schedule-times input:disabled { opacity: 0.5; }
+@media (max-width: 480px) {
+  .idle-schedule-times { grid-template-columns: 1fr; }
+}

@@ -123,6 +123,9 @@ Menyimpan tetapan audio utama untuk azan dan idle playback.
 | `azan_other_file_path` | TEXT | Path fail MP3 azan selain Subuh |
 | `idle_folder_path` | TEXT | Path folder MP3 al-Quran/zikir |
 | `idle_enabled` | INTEGER | 0 atau 1 |
+| `idle_schedule_enabled` | INTEGER | 0 atau 1, lalai 0; ditambah oleh migration 007 |
+| `idle_sleep_time` | TEXT | HH:mm waktu tempatan PC, lalai `22:00` |
+| `idle_wake_time` | TEXT | HH:mm waktu tempatan PC, lalai `05:30`, mesti berbeza daripada waktu senyap |
 | `idle_resume_mode` | TEXT | Contoh: `restart_track`, `resume_track`, `restart_playlist` |
 | `idle_sort_mode` | TEXT | Contoh: `filename_asc` |
 | `updated_at` | TEXT | ISO datetime |
@@ -135,6 +138,9 @@ CREATE TABLE IF NOT EXISTS audio_settings (
   azan_other_file_path TEXT,
   idle_folder_path TEXT,
   idle_enabled INTEGER NOT NULL DEFAULT 0,
+  idle_schedule_enabled INTEGER NOT NULL DEFAULT 0 CHECK (idle_schedule_enabled IN (0, 1)),
+  idle_sleep_time TEXT NOT NULL DEFAULT '22:00',
+  idle_wake_time TEXT NOT NULL DEFAULT '05:30',
   idle_resume_mode TEXT NOT NULL DEFAULT 'restart_playlist',
   idle_sort_mode TEXT NOT NULL DEFAULT 'filename_asc',
   updated_at TEXT NOT NULL

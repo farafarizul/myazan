@@ -43,6 +43,9 @@ export interface AudioSettings {
   azanOtherFilePath: string | null;
   idleFolderPath: string | null;
   idleEnabled: boolean;
+  idleScheduleEnabled: boolean;
+  idleSleepTime: string;
+  idleWakeTime: string;
   idleResumeMode: 'restart_playlist' | 'restart_track' | 'resume_track';
   idleSortMode: 'filename_asc';
 }
@@ -72,6 +75,11 @@ export interface AppSettings {
   idleFolderPath: string | null;
   /** Sama ada audio idle diaktifkan. */
   idleEnabled: boolean;
+  /** Sama ada jadual senyap harian digunakan. */
+  idleScheduleEnabled: boolean;
+  /** Waktu senyap dan mula semula harian (HH:mm, waktu tempatan PC). */
+  idleSleepTime: string;
+  idleWakeTime: string;
   /** Kelantangan player azan (0–100). */
   azanVolume: number;
   /** Kelantangan player notifikasi (0–100). */
@@ -145,6 +153,17 @@ export interface PlaybackStatus {
   activePriority: 'azan' | 'notification' | 'idle' | 'none';
   /** Nama fail idle yang sedang dimainkan (tanpa laluan penuh), atau null. */
   idleTrack: string | null;
+  idleState: 'disabled' | 'empty' | 'playing' | 'paused' | 'scheduled' | 'interrupted' | 'error' | 'ready';
+  idleTrackCount: number;
+  idleFolderPath: string | null;
+  idleError: string | null;
+}
+
+export type IdlePlaybackCommand = 'play' | 'pause' | 'next' | 'previous';
+export interface IdlePlaybackResult {
+  ok: boolean;
+  error?: string;
+  status: PlaybackStatus;
 }
 
 /**
@@ -157,6 +176,9 @@ export interface SaveSettingsPayload {
   azanOtherFilePath?: string | null;
   idleFolderPath?: string | null;
   idleEnabled?: boolean;
+  idleScheduleEnabled?: boolean;
+  idleSleepTime?: string;
+  idleWakeTime?: string;
   azanVolume?: number;
   notificationVolume?: number;
   idleVolume?: number;

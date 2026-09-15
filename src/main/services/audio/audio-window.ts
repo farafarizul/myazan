@@ -15,6 +15,7 @@ export const AUDIO_IPC = {
   PAUSE_IDLE: 'audio-internal:pause-idle',
   RESUME_IDLE: 'audio-internal:resume-idle',
   STOP_IDLE: 'audio-internal:stop-idle',
+  SET_IDLE_VOLUME: 'audio-internal:set-idle-volume',
   AZAN_ENDED: 'audio-internal:azan-ended',
   NOTIFICATION_ENDED: 'audio-internal:notification-ended',
   IDLE_ENDED: 'audio-internal:idle-ended',
@@ -48,6 +49,7 @@ export function createAudioWindow(): void {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
+      backgroundThrottling: false,
     },
   });
 

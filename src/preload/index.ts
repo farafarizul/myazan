@@ -9,6 +9,8 @@ import type {
   SyncResult,
   PrayerTimeForDate,
   PlaybackStatus,
+  IdlePlaybackCommand,
+  IdlePlaybackResult,
 } from '../shared/types';
 
 /**
@@ -107,6 +109,9 @@ contextBridge.exposeInMainWorld('myAzan', {
    */
   getPlaybackStatus: (): Promise<PlaybackStatus> =>
     ipcRenderer.invoke(IPC_CHANNELS.GET_PLAYBACK_STATUS),
+
+  controlIdle: (command: IdlePlaybackCommand): Promise<IdlePlaybackResult> =>
+    ipcRenderer.invoke(IPC_CHANNELS.CONTROL_IDLE, command),
 
   /**
    * Senaraikan fail MP3/audio dalam folder idle, diisih mengikut nama fail.

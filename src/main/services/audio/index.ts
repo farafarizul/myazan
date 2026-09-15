@@ -42,5 +42,6 @@ export function stopAudioEngine(): void {
  * Dapatkan status playback semasa untuk paparan UI.
  */
 export { getPlaybackStatus, applySettingsChange };
+export { controlIdle } from './coordinator';
 export type { PlaybackStatus };
 
