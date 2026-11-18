@@ -292,7 +292,7 @@ test('settings validate complete and partial schedules before writing', () => {
   const writes = [];
   const row = { idle_schedule_enabled: 1, idle_sleep_time: '22:00', idle_wake_time: '05:30' };
   const api = createLoader({
-    electron: { app: {} },
+    electron: { app: { getAppPath: () => root } },
     'src/main/database/index.ts': { getAudioSettings: () => row, saveAudioSettings: update => writes.push(update),
       getAllNotificationSettings: () => [], getSetting: () => null, getActiveZoneCode: () => null },
   })('src/main/services/settings/index.ts');
@@ -305,4 +305,53 @@ test('settings validate complete and partial schedules before writing', () => {
   assert.equal(writes[0].idle_sleep_time, '23:00');
   assert.equal(writes[0].idle_schedule_enabled, 0);
   assert.equal(api.getSettings().idleWakeTime, '05:30');
+});
+
+test('missing saved media falls back without blocking zone saves; valid custom files remain', t => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myazan-defaults-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  for (const name of ['audio/default_azan_subuh.mp3', 'audio/default_azan_biasa.mp3',
+    'audio/notification_default/default notification_15_minutes.mp3', 'icons/icon.png']) {
+    const file = path.join(dir, 'dist/assets', name);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, 'fixture');
+  }
+  fs.mkdirSync(path.join(dir, 'dist/assets/zikir_default'));
+  const missing = path.join(dir, 'removed.png');
+  const stored = new Map(['tv_logo_file_path', 'tv_logo_source_file_path', 'tv_background_file_path',
+    'tv_qr_file_path', 'tv_qr_source_file_path'].map(key => [key, missing]));
+  const writes = [];
+  const api = createLoader({
+    electron: { app: { getAppPath: () => dir } },
+    'src/main/database/index.ts': {
+      getAudioSettings: () => ({ azan_subuh_file_path: missing, azan_other_file_path: missing, idle_folder_path: missing }),
+      saveAudioSettings: row => writes.push(row), getAllNotificationSettings: () => [
+        { event_name: 'fajr', audio_file_path: missing, enabled: 1, minutes_before: 15, volume: 50 },
+      ], getSetting: key => stored.get(key) ?? null, getActiveZoneCode: () => 'WLY01',
+      setActiveZoneCode: code => stored.set('zone', code), setSetting: (key, value) => stored.set(key, value),
+      saveNotificationSetting: (event, value) => stored.set(event, value),
+    },
+  })('src/main/services/settings/index.ts');
+  const settings = api.getSettings();
+  assert.equal(settings.tvLogoFilePath, path.join(dir, 'dist/assets/icons/icon.png'));
+  assert.equal(settings.tvLogoSourceFilePath, settings.tvLogoFilePath);
+  assert.equal(settings.tvQrFilePath, null);
+  assert.equal(settings.tvQrSourceFilePath, null);
+  assert.equal(settings.tvBackgroundFilePath, null);
+  assert.equal(settings.idleFolderPath, path.join(dir, 'dist/assets/zikir_default'));
+  assert.equal(settings.notificationSettings[0].audioFilePath, path.join(dir, 'dist/assets/audio/notification_default/default notification_15_minutes.mp3'));
+  api.saveSettings({ activeZoneCode: 'PHG02', tvLogoFilePath: missing, tvLogoSourceFilePath: missing,
+    tvQrFilePath: missing, tvQrSourceFilePath: missing, tvBackgroundFilePath: missing,
+    azanSubuhFilePath: missing, azanOtherFilePath: missing, idleFolderPath: missing,
+    notificationSettings: settings.notificationSettings });
+  assert.equal(stored.get('zone'), 'PHG02');
+  assert.equal(stored.get('tv_logo_file_path'), settings.tvLogoFilePath);
+  assert.equal(stored.get('tv_logo_source_file_path'), settings.tvLogoFilePath);
+  assert.equal(writes[0].azan_subuh_file_path, path.join(dir, 'dist/assets/audio/default_azan_subuh.mp3'));
+  assert.equal(writes[0].azan_other_file_path, path.join(dir, 'dist/assets/audio/default_azan_biasa.mp3'));
+  const custom = path.join(dir, 'custom.png');
+  fs.writeFileSync(custom, 'fixture');
+  api.saveSettings({ tvLogoFilePath: custom, tvLogoSourceFilePath: custom, tvQrFilePath: custom });
+  assert.equal(stored.get('tv_logo_file_path'), custom);
+  assert.equal(stored.get('tv_qr_file_path'), custom);
 });

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { app } from 'electron';
 import {
   getActiveZoneCode,
@@ -53,6 +54,46 @@ function getTextSetting(key: string, fallback: string): string {
   return value && value.trim().length > 0 ? value : fallback;
 }
 
+/** Missing user files fall back to bundled assets; optional TV images stay empty. */
+function resolveFileDefaults<T extends SaveSettingsPayload>(settings: T): T {
+  const assets = path.join(app.getAppPath(), 'dist/assets');
+  const defaults: Partial<Record<keyof SaveSettingsPayload, string | null>> = {
+    azanSubuhFilePath: path.join(assets, 'audio/default_azan_subuh.mp3'),
+    azanOtherFilePath: path.join(assets, 'audio/default_azan_biasa.mp3'),
+    idleFolderPath: path.join(assets, 'zikir_default'),
+    tvLogoFilePath: path.join(assets, 'icons/icon.png'),
+    tvBackgroundFilePath: null,
+    tvQrFilePath: null,
+    tvQrSourceFilePath: null,
+  };
+  const result = { ...settings };
+  for (const [key, fallback] of Object.entries(defaults)) {
+    const field = key as keyof SaveSettingsPayload;
+    if (!(field in result)) continue;
+    const value = result[field];
+    const valid = field === 'idleFolderPath' ? isValidFolderPath : field.startsWith('tv') ? isValidImagePath : isValidFilePath;
+    if (value === null || (typeof value === 'string' && (!value || !valid(value)))) {
+      const replacement = fallback && valid(fallback) ? fallback : null;
+      Object.assign(result, { [field]: replacement });
+    }
+  }
+  if ('tvLogoSourceFilePath' in result && !isValidImagePath(result.tvLogoSourceFilePath)) {
+    result.tvLogoSourceFilePath = result.tvLogoFilePath ?? path.join(assets, 'icons/icon.png');
+  }
+  if (result.tvLogoFilePath && !result.tvLogoSourceFilePath && 'tvLogoSourceFilePath' in result) {
+    result.tvLogoSourceFilePath = result.tvLogoFilePath;
+  }
+  if (result.notificationSettings) {
+    const notificationDefault = path.join(assets, 'audio/notification_default/default notification_15_minutes.mp3');
+    result.notificationSettings = result.notificationSettings.map((setting) => ({
+      ...setting,
+      audioFilePath: setting.audioFilePath && !isValidFilePath(setting.audioFilePath)
+        ? isValidFilePath(notificationDefault) ? notificationDefault : null : setting.audioFilePath,
+    }));
+  }
+  return result;
+}
+
 // ============================================================
 // Baca tetapan
 // ============================================================
@@ -72,7 +113,7 @@ export function getSettings(): AppSettings {
     volume: n.volume,
   }));
 
-  return {
+  return resolveFileDefaults({
     activeZoneCode: getActiveZoneCode(),
     azanSubuhFilePath: audio?.azan_subuh_file_path ?? null,
     azanOtherFilePath: audio?.azan_other_file_path ?? null,
@@ -98,7 +139,7 @@ export function getSettings(): AppSettings {
       'tv_donation_text',
       'Jazakumullahu Khairan atas sumbangan anda.',
     ),
-  };
+  });
 }
 
 // ============================================================
@@ -123,6 +164,7 @@ function clampVolume(value: number | undefined): number {
  * Melempar SettingsValidationError jika laluan fail/folder tidak sah.
  */
 export function saveSettings(payload: SaveSettingsPayload): void {
+  payload = resolveFileDefaults(payload);
   // Sahkan jadual sebelum sebarang penulisan, termasuk payload separa melalui IPC.
   if ('idleScheduleEnabled' in payload || 'idleSleepTime' in payload || 'idleWakeTime' in payload) {
     const current = getAudioSettings();

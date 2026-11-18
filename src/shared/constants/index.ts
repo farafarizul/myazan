@@ -1,5 +1,5 @@
 export const APP_NAME = 'myAzan';
-export const APP_VERSION = '0.3.1';
+export const APP_VERSION = '0.3.2';
 export const APP_AUTHOR = 'Fara Farizul';
 export const APP_EMAIL = 'farxpeace@gmail.com';
 export const APP_PHONE = '+60137974467';

@@ -84,6 +84,8 @@ Aplikasi menyokong **58 zon** merangkumi **14 negeri** seluruh Malaysia:
 
 ## ⚙️ Aliran Proses Aplikasi
 
+Fail tetapan yang hilang menggunakan aset lalai: logo myAzan, audio azan mengikut waktu dan folder zikir terbina. Audio notifikasi yang hilang menggunakan bunyi notifikasi terbina. Logo asal untuk crop menggunakan logo semasa jika fail asal hilang. QR derma dan latar pilihan yang tidak lagi wujud dikosongkan. Fail pilihan yang masih sah dikekalkan; pengaktifan audio dan jadual tidak diubah.
+
 ### 1️⃣ Permulaan Aplikasi (Startup)
 
 Apabila myAzan dibuka, ia menjalankan proses bootstrap secara berperingkat:
@@ -694,7 +696,7 @@ npm run build
 
 Pemasang NSIS dan fail EXE mudah alih akan dihasilkan dalam folder `dist-build/`.
 
-Release Windows terkini: [Muat turun installer atau portable](https://github.com/farafarizul/myazan/releases/latest). Nota pembaikan dan binaan stabil: [v0.3.1](docs/releases/v0.3.1.md). Proses release terdahulu: [v0.3.0](docs/releases/v0.3.0.md).
+Release Windows terkini: [Muat turun installer atau portable](https://github.com/farafarizul/myazan/releases/latest). Nota pembaikan dan binaan stabil: [v0.3.2](docs/releases/v0.3.2.md). Proses release terdahulu: [v0.3.0](docs/releases/v0.3.0.md).
 
 Binaan ujian lokal berasingan: [myAzan Dev 0.3.1-dev.1](docs/releases/v0.3.1-dev.1.md), termasuk langkah menguji pembaikan bulan JAKIM, loading bar dan cubaan semula selepas ralat.
 

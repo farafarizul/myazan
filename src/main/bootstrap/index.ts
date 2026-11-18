@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import { app } from 'electron';
 import { APP_NAME, APP_VERSION } from '../../shared/constants';
 import {
@@ -25,13 +26,13 @@ function setDefaultAudioPaths(): void {
   const assetsDir = path.join(__dirname, '../assets');
   const updates: Record<string, string> = {};
 
-  if (!audio?.azan_subuh_file_path) {
-    updates['azan_subuh_file_path'] = path.join(assetsDir, 'audio', 'default_azan_biasa.mp3');
+  if (!audio?.azan_subuh_file_path || !fs.existsSync(audio.azan_subuh_file_path)) {
+    updates['azan_subuh_file_path'] = path.join(assetsDir, 'audio', 'default_azan_subuh.mp3');
   }
-  if (!audio?.azan_other_file_path) {
-    updates['azan_other_file_path'] = path.join(assetsDir, 'audio', 'default_azan_subuh.mp3');
+  if (!audio?.azan_other_file_path || !fs.existsSync(audio.azan_other_file_path)) {
+    updates['azan_other_file_path'] = path.join(assetsDir, 'audio', 'default_azan_biasa.mp3');
   }
-  if (!audio?.idle_folder_path) {
+  if (!audio?.idle_folder_path || !fs.existsSync(audio.idle_folder_path)) {
     updates['idle_folder_path'] = path.join(assetsDir, 'zikir_default');
   }
 
@@ -56,7 +57,7 @@ function setDefaultNotificationAudioPaths(): void {
   const notifications = getAllNotificationSettings();
 
   for (const row of notifications) {
-    if (targetEvents.includes(row.event_name) && !row.audio_file_path) {
+    if ((targetEvents.includes(row.event_name) && !row.audio_file_path) || (row.audio_file_path && !fs.existsSync(row.audio_file_path))) {
       saveNotificationSetting(row.event_name, { audio_file_path: defaultAudioPath });
     }
   }
