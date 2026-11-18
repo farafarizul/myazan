@@ -64,6 +64,7 @@ function initNavigation(): void {
       const pageEl = document.getElementById(`page-${targetPage}`);
       pageEl?.classList.add('active');
       if (targetPage === 'jadual-solat') void loadPrayerSchedule();
+      if (targetPage === 'papan-pemuka') void loadHalamanUtama();
 
       // Sync audio page controls when navigating to audio page
       if (targetPage === 'audio') {
@@ -242,113 +243,147 @@ function kemaskiniCountdown(waktu: Array<[string, string | null]>, sekarangMinit
  * Muatkan dan paparkan waktu solat hari ini.
  * Jika tiada data tempatan, cuba sync terlebih dahulu.
  */
-async function loadHalamanUtama(): Promise<void> {
-  const bentoEl = document.getElementById('db-prayer-bento');
+let dashboardRequest = 0;
 
-  if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Memuat waktu solat...</p>';
+function showDashboardStatus(message: string, loading: boolean, detail?: string): void {
+  const status = document.getElementById('dashboard-load-status')!;
+  status.hidden = !message;
+  status.setAttribute('aria-busy', String(loading));
+  document.getElementById('dashboard-load-message')!.textContent = message;
+  document.getElementById('dashboard-load-progress')!.hidden = !loading;
+  const retry = document.getElementById('dashboard-retry') as HTMLButtonElement;
+  retry.hidden = !detail;
+  retry.onclick = (): void => { void loadHalamanUtama(); };
+  document.getElementById('dashboard-error-details')!.hidden = !detail;
+  document.getElementById('dashboard-error-text')!.textContent = detail ?? '';
+  if (message) {
+    _prayerWaktu = [];
+    document.getElementById('db-prayer-bento')!.replaceChildren();
+    document.getElementById('waktu-solat-list')!.replaceChildren();
+    document.getElementById('next-prayer-label')!.textContent = 'Seterusnya';
+    document.getElementById('next-prayer-countdown')!.textContent = '—';
+    document.getElementById('next-prayer-bar-fill')!.style.width = '0%';
+    const svg = document.getElementById('db-timeline-svg')!;
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '380');
+    text.setAttribute('y', '50');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '12');
+    text.setAttribute('fill', 'var(--on-surface-variant)');
+    text.textContent = loading ? 'Sedang memuatkan waktu solat' : 'Waktu solat belum tersedia';
+    svg.replaceChildren(text);
+  }
+}
+
+async function loadHalamanUtama(): Promise<void> {
+  const request = ++dashboardRequest;
+  showDashboardStatus('Memuatkan waktu solat daripada simpanan lokal...', true);
 
   startClock();
 
-  let settings: AppSettings;
   try {
-    settings = await window.myAzan.getSettings();
-  } catch {
-    if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Gagal mendapatkan tetapan.</p>';
-    return;
-  }
-
-  const zoneCode = settings.activeZoneCode;
-
-  // Kemas kini label zon di papan pemuka
-  const zonLabelEl = document.getElementById('dashboard-zon-label');
-  if (zonLabelEl) {
-    zonLabelEl.textContent = zoneCode ?? '— Pilih Zon di Tetapan —';
-  }
-
-  // Kemas kini status idle audio
-  kemaskiniZikirPlayingIndicator().catch(() => undefined);
-
-  if (!zoneCode) {
-    const msg = '<p class="info-teks">Sila pilih zon waktu solat anda di halaman <strong>Tetapan</strong>.</p>';
-    if (bentoEl) bentoEl.innerHTML = msg;
-    return;
-  }
-
-  const tarikh = tarikhHariIni();
-  let data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
-
-  if (!data) {
-    if (bentoEl) bentoEl.innerHTML = '<p class="info-teks">Memuat turun data waktu solat...</p>';
+    let settings: AppSettings;
     try {
-      const syncResult = await window.myAzan.syncPrayerTimes({ zoneCode });
-      if (!syncResult.ok) {
-        const errMsg = `<p class="info-teks">Gagal memuat turun data: ${syncResult.error ?? 'Ralat tidak diketahui'}.</p>`;
-        if (bentoEl) bentoEl.innerHTML = errMsg;
-        return;
-      }
-      data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
+      settings = await window.myAzan.getSettings();
     } catch {
-      const errMsg = '<p class="info-teks">Gagal memuat turun data waktu solat.</p>';
-      if (bentoEl) bentoEl.innerHTML = errMsg;
+      throw new Error('Tetapan aplikasi tidak dapat dibaca.');
+    }
+    if (request !== dashboardRequest) return;
+
+    const zoneCode = settings.activeZoneCode;
+
+    // Kemas kini label zon di papan pemuka
+    const zonLabelEl = document.getElementById('dashboard-zon-label');
+    if (zonLabelEl) {
+      zonLabelEl.textContent = zoneCode ?? '— Pilih Zon di Tetapan —';
+    }
+
+    // Kemas kini status idle audio
+    kemaskiniZikirPlayingIndicator().catch(() => undefined);
+
+    if (!zoneCode) {
+      showDashboardStatus('Pilih zon waktu solat di Tetapan, kemudian tekan Simpan.', false);
       return;
     }
-  }
 
-  if (!data) {
-    const errMsg = '<p class="info-teks">Tiada data waktu solat untuk hari ini.</p>';
-    if (bentoEl) bentoEl.innerHTML = errMsg;
-    return;
-  }
+    const tarikh = tarikhHariIni();
+    let data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
+    if (request !== dashboardRequest) return;
 
-  const sekarangMinit = masaKeMinit(masaSekarang());
-  const waktuBerurutan: Array<[string, string | null]> = [
-    ['imsak', data.imsak],
-    ['fajr', data.fajr],
-    ['syuruk', data.syuruk],
-    ['dhuha', data.dhuha],
-    ['dhuhr', data.dhuhr],
-    ['asr', data.asr],
-    ['maghrib', data.maghrib],
-    ['isha', data.isha],
-  ];
-
-  // Simpan untuk clock tick
-  _prayerWaktu = waktuBerurutan;
-
-  // Cari waktu berikutnya
-  let indexBerikutnya = -1;
-  for (let i = 0; i < waktuBerurutan.length; i++) {
-    const masa = waktuBerurutan[i]?.[1];
-    if (masa && masaKeMinit(masa) > sekarangMinit) {
-      indexBerikutnya = i;
-      break;
+    if (!data) {
+      showDashboardStatus(`Memuat turun data JAKIM untuk ${zoneCode}. Sila tunggu...`, true);
+      const syncResult = await window.myAzan.syncPrayerTimes({ zoneCode });
+      if (request !== dashboardRequest) return;
+      if (!syncResult.ok) {
+        throw new Error(syncResult.error ?? 'Muat turun JAKIM gagal tanpa butiran ralat.');
+      }
+      data = await window.myAzan.getPrayerTimesForDate(zoneCode, tarikh);
+      if (request !== dashboardRequest) return;
     }
-  }
 
-  // Countdown strip (initial render — clock tick akan terus kemas kini)
-  kemaskiniCountdown(waktuBerurutan, sekarangMinit);
+    if (!data) {
+      throw new Error(`Tiada rekod ${zoneCode} untuk ${tarikh} selepas penyegerakan. Semak julat tarikh di Jadual Solat.`);
+    }
+    showDashboardStatus('', false);
 
-  // Bento prayer grid
-  renderPrayerBentoCards(waktuBerurutan, sekarangMinit, indexBerikutnya, settings);
+    const sekarangMinit = masaKeMinit(masaSekarang());
+    const waktuBerurutan: Array<[string, string | null]> = [
+      ['imsak', data.imsak],
+      ['fajr', data.fajr],
+      ['syuruk', data.syuruk],
+      ['dhuha', data.dhuha],
+      ['dhuhr', data.dhuhr],
+      ['asr', data.asr],
+      ['maghrib', data.maghrib],
+      ['isha', data.isha],
+    ];
 
-  // SVG Timeline chart
-  renderTimelineSvg(waktuBerurutan, sekarangMinit, indexBerikutnya);
+    // Simpan untuk clock tick
+    _prayerWaktu = waktuBerurutan;
 
-  // Hidden compat: waktu-solat-list
-  const listEl = document.getElementById('waktu-solat-list');
-  if (listEl) {
-    listEl.innerHTML = waktuBerurutan
-      .map(([event, masa], i) => {
-        if (!masa) return '';
-        const nama = NAMA_WAKTU[event] ?? event;
-        const isActive = i === indexBerikutnya;
-        return `<div style="display:flex;justify-content:space-between;padding:2px 0;
-                     ${isActive ? 'color:var(--primary);font-weight:700;' : ''}">
-                  <span>${nama}</span>
-                  <span style="font-variant-numeric:tabular-nums;">${masa.substring(0, 5)}</span>
-                </div>`;
-      })
-      .join('');
+    // Cari waktu berikutnya
+    let indexBerikutnya = -1;
+    for (let i = 0; i < waktuBerurutan.length; i++) {
+      const masa = waktuBerurutan[i]?.[1];
+      if (masa && masaKeMinit(masa) > sekarangMinit) {
+        indexBerikutnya = i;
+        break;
+      }
+    }
+
+    // Countdown strip (initial render — clock tick akan terus kemas kini)
+    kemaskiniCountdown(waktuBerurutan, sekarangMinit);
+
+    // Bento prayer grid
+    renderPrayerBentoCards(waktuBerurutan, sekarangMinit, indexBerikutnya, settings);
+
+    // SVG Timeline chart
+    renderTimelineSvg(waktuBerurutan, sekarangMinit, indexBerikutnya);
+
+    // Hidden compat: waktu-solat-list
+    const listEl = document.getElementById('waktu-solat-list');
+    if (listEl) {
+      listEl.innerHTML = waktuBerurutan
+        .map(([event, masa], i) => {
+          if (!masa) return '';
+          const nama = NAMA_WAKTU[event] ?? event;
+          const isActive = i === indexBerikutnya;
+          return `<div style="display:flex;justify-content:space-between;padding:2px 0;
+                       ${isActive ? 'color:var(--primary);font-weight:700;' : ''}">
+                    <span>${nama}</span>
+                    <span style="font-variant-numeric:tabular-nums;">${masa.substring(0, 5)}</span>
+                  </div>`;
+        })
+        .join('');
+    }
+  } catch (error) {
+    if (request !== dashboardRequest) return;
+    const detail = error instanceof Error ? error.message : String(error);
+    const guidance = detail.includes('format tarikh') || detail.includes('medan wajib') || detail.includes('tidak lengkap')
+      ? 'Format data JAKIM tidak dapat dibaca. Cuba semula atau semak kemas kini aplikasi.'
+      : detail.includes('Tiada rekod') ? 'Rekod hari ini tiada dalam data tersimpan. Semak julat tarikh di Jadual Solat.'
+      : 'Semak sambungan internet dan cuba semula. Jika berulang, buka butiran teknikal.';
+    showDashboardStatus(`Waktu solat gagal dimuatkan. ${guidance}`, false, detail);
   }
 }
 

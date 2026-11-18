@@ -153,6 +153,16 @@
             </div>
           </div>
 
+          <div id="dashboard-load-status" class="dashboard-load-status" hidden>
+            <p id="dashboard-load-message" role="status" aria-live="polite"></p>
+            <progress id="dashboard-load-progress" aria-label="Memuatkan waktu solat"></progress>
+            <button id="dashboard-retry" type="button" class="btn-secondary" hidden>Cuba semula</button>
+            <details id="dashboard-error-details" hidden>
+              <summary>Butiran teknikal</summary>
+              <p id="dashboard-error-text"></p>
+            </details>
+          </div>
+
           <div class="db-section">
             <!-- SVG Timeline Chart -->
             <div class="db-card db-chart-card">

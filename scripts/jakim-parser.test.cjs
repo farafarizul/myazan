@@ -20,6 +20,7 @@ function yearlyData(months) {
 for (const [language, months] of [
   ['English', 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'],
   ['Malay', 'Jan Feb Mac Apr Mei Jun Jul Ogo Sep Okt Nov Dis'],
+  ['JAKIM live WLY01', 'Jan Feb Mac Apr Mei Jun Jul Ogos Sep Okt Nov Dis'],
 ]) {
   test(`parses a full year with ${language} month abbreviations`, () => {
     const rows = parseJakimResponse(yearlyData(months.split(' ')), 'WLY01', 2026);

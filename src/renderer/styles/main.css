@@ -2286,3 +2286,10 @@ li.zikir-fail-sedang-main {
 .schedule-table th { position: sticky; top: 0; background: var(--surface-container-low); color: var(--primary); text-align: left; z-index: 1; }
 .schedule-table th, .schedule-table td { padding: 12px; border-bottom: 1px solid var(--outline-variant); }
 .schedule-table tbody tr:hover { background: var(--surface-container-low); }
+
+.dashboard-load-status { margin: 0 48px 24px; padding: 20px; border: 1px solid var(--outline-variant); border-radius: 12px; background: var(--surface-container-lowest); }
+.dashboard-load-status p { margin: 0 0 12px; line-height: 1.6; }
+.dashboard-load-status progress { display: block; width: 100%; height: 12px; accent-color: var(--primary); }
+.dashboard-load-status [hidden] { display: none; }
+.dashboard-load-status details { margin-top: 16px; overflow-wrap: anywhere; font-size: 13px; }
+.dashboard-load-status summary { cursor: pointer; }

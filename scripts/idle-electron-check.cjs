@@ -181,6 +181,35 @@ async function run() {
   setSetting('active_zone_code', null, 'string');
   checks.push('Schedule shows all cached dates, stored-year selection, null values, empty zones, and rejects invalid IPC years without downloading');
 
+  const { ipcMain } = require('electron');
+  const { IPC_CHANNELS } = require('../src/shared/constants');
+  ipcMain.removeHandler(IPC_CHANNELS.SYNC_PRAYER_TIMES);
+  let finishSync;
+  ipcMain.handle(IPC_CHANNELS.SYNC_PRAYER_TIMES, () => new Promise(resolve => { finishSync = resolve; }));
+  setSetting('active_zone_code', 'WLY02', 'string');
+  await ui(`document.querySelector('[data-page="papan-pemuka"]').click()`);
+  await waitFor(() => ui(`!document.getElementById('dashboard-load-progress').hidden && document.getElementById('dashboard-load-message').textContent.includes('Memuat turun')`), 'dashboard loading bar');
+  await waitFor(() => Boolean(finishSync), 'sync pending');
+  finishSync({ ok: false, error: 'Rekod ke-213: format tarikh tidak sah "01-Ogos-2026" <img src=x>' });
+  await waitFor(() => ui(`!document.getElementById('dashboard-retry').hidden`), 'clear error and retry');
+  assert.equal(await ui(`document.getElementById('dashboard-load-progress').hidden`), true);
+  assert.equal(await ui(`document.getElementById('dashboard-load-message').textContent.includes('Format data JAKIM')`), true);
+  assert.equal(await ui(`document.getElementById('db-timeline-svg').textContent.includes('Memuat')`), false);
+  assert.equal(await ui(`document.querySelectorAll('#dashboard-error-text img').length`), 0);
+  await ui(`document.getElementById('dashboard-error-details').open = true`);
+  mainWindow.webContents.invalidate();
+  await delay(200);
+  fs.writeFileSync(path.join(screenshots, 'dashboard-clear-error.png'), (await mainWindow.webContents.capturePage()).toPNG());
+  finishSync = undefined;
+  await click('dashboard-retry');
+  await waitFor(() => ui(`!document.getElementById('dashboard-load-progress').hidden`), 'retry loading');
+  await waitFor(() => Boolean(finishSync), 'retry sync pending');
+  savePrayerTimes(rows.map(row => ({ ...row, zone_code: 'WLY02' })));
+  finishSync({ ok: true });
+  await waitFor(() => ui(`document.querySelectorAll('#db-prayer-bento .db-prayer-card').length > 0`), 'retry success');
+  assert.equal(await ui(`document.getElementById('dashboard-load-status').hidden`), true);
+  checks.push('Dashboard loading bar ends on failure; clear error, safe technical details and retry recover to cached prayer cards');
+
   mainWindow.destroy();
   mainWindow = null;
   stopAudioEngine();

@@ -61,6 +61,8 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 
 Muat turun waktu solat menerima singkatan bulan Bahasa Melayu dan Inggeris daripada JAKIM (contohnya `Mac` dan `Mar`), termasuk selepas pertukaran zon.
 
+Format JAKIM `Ogos` turut disokong. Papan pemuka menunjukkan loading bar semasa membaca atau memuat turun waktu solat; jika gagal, mesej tindakan, butiran teknikal dan butang **Cuba semula** dipaparkan. Garis masa tidak kekal dalam keadaan memuat selepas ralat.
+
 Aplikasi menyokong **58 zon** merangkumi **14 negeri** seluruh Malaysia:
 
 - Wilayah Persekutuan (WLY01–WLY02) — 2 zon
@@ -692,7 +694,9 @@ npm run build
 
 Pemasang NSIS dan fail EXE mudah alih akan dihasilkan dalam folder `dist-build/`.
 
-Release Windows terkini: [Muat turun installer atau portable](https://github.com/farafarizul/myazan/releases/latest). Proses binaan dan nota v0.3.0: [Panduan release](docs/releases/v0.3.0.md).
+Release Windows terkini: [Muat turun installer atau portable](https://github.com/farafarizul/myazan/releases/latest). Nota pembaikan dan binaan stabil: [v0.3.1](docs/releases/v0.3.1.md). Proses release terdahulu: [v0.3.0](docs/releases/v0.3.0.md).
+
+Binaan ujian lokal berasingan: [myAzan Dev 0.3.1-dev.1](docs/releases/v0.3.1-dev.1.md), termasuk langkah menguji pembaikan bulan JAKIM, loading bar dan cubaan semula selepas ralat.
 
 ---
 

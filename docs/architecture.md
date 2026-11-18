@@ -15,6 +15,8 @@ Matlamat seni bina:
 
 ## Prinsip Reka Bentuk
 
+Pemuatan papan pemuka menggunakan progress bar tanpa peratus rekaan kerana API tidak memberikan kemajuan muat turun. Setiap pemuatan mengosongkan waktu dan countdown lama; respons permintaan lama diabaikan. Kegagalan tetapan, cache dan sync ditangkap pada satu aliran, dengan mesej tindakan, butiran teknikal melalui `textContent` dan butang cuba semula. Ujian Electron merangkumi muat turun tertangguh, ralat parser, butiran yang selamat dan pemulihan selepas cuba semula. Semakan API WLY01 pada 18 November 2026 mengesahkan 365 rekod dengan bulan `Ogos`; parser menyokong `Ogos` dan alias `Ogo`.
+
 Halaman **Jadual Solat** menggunakan IPC `get-prayer-schedule` untuk membaca tahun yang tersedia dan rekod tahunan zon aktif melalui repository SQLite. Tahun disahkan sebagai integer sebelum query berparameter dijalankan. Tiada muat turun atau perubahan data dilakukan. Renderer memaparkan nilai tersimpan dengan `textContent`, pilihan tahun, jumlah rekod, julat tarikh, keadaan kosong dan cubaan semula selepas ralat. Ujian Electron menggunakan database sementara untuk menyemak paparan setahun, pertukaran tahun dan zon, serta validasi IPC (`npm run test:electron`).
 
 Parser tarikh JAKIM menormalkan format `DD-MMM-YYYY` kepada `YYYY-MM-DD`, dengan sokongan singkatan bulan Inggeris serta Melayu (`Mac`, `Mei`, `Ogo`, `Okt`, `Dis`). Singkatan yang tidak dikenali masih ditolak sebelum data disimpan. Ujian regresi tahunan dijalankan melalui `npm test`.
