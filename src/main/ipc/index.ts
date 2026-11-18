@@ -19,6 +19,7 @@ import {
 } from '../services/prayer-time';
 import { getPlaybackStatus, applySettingsChange, controlIdle } from '../services/audio';
 import { readIdlePlaylist } from '../services/audio/playlist';
+import { getPrayerSchedule } from '../services/prayer-time/schedule';
 import type { IdlePlaybackCommand } from '../../shared/types';
 
 /**
@@ -31,6 +32,7 @@ export function registerIpcHandlers(
   openTvDisplay: () => void,
   closeTvDisplay: () => void,
 ): void {
+  ipcMain.handle(IPC_CHANNELS.GET_PRAYER_SCHEDULE, (_event, year?: number) => getPrayerSchedule(year));
   ipcMain.handle(IPC_CHANNELS.GET_APP_INFO, (): AppInfo => {
     return {
       name: APP_NAME,

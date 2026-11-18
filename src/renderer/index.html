@@ -47,6 +47,10 @@
           <span class="material-symbols-outlined">dashboard</span>
           Papan Pemuka
         </button>
+        <button class="nav-item" data-page="jadual-solat">
+          <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+          Jadual Solat
+        </button>
         <button class="nav-item" data-page="tetapan">
           <span class="material-symbols-outlined">settings</span>
           Tetapan
@@ -186,6 +190,33 @@
       <!-- ===================================================
            Halaman: Tetapan
            =================================================== -->
+      <section id="page-jadual-solat" class="page">
+        <div class="page-content">
+          <div class="page-header">
+            <h2 class="page-header-title">Jadual Solat</h2>
+            <p class="page-header-subtitle">Semak jadual setahun daripada data yang sudah dimuat turun untuk zon aktif. Semua waktu dalam format 24 jam.</p>
+          </div>
+          <div class="card schedule-card">
+            <div class="schedule-toolbar">
+              <div><strong id="schedule-zone">Zon aktif</strong><p id="schedule-summary" role="status" aria-live="polite">Buka halaman untuk membaca data lokal.</p></div>
+              <div class="schedule-actions">
+                <label for="schedule-year">Tahun</label>
+                <select id="schedule-year" disabled></select>
+                <button id="schedule-refresh" type="button" class="btn-secondary">Muat semula</button>
+              </div>
+            </div>
+            <p id="schedule-message" role="status" aria-live="polite"></p>
+            <div class="schedule-scroll" tabindex="0" role="region" aria-label="Jadual waktu solat tahunan" aria-busy="false">
+              <table class="schedule-table">
+                <caption>Data lokal JAKIM. Nilai kosong ditandakan dengan —.</caption>
+                <thead><tr><th scope="col">Tarikh</th><th scope="col">Hari</th><th scope="col">Hijri</th><th scope="col">Imsak</th><th scope="col">Subuh</th><th scope="col">Syuruk</th><th scope="col">Dhuha</th><th scope="col">Zohor</th><th scope="col">Asar</th><th scope="col">Maghrib</th><th scope="col">Isyak</th></tr></thead>
+                <tbody id="schedule-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="page-tetapan" class="page">
         <div class="page-content">
 

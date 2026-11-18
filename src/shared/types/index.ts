@@ -38,6 +38,14 @@ export interface PrayerTime {
   source: string;
 }
 
+export interface PrayerSchedule {
+  zoneCode: string | null;
+  zoneName: string | null;
+  years: number[];
+  year: number;
+  rows: PrayerTime[];
+}
+
 export interface AudioSettings {
   azanSubuhFilePath: string | null;
   azanOtherFilePath: string | null;

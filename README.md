@@ -40,6 +40,8 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 
 ## ✨ Ciri Utama
 
+**Jadual Solat** di menu kiri memaparkan semua rekod waktu solat setahun daripada SQLite untuk zon aktif. Pilih tahun yang sudah tersimpan dan semak tarikh, hari, tarikh Hijri serta lapan waktu. Jumlah rekod dan julat tarikh membantu mengesan data yang tidak lengkap. Halaman ini membaca data lokal sahaja; gunakan Tetapan untuk memilih zon dan memuat turun data.
+
 | Ciri | Keterangan |
 |------|-----------|
 | 🔊 Azan Automatik | Memainkan azan tepat pada waktunya mengikut zon JAKIM |
@@ -689,6 +691,8 @@ npm run build
 ```
 
 Pemasang NSIS dan fail EXE mudah alih akan dihasilkan dalam folder `dist-build/`.
+
+Release Windows terkini: [Muat turun installer atau portable](https://github.com/farafarizul/myazan/releases/latest). Proses binaan dan nota v0.3.0: [Panduan release](docs/releases/v0.3.0.md).
 
 ---
 

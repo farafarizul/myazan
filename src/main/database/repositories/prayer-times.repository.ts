@@ -60,6 +60,13 @@ export function getPrayerTimesByYear(zoneCode: string, year: number): PrayerTime
     .all(zoneCode, year) as PrayerTimeRow[];
 }
 
+export function getPrayerTimeYears(zoneCode: string): number[] {
+  const rows = getDatabase()
+    .prepare('SELECT DISTINCT year FROM prayer_times WHERE zone_code = ? ORDER BY year DESC')
+    .all(zoneCode) as { year: number }[];
+  return rows.map((row) => row.year);
+}
+
 /**
  * Simpan banyak rekod waktu solat serentak.
  * Gunakan INSERT OR REPLACE untuk elak duplikasi.

@@ -18,6 +18,8 @@ import type {
  * Renderer TIDAK mempunyai akses langsung kepada Node.js atau Electron API.
  */
 contextBridge.exposeInMainWorld('myAzan', {
+  getPrayerSchedule: (year?: number): Promise<import('../shared/types').PrayerSchedule> =>
+    ipcRenderer.invoke(IPC_CHANNELS.GET_PRAYER_SCHEDULE, year),
   /**
    * Dapatkan maklumat aplikasi (nama, versi, pembangun, dsb.)
    */

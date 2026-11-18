@@ -2272,3 +2272,17 @@ li.zikir-fail-sedang-main {
 @media (max-width: 480px) {
   .idle-schedule-times { grid-template-columns: 1fr; }
 }
+
+/* Jadual Solat: full-year, read-only cache inspection. */
+.schedule-card { padding: 20px; min-width: 0; }
+.schedule-toolbar, .schedule-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.schedule-toolbar { justify-content: space-between; }
+.schedule-toolbar p, #schedule-message { font-size: 13px; color: var(--on-surface-variant); line-height: 1.6; }
+.schedule-actions select { padding: 10px; min-height: 44px; border: 1px solid var(--outline); border-radius: 8px; background: var(--surface-container-lowest); color: var(--on-surface); font: inherit; }
+.schedule-scroll { overflow: auto; max-height: 65vh; border: 1px solid var(--outline-variant); border-radius: 8px; }
+.schedule-scroll:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.schedule-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.schedule-table caption { text-align: left; padding: 12px; color: var(--on-surface-variant); }
+.schedule-table th { position: sticky; top: 0; background: var(--surface-container-low); color: var(--primary); text-align: left; z-index: 1; }
+.schedule-table th, .schedule-table td { padding: 12px; border-bottom: 1px solid var(--outline-variant); }
+.schedule-table tbody tr:hover { background: var(--surface-container-low); }

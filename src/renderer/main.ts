@@ -1,9 +1,11 @@
 import type { AppInfo, AppSettings, Zone, NotificationSetting, SaveSettingsPayload, PlaybackStatus, IdlePlaybackCommand, IdlePlaybackResult } from '../shared/types';
 import { isValidIdleTime } from '../shared/idle-schedule';
+import { loadPrayerSchedule } from './prayer-schedule';
 
 declare global {
   interface Window {
     myAzan: {
+      getPrayerSchedule: (year?: number) => Promise<import('../shared/types').PrayerSchedule>;
       getAppInfo: () => Promise<AppInfo>;
       getZones: () => Promise<Zone[]>;
       getSettings: () => Promise<AppSettings>;
@@ -61,6 +63,7 @@ function initNavigation(): void {
       item.classList.add('nav-item-active');
       const pageEl = document.getElementById(`page-${targetPage}`);
       pageEl?.classList.add('active');
+      if (targetPage === 'jadual-solat') void loadPrayerSchedule();
 
       // Sync audio page controls when navigating to audio page
       if (targetPage === 'audio') {

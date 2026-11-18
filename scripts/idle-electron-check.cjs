@@ -150,6 +150,37 @@ async function run() {
   fs.writeFileSync(path.join(screenshots, 'idle-player-720.png'), (await mainWindow.webContents.capturePage()).toPNG());
   checks.push('UI has no horizontal overflow at the supported 720px window width');
 
+  await ui(`document.querySelector('[data-page="jadual-solat"]').click()`);
+  await waitFor(() => ui(`document.getElementById('schedule-message').textContent.includes('Pilih zon')`), 'schedule without zone');
+  const { savePrayerTimes } = require('../src/main/database');
+  const rows = Array.from({ length: 365 }, (_, index) => ({
+    zone_code: 'WLY01', year: 2026,
+    date: new RealDate(Date.UTC(2026, 0, index + 1)).toISOString().slice(0, 10),
+    hijri: '1448-01-01', day_label: 'Hari ujian', imsak: '05:39', fajr: '05:49',
+    syuruk: '06:57', dhuha: null, dhuhr: '13:00', asr: '16:00', maghrib: '19:00', isha: '20:00', source: 'jakim',
+  }));
+  savePrayerTimes(rows);
+  savePrayerTimes([{ ...rows[0], year: 2025, date: '2025-01-01' }]);
+  setSetting('active_zone_code', 'WLY01', 'string');
+  await ui(`document.querySelector('[data-page="jadual-solat"]').click()`);
+  await waitFor(() => ui(`document.querySelectorAll('#schedule-body tr').length === 365`), 'full-year cached schedule');
+  assert.equal(await ui(`document.querySelector('#schedule-body tr td').textContent`), '2026-01-01');
+  assert.equal(await ui(`document.querySelector('#schedule-body tr:last-child td').textContent`), '2026-12-31');
+  assert.equal(await ui(`document.querySelector('#schedule-body tr td:nth-child(7)').textContent`), '—');
+  assert.equal(await ui(`document.querySelector('#page-jadual-solat .page-content').scrollWidth <= document.querySelector('#page-jadual-solat .page-content').clientWidth`), true);
+  mainWindow.setSize(1200, 850);
+  await delay(200);
+  fs.writeFileSync(path.join(screenshots, 'jadual-solat-desktop.png'), (await mainWindow.webContents.capturePage()).toPNG());
+  await ui(`document.getElementById('schedule-year').value = '2025'; document.getElementById('schedule-year').dispatchEvent(new Event('change'))`);
+  await waitFor(() => ui(`document.querySelectorAll('#schedule-body tr').length === 1`), 'selected stored year');
+  assert.equal(await ui(`document.querySelector('#schedule-body tr td').textContent`), '2025-01-01');
+  await assert.rejects(() => ui(`window.myAzan.getPrayerSchedule('2026')`));
+  setSetting('active_zone_code', 'WLY02', 'string');
+  await ui(`document.querySelector('[data-page="jadual-solat"]').click()`);
+  await waitFor(() => ui(`document.getElementById('schedule-zone').textContent.startsWith('WLY02') && document.querySelectorAll('#schedule-body tr').length === 0`), 'zone change clears previous schedule');
+  setSetting('active_zone_code', null, 'string');
+  checks.push('Schedule shows all cached dates, stored-year selection, null values, empty zones, and rejects invalid IPC years without downloading');
+
   mainWindow.destroy();
   mainWindow = null;
   stopAudioEngine();

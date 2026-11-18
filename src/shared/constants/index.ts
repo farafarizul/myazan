@@ -1,5 +1,5 @@
 export const APP_NAME = 'myAzan';
-export const APP_VERSION = '0.1.0';
+export const APP_VERSION = '0.3.0';
 export const APP_AUTHOR = 'Fara Farizul';
 export const APP_EMAIL = 'farxpeace@gmail.com';
 export const APP_PHONE = '+60137974467';
@@ -23,6 +23,7 @@ export const IPC_CHANNELS = {
   CONTROL_IDLE: 'control-idle',
   SYNC_PRAYER_TIMES: 'sync-prayer-times',
   GET_PRAYER_TIMES_FOR_DATE: 'get-prayer-times-for-date',
+  GET_PRAYER_SCHEDULE: 'get-prayer-schedule',
   OPEN_TV_DISPLAY: 'open-tv-display',
   CLOSE_TV_DISPLAY: 'close-tv-display',
   WINDOW_MINIMIZE: 'window-minimize',
