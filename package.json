@@ -10,7 +10,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "test": "node --test scripts/idle-player.test.cjs",
+    "test": "node --test scripts/idle-player.test.cjs scripts/jakim-parser.test.cjs",
     "test:electron": "npm run compile && node scripts/run-idle-electron-check.cjs",
     "compile": "node scripts/build.js",
     "postinstall": "electron-rebuild -f -w better-sqlite3",

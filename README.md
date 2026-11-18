@@ -57,6 +57,8 @@ myAzan dibangunkan untuk kegunaan desktop atau mini PC yang berjalan 24 jam, den
 
 ## 🗺️ Zon JAKIM Yang Disokong
 
+Muat turun waktu solat menerima singkatan bulan Bahasa Melayu dan Inggeris daripada JAKIM (contohnya `Mac` dan `Mar`), termasuk selepas pertukaran zon.
+
 Aplikasi menyokong **58 zon** merangkumi **14 negeri** seluruh Malaysia:
 
 - Wilayah Persekutuan (WLY01–WLY02) — 2 zon

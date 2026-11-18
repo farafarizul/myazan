@@ -14,6 +14,9 @@ Matlamat seni bina:
 - mudah dikembangkan pada versi akan datang.
 
 ## Prinsip Reka Bentuk
+
+Parser tarikh JAKIM menormalkan format `DD-MMM-YYYY` kepada `YYYY-MM-DD`, dengan sokongan singkatan bulan Inggeris serta Melayu (`Mac`, `Mei`, `Ogo`, `Okt`, `Dis`). Singkatan yang tidak dikenali masih ditolak sebelum data disimpan. Ujian regresi tahunan dijalankan melalui `npm test`.
+
 1. **Offline-first**
    - Selepas data dimuat turun, aplikasi mesti boleh terus berfungsi tanpa internet.
 2. **Separation of concerns**
